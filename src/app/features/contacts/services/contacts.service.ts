@@ -28,7 +28,6 @@ export class ContactsService {
       this.contactsData.set(localStorageContactData);
     }
     this.contactApiService.getApiContacts().subscribe((contacts) => {
-      console.log('dentroooo');
       const transformContactsData = this.transformContactsData(contacts);
       this.contactsData.set(transformContactsData);
       this.storageService.setItem('contactsData', transformContactsData);

@@ -15,7 +15,7 @@ export class TokenInterceptor implements HttpInterceptor {
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
     const token =
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImE3ODU4NWIzLWRiMGYtNGVjMi05YWIwLTIwYjRlZTc4MDc3YSIsImlhdCI6MTc0MjgxMDkxNSwiZXhwIjoxNzQyODE4MTE1fQ.HE_l9rUZRto-XdyklWj8FRpJ-rui8QJ_hIWZjPRZRXg';
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImExZWRhMWUzLTg3ZjAtNGJhYy04MDYxLWFkZWYxMWQzNmI2YyIsImlhdCI6MTc0MjgyNTIzOSwiZXhwIjoxNzQyODMyNDM5fQ.dPLJseMwEE_hfem55gU8mHb-9uKPsXA-KjGWoFwo_30';
 
     if (token) {
       const cloned = req.clone({
