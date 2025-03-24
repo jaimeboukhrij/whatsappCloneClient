@@ -1,0 +1,60 @@
+<section class="h-full bg-backgroundDefault flex flex-col ">
+  @if (!showArchivedChat) {
+  <section class="px-4">
+    <chat-header></chat-header>
+  </section>
+  <section class="px-4 pb-[7px]">
+    <chats-input [isChatInputLoading]="isChatInputLoading()" (messageEvent)="onChangeQueryInput($event)"
+      [defaultPlaceHolder]="'Buscar'" />
+    <section class="flex items-center gap-2 flex-wrap">
+      @for (item of buttonText; track $index) {
+      <chat-button (click)="onClickButton(item.id)" [buttonText]="item.text"
+        [isActive]="item.id === currenIndexBtnActive()" />
+      }
+    </section>
+  </section>
+  <section class="scroll_section  ">
+    @if (currenIndexBtnActive() === 'all') {
+    <button (click)="toggleShowArchivedChat()"
+      class="flex items-center gap-6 h-[50px] px-4 text-lg cursor-pointer w-full">
+      <shared-archived-icon />
+      <p>Archivados</p>
+    </button>
+    }
+    @if (chatsPreviewData().length) {
+    <section>
+      @for (data of chatsPreviewData(); track $index) {
+      <chat-preview [chatPreviewData]="data" />
+      }
+    </section>
+    }@else {
+    <section class="w-full h-full flex flex-col justify-center items-center p-[25px] gap-[18px]">
+      <h2 class="text-[16px] text-[#667781]">No hay chats disponibles.</h2>
+      <button (click)="onClickButton('all')" class="text-[14px] text-[#00a884]">Ver todos los chats</button>
+    </section>
+    }
+  </section>
+
+  }@else {
+  <header class="flex flex-col ">
+    <section class="flex justify-start h-[64px] pl-[25px] pr-[20px] items-center gap-[30px]">
+      <button (click)="toggleShowArchivedChat()" class="flex">
+        <shared-left-arrow-icon iconColor="#8696A0" />
+      </button>
+      <p class="text-[16px] text-[#e9edef]">Archivados</p>
+    </section>
+    <p class="text-[14px] text-[#ADBAC1] pb-5 pl-[20px] pr-[20px]">
+      Cuando se reciben nuevos mensajes, estos chats permanecen archivados. Para
+      cambiar esta experiencia, ve a
+      <span class="font-bold">Ajustes &gt; Chats</span> en tu teléfono.
+    </p>
+    <div class=" h-[1px] bg-[#D8D8D8] ml-[20px] mr-[20px]"></div>
+  </header>
+  @for (data of chatsPreviewData(); track $index) {
+  <chat-preview [chatPreviewData]="data" />
+  }
+  }
+</section>
+@if (showSilencedNotificationsModal()) {
+<chat-notifications-silenced-modal></chat-notifications-silenced-modal>
+}

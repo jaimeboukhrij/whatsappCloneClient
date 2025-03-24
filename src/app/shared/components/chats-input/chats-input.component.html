@@ -1,0 +1,26 @@
+<section class="w-full h-[44px] ">
+  <section class="flex justify-between h-[35px] bg-searchInputBg rounded-lg gap-6 items-center px-3 w-full">
+
+    <div class="flex gap-6 items-center w-full">
+      @if (isFocus()) {
+      <button (click)="onArrowClick($event)" (mousedown)="$event.preventDefault()">
+        <shared-left-arrow-icon />
+      </button>
+      }@else {
+      <shared-search-icon />
+      }
+      <input class="bg-transparent flex-grow" type="text" [placeholder]="placeHolder()" (input)="onChange($event)"
+        (focus)="onFocus()" (blur)="onBlur()" [value]="query()">
+    </div>
+
+    @if (isChatInputLoading) {
+    <shared-loading-spinner />
+    }
+    @if (query() && !isChatInputLoading) {
+    <button (click)="xOnClick()">
+      <shared-x-icon />
+    </button>
+    }
+  </section>
+
+</section>

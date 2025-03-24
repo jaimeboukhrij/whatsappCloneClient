@@ -1,0 +1,5 @@
+button{
+  &.active{
+    background-color: var(--icon-sidebar-active);
+  }
+}

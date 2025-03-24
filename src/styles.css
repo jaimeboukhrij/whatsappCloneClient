@@ -1,0 +1,82 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* @font-face {
+  font-family: "SF Pro Text";
+  src: url("/path/to/SF-Pro-Text.woff2") format("woff2"),
+    url("/path/to/SF-Pro-Text.woff") format("woff");
+}
+
+@font-face {
+  font-family: "SF Pro Icons";
+  src: url("/path/to/SF-Pro-Icons.woff2") format("woff2"),
+    url("/path/to/SF-Pro-Icons.woff") format("woff");
+} */
+
+body {
+  font-family: "SF Pro Text", "SF Pro Icons", system, -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", "Helvetica", "Arial", "Lucida Grande", "Ubuntu", "Cantarell", "Fira Sans", sans-serif;
+}
+
+
+:root {
+  --button-primary-background-hover: #06cf9c;
+  --button-primary-background: #00a884;
+  --button-primary: #111b21;
+  --intro-background: #222e35;
+  --navbar-background: #202c33;
+  --shadow-rgb: 11, 20, 26;
+  --icon-sidebar-active: #374247;
+  --background-default: #111b21;
+  --serach-input-background: #1F2C33;
+  --text-gray: #e9edef;
+
+}
+
+input {
+  &:focus-visible {
+    border: none;
+    outline: none;
+  }
+}
+
+body {
+  color: white;
+  height: 100vh;
+  font-family: "SF Pro Text", "SF Pro Icons", system, -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", "Helvetica", "Arial", "Lucida Grande", "Ubuntu", "Cantarell", "Fira Sans", sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #262524;
+  overflow-x: hidden;
+  overflow-y: hidden;
+
+  main {
+    width: 100vw;
+    height: 100vh;
+    border-radius: 15px;
+  }
+}
+
+.scroll_section {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.16) transparent;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  overflow-y: auto;
+}
+
+
+.scroll_section::-webkit-scrollbar {
+  height: 8px;
+}
+
+.scroll_section::-webkit-scrollbar-thumb {
+  background-color: rgb(255, 255, 255);
+  border-radius: 100px;
+}
+
+.scroll_section::-webkit-scrollbar-track {
+  background: transparent;
+}
