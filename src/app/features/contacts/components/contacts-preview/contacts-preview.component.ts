@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { IUser } from '../../../../core/interfaces/user.interface';
+import { IUser } from '../../../../shared/interfaces/user.interface';
 
 @Component({
   selector: 'contacts-preview',

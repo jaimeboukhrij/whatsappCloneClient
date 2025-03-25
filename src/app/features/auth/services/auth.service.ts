@@ -32,7 +32,7 @@ export class AuthService {
   }
 
   isAuthenticated() {
-    const jwtToken = this.storageService.getItem('jwtToken');
+    const jwtToken = this.storageService.getItem('jwtToken')?.data;
     return jwtToken ? true : false;
   }
 

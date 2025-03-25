@@ -6,12 +6,14 @@ import { ContactsHeaderComponent } from './components/contacts-header/contacts-h
 import { ContactsComponent } from './contacts.component';
 import { ContactsPreviewComponent } from './components/contacts-preview/contacts-preview.component';
 import { ContactsRoutingModule } from './contacts-routing.module';
+import { AddNewContactModalComponent } from './components/add-new-contact-modal/add-new-contact-modal.component';
 
 @NgModule({
   declarations: [
     ContactsComponent,
     ContactsHeaderComponent,
     ContactsPreviewComponent,
+    AddNewContactModalComponent,
   ],
   imports: [CommonModule, ContactsRoutingModule, SharedModule],
 })

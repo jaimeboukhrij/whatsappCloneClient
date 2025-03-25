@@ -3,7 +3,7 @@ import { StorageService } from '../../../core/services/storage.service';
 import { ContactInterface } from '../model';
 import { debounceTime, Subject } from 'rxjs';
 import { ContactApiService } from '../../../core/services/api';
-import { IUser } from '../../../core/interfaces/user.interface';
+import { IUser } from '../../../shared/interfaces/user.interface';
 
 @Injectable({ providedIn: 'root' })
 export class ContactsService {
@@ -21,13 +21,12 @@ export class ContactsService {
   }
 
   public getContactsData(): void {
-    const storedData = this.storageService.getItem<{
-      timestamp: number;
-      data: ContactInterface[];
-    }>('contactsData');
+    const storedData =
+      this.storageService.getItem<ContactInterface[]>('contactsData');
 
     if (storedData && Date.now() - storedData.timestamp < 60 * 60 * 1000) {
       this.contactsData.set(storedData.data);
+      console.log(storedData);
       this.originalContactData.set(
         this.getUserDataFromContact(storedData.data)
       );
@@ -37,10 +36,7 @@ export class ContactsService {
     this.contactApiService.getApiContacts().subscribe((contacts) => {
       const transformedContactsData = this.transformContactsData(contacts);
       this.contactsData.set(transformedContactsData);
-      this.storageService.setItem('contactsData', {
-        timestamp: Date.now(),
-        data: transformedContactsData,
-      });
+      this.storageService.setItem('contactsData', transformedContactsData);
 
       this.originalContactData.set(contacts);
     });

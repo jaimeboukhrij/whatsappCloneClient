@@ -7,20 +7,37 @@
       <div class="w-[49px] h-[49px] rounded-full bg-[#00A884] flex justify-center items-center">
         <shared-group-icon [iconColor]="'white'" />
       </div>
-      <section class="flex flex-row gap-5 justify-between items-center flex-1 border-y-[.5px] h-full border-[#1F2C33]">
+      <section
+        class="flex flex-row gap-5 justify-between items-center flex-1 border-y-[.5px] h-[72px] border-[#1F2C33]">
         <div class="flex flex-col px-4">
           <h2 class="text-[16px] text-left text-textGray">Nuevo Grupo</h2>
         </div>
 
       </section>
     </button>
+
     <button class="flex relative  w-full items-center cursor-pointer hover:bg-[#202c33]  min-h-[72px] pl-[13px]">
       <div class="w-[49px] h-[49px] rounded-full bg-[#00A884] flex justify-center items-center">
         <shared-community-icon [iconColor]="'white'" />
       </div>
-      <section class="flex flex-row gap-5 justify-between items-center flex-1 border-y-[.5px] h-full border-[#1F2C33]">
+      <section
+        class="flex flex-row gap-5 justify-between items-center flex-1 border-y-[.5px] h-[72px] border-[#1F2C33]">
         <div class="flex flex-col px-4">
           <h2 class="text-[16px] text-left text-textGray">Nueva Comunidad</h2>
+        </div>
+
+      </section>
+    </button>
+
+    <button class="flex relative w-full items-center cursor-pointer hover:bg-[#202c33]  min-h-[72px] pl-[13px]"
+      (click)="onClickAddNewUser()">
+      <div class="w-[49px] h-[49px] rounded-full bg-[#00A884] flex justify-center items-center">
+        <shared-community-icon [iconColor]="'white'" />
+      </div>
+      <section
+        class="flex flex-row gap-5 justify-between items-center flex-1 border-y-[.5px] h-[72px] border-[#1F2C33]">
+        <div class="flex flex-col px-4">
+          <h2 class="text-[16px] text-left text-textGray">Añadir Nuevo Contacto</h2>
         </div>
 
       </section>
@@ -36,3 +53,6 @@
 
   </section>
 </section>
+@if (showNewContactModal()) {
+<contacts-add-new-contact-modal />
+}

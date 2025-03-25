@@ -12,20 +12,29 @@ export class ChatService {
   public chatsPreviewData: WritableSignal<ChatPreviewInterface[]> = signal([]);
 
   get allChats() {
-    const localStorageChats: ChatPreviewInterface[] =
-      this.storageService.getItem('originalChats')!;
+    const localStorageChats = (
+      this.storageService.getItem('originalChats') as {
+        data: ChatPreviewInterface[];
+      }
+    )?.data;
 
     return this.sortChats(localStorageChats);
   }
 
   set allChats(newChats: ChatPreviewInterface[]) {
-    this.storageService.setItem('originalChats', newChats)!;
+    this.storageService.setItem<ChatPreviewInterface[]>(
+      'originalChats',
+      newChats
+    )!;
   }
 
   public deleteChat(id: string) {
     const chats = this.allChats;
     const newChats = chats.filter((chat) => chat.id !== id);
-    this.storageService.setItem('originalChats', newChats)!;
+    this.storageService.setItem<ChatPreviewInterface[]>(
+      'originalChats',
+      newChats
+    )!;
   }
 
   private sortChats(newChats: ChatPreviewInterface[]) {

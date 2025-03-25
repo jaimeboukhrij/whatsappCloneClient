@@ -1,0 +1,55 @@
+<section style="background-color: rgba(11, 20, 26, 0.85)"
+  class="absolute w-full h-[100vh] bg-[rgba(11, 20, 26, .85)] left-0 top-0 z flex justify-center items-center"
+  (mousedown)="onClickOutSide($event)">
+  <article
+    class="w-[500px] h-auto max-h-[700px] min-h-[700px] bg-[#3B4A55] px-[12px] pt-[22px] flex flex-col gap-[15px]"
+    (mousedown)="onClickInside($event)">
+    <h1 class="font-[400] text-[1.25rem] text-[#d1d7db]">Añadir Nuevo Contacto----</h1>
+
+    <chats-input [defaultPlaceHolder]="'Introduce un usuario'" (messageEvent)="onChangeQueryInput($event)"
+      [isChatInputLoading]="isDataLoading()" />
+    @if (!userFindByQuery().length && !query() ) {
+    <p class="text-[14px] text-[#aebac1]">
+      Usuarios que creemos que conoceras:
+    </p>
+    }
+    <section class="scroll_section py-[10px] flex flex-col gap-4">
+
+
+      @if (userFindByQuery().length || query() ) {
+      @if(userFindByQuery().length){
+      @for (user of userFindByQuery(); track $index) {
+      <button
+        class="flex items-center justify-between cursor-pointer hover:bg-[#65666730] h-[72px] py-4 px-2 pr-6 rounded-md transition-all">
+        <section class="flex items-center gap-4">
+          <img style="clip-path: circle();" class="w-[49px] h-[49px] clip" [src]="user.urlImg" alt="">
+          <h2>{{user.userName}}</h2>
+        </section>
+        <button class="hover:text-red-500">Enviar Peticion</button>
+      </button>
+      }
+      }@else { <p class="text-[14px] text-[#aebac1]">no hay resultados que mostrar...</p>}
+
+      }
+      @else{
+      @for (user of usersRecommended(); track $index) {
+      <button
+        class="flex items-center justify-between cursor-pointer hover:bg-[#65666730] h-[72px] py-4 px-2 pr-6 rounded-md transition-all">
+        <section class="flex items-center gap-4">
+          <img style="clip-path: circle();" class="w-[49px] h-[49px] clip" [src]="user.urlImg" alt="">
+          <h2>{{user.userName}}</h2>
+        </section>
+        <button class="hover:text-red-500">Enviar Peticion</button>
+
+      </button>
+
+      }
+      }
+
+    </section>
+
+
+
+
+  </article>
+</section>

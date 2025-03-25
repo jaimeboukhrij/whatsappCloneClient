@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
-import { IUser } from '../../interfaces/user.interface';
+import { IUser } from '../../../shared/interfaces/user.interface';
 
 interface LoginI {
   email: string;
