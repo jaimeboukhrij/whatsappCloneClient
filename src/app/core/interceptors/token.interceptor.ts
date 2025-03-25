@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import {
   HttpEvent,
   HttpHandler,
@@ -7,15 +7,16 @@ import {
   HttpRequest,
 } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { StorageService } from '../services/storage.service';
 
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {
+  private readonly storageService = inject(StorageService);
   intercept(
     req: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
-    const token =
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImExZWRhMWUzLTg3ZjAtNGJhYy04MDYxLWFkZWYxMWQzNmI2YyIsImlhdCI6MTc0MjgyNTIzOSwiZXhwIjoxNzQyODMyNDM5fQ.dPLJseMwEE_hfem55gU8mHb-9uKPsXA-KjGWoFwo_30';
+    const token = this.storageService.getItem('jwtToken');
 
     if (token) {
       const cloned = req.clone({

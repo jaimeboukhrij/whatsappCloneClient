@@ -1,4 +1,3 @@
-import { StorageService } from './../storage.service';
 import {
   HttpClient,
   HttpErrorResponse,
@@ -7,6 +6,8 @@ import {
 import { Injectable } from '@angular/core';
 import { catchError, Observable, throwError } from 'rxjs';
 import { environment } from '../../../../environments/environment';
+import { StorageService } from '../storage.service';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -17,7 +18,8 @@ export class ApiService {
 
   constructor(
     protected http: HttpClient,
-    private readonly storageService: StorageService
+    private readonly storageService: StorageService,
+    private readonly router: Router
   ) {}
 
   fetchApi<T>(
@@ -52,13 +54,12 @@ export class ApiService {
       errorMessage = `Client Error: ${error.message}`;
     } else {
       if (error.status === 401) {
-        console.warn('Unauthorized - Clearing LocalStorage');
-        this.storageService.clear(); // Limpia el almacenamiento
+        this.storageService.clear();
+        this.router.navigate(['auth/login']);
       }
       errorMessage = `Server Error (${error.status}): ${error.message}`;
     }
 
-    console.error(errorMessage);
     return throwError(() => new Error(errorMessage));
   };
 }

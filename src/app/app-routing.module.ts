@@ -1,43 +1,20 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { AuthGuard } from './core/guards/auth.guard';
+import { NoAuthGuard } from './core/guards';
 
 const routes: Routes = [
   {
-    path: 'chats',
+    path: 'auth',
     loadChildren: () =>
-      import('./features/chats/chats.module').then((m) => m.ChatsModule),
+      import('./features/auth/auth.module').then((m) => m.AuthModule),
+    canActivate: [NoAuthGuard],
   },
   {
-    path: 'states',
+    path: '',
     loadChildren: () =>
-      import('./features/states/states.module').then((m) => m.StatesModule),
-  },
-
-  {
-    path: 'channels',
-    loadChildren: () =>
-      import('./features/channels/channels.module').then(
-        (m) => m.ChannelsModule
-      ),
-  },
-  {
-    path: 'contacts',
-    loadChildren: () =>
-      import('./features/contacts/contacts.module').then(
-        (m) => m.ContactsModule
-      ),
-  },
-  {
-    path: 'settings',
-    loadChildren: () =>
-      import('./features/settings/settings.module').then(
-        (m) => m.SettingsModule
-      ),
-  },
-  {
-    path: 'profile',
-    loadChildren: () =>
-      import('./features/profile/profile.module').then((m) => m.ProfileModule),
+      import('./layout/layout.module').then((m) => m.LayoutModule),
+    canActivate: [AuthGuard],
   },
   {
     path: '**',

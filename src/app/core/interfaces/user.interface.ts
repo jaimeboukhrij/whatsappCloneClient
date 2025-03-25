@@ -7,4 +7,5 @@ export interface IUser {
   firstName: string;
   urlImg?: string | null;
   contacts?: IUser[] | null;
+  token?: string;
 }

@@ -1,3 +1,4 @@
-export * from './user-api.service'
-export * from './contact-api.service'
-export * from './api.service'
+export * from './user-api.service';
+export * from './contact-api.service';
+export * from './api.service';
+export * from './auth-api.service';

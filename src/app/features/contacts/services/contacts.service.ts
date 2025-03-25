@@ -17,20 +17,31 @@ export class ContactsService {
   public isChatInputLoading = signal(false);
 
   constructor() {
-    this.getContactsData();
     this.filterByQuery();
   }
 
-  private getContactsData(): void {
-    const localStorageContactData: ContactInterface[] | null =
-      this.storageService.getItem('contactsData');
-    if (localStorageContactData) {
-      this.contactsData.set(localStorageContactData);
+  public getContactsData(): void {
+    const storedData = this.storageService.getItem<{
+      timestamp: number;
+      data: ContactInterface[];
+    }>('contactsData');
+
+    if (storedData && Date.now() - storedData.timestamp < 60 * 60 * 1000) {
+      this.contactsData.set(storedData.data);
+      this.originalContactData.set(
+        this.getUserDataFromContact(storedData.data)
+      );
+      return;
     }
+
     this.contactApiService.getApiContacts().subscribe((contacts) => {
-      const transformContactsData = this.transformContactsData(contacts);
-      this.contactsData.set(transformContactsData);
-      this.storageService.setItem('contactsData', transformContactsData);
+      const transformedContactsData = this.transformContactsData(contacts);
+      this.contactsData.set(transformedContactsData);
+      this.storageService.setItem('contactsData', {
+        timestamp: Date.now(),
+        data: transformedContactsData,
+      });
+
       this.originalContactData.set(contacts);
     });
   }
@@ -54,9 +65,11 @@ export class ContactsService {
   }
 
   private filterContactsDataByQuery(query: string) {
+    const upperQuery = query.toUpperCase();
     const contactsFilterByQuery = this.originalContactData().filter(
-      ({ firstName }) => firstName.toUpperCase().includes(query.toUpperCase())
+      ({ firstName }) => firstName.toUpperCase().includes(upperQuery)
     );
+
     this.contactsData.set(this.transformContactsData(contactsFilterByQuery));
   }
 
@@ -66,12 +79,10 @@ export class ContactsService {
   }
 
   private getFirstLettersOfContactData(contacts: IUser[]) {
-    const sortedContacts = contacts.sort((a, b) =>
-      a.firstName.localeCompare(b.firstName)
-    );
-    sortedContacts.forEach((contact) =>
-      this.firstLetterSet.add(contact.firstName[0])
-    );
+    this.firstLetterSet.clear();
+    contacts
+      .sort((a, b) => a.firstName.localeCompare(b.firstName))
+      .forEach((contact) => this.firstLetterSet.add(contact.firstName[0]));
   }
 
   private getSortedContactDataByLetter(contacts: IUser[]) {
@@ -86,5 +97,11 @@ export class ContactsService {
     });
 
     return sortedContactsDataByLetter;
+  }
+
+  private getUserDataFromContact(contacts: ContactInterface[]): IUser[] {
+    const contactData: IUser[] = [];
+    contacts.forEach((contact) => contactData.push(...contact.data));
+    return contactData;
   }
 }

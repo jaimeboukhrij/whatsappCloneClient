@@ -4,15 +4,7 @@ import { contactsSeed, seedChatsPreviewData } from './seed';
 
 @Component({
   selector: 'app-root',
-  template: `
-    <main class="flex justify-start">
-      <shared-sidebar class="w-[64px] " />
-      <section class="basis-[40%] max-w-[40%] min-w-[335px]">
-        <router-outlet />
-      </section>
-      <section class="bg-red-500 flex-1">chat-room</section>
-    </main>
-  `,
+  template: ` <router-outlet /> `,
   standalone: false,
 })
 export class AppComponent {
