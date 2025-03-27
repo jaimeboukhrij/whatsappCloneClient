@@ -26,7 +26,6 @@ export class ContactsService {
 
     if (storedData && Date.now() - storedData.timestamp < 60 * 60 * 1000) {
       this.contactsData.set(storedData.data);
-      console.log(storedData);
       this.originalContactData.set(
         this.getUserDataFromContact(storedData.data)
       );

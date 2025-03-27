@@ -1,0 +1,9 @@
+@if(showEmojis()){
+<div class="emoji-picker-container" [ngClass]="{'show': showEmojis()}"
+  [ngStyle]="{ position:'absolute',top: emojiPickerCordenates().y + 30 + 'px', left: emojiPickerCordenates().x + 10 + 'px' }">
+  <emoji-picker #emojiPicker></emoji-picker>
+</div>
+}
+<button (click)="setShowEmoji($event)" #imageElement class="relative">
+  <shared-emojy-icon />
+</button>

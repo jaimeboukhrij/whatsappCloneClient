@@ -1,0 +1,8 @@
+input {
+  background-color: transparent;
+
+  &::placeholder {
+    color: #6E767A;
+    font-size: 20px;
+  }
+}

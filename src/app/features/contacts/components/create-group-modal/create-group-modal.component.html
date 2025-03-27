@@ -1,0 +1,57 @@
+<section style="background-color: rgba(11, 20, 26, 0.85)"
+  class="absolute w-full h-[100vh] bg-[rgba(11, 20, 26, .85)] left-0 top-0 z flex justify-center items-center"
+  (mousedown)="onClickOutSide($event)">
+  <article class="w-[700px]   h-[800px] bg-[#111B21] px-[12px] pt-[22px] flex flex-col gap-[15px]"
+    (mousedown)="onClickInside($event)">
+
+    <h1 class="font-[400] text-[1.25rem] text-[#d1d7db]">Crear Grupo</h1>
+    <section class="flex flex-col gap-18">
+
+      <section class=" flex justify-start gap-8">
+        <section class="flex justify-center items-center ">
+          <img src="assets/images/add_image2.png" alt="no hay imagen" class="w-[200px] cursor-pointer">
+        </section>
+        <section class=" flex  flex-1 flex-col  justify-center items-start">
+          <div class=" flex border-b-[3px] py-2 border-[#8696A0] w-3/4 px-2 ">
+            <input type="text" placeholder="Asunto del grupo (opcional)" (input)="onInputChange($event)"
+              [value]="groupName()" class="basis-[90%]">
+            <button class="flex-1">
+              <shared-emoji-picker (emitEmoji)="onEmojiChange($event)" />
+
+            </button>
+          </div>
+
+        </section>
+      </section>
+
+      <section class="flex flex-col gap-3">
+        <div class=" flex flex-col gap-4">
+          <p class="w-full text-right font-semibold text-[#04A784]">miembros {{ groupMembers() }}/20</p>
+          <chats-input [defaultPlaceHolder]="'Introduce un usuario'" />
+        </div>
+        <form [formGroup]="createGroupForm" class="scroll_section h-[390px]">
+          @for (user of userContacts(); track $index) {
+          <button
+            class="flex items-center justify-between cursor-pointer hover:bg-[#65666730] h-[72px] w-full py-4 px-2 pr-6 rounded-md transition-all">
+            <section class="flex items-center gap-4">
+              <img style="clip-path: circle();" class="w-[49px] h-[49px] clip" [src]="user.urlImg" alt="">
+              <h2>{{user.firstName}} {{user.lastName}}</h2>
+            </section>
+            <input [value]="user.id" type="checkbox" (change)="onCheckboxChange($event)"
+              class="w-[20px] h-[20px] cursor-pointer accent-[#04A784]">
+
+
+          </button>
+
+          }
+        </form>
+
+      </section>
+
+
+    </section>
+
+
+
+  </article>
+</section>
