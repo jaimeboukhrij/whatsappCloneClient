@@ -7,6 +7,7 @@ import { SharedModule } from './shared/shared.module';
 import { LayoutModule } from './layout/layout.module';
 import { HttpClientModule } from '@angular/common/http';
 import { CoreModule } from './core/core.module';
+import { GroupsModule } from './features/groups/groups.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -17,6 +18,7 @@ import { CoreModule } from './core/core.module';
     LayoutModule,
     CoreModule,
     HttpClientModule,
+    GroupsModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

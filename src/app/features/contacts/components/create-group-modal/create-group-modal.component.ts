@@ -16,7 +16,9 @@ export class CreateGroupModalComponent implements OnInit {
   public userContacts = this.createGroupService.userContacts;
   public createGroupForm: FormGroup;
   public groupMembers = signal(0);
-  public groupName = signal('hola');
+  public groupName = signal('');
+  public selectedFile: File | null = null;
+  public previewImg = 'assets/images/add_image2.png';
 
   constructor(private fb: FormBuilder) {
     this.createGroupForm = this.fb.group({
@@ -34,7 +36,29 @@ export class CreateGroupModalComponent implements OnInit {
   }
 
   onEmojiChange(emoji: string) {
-    this.groupName.update((prev) => prev + emoji);
+    this.groupName.update((prev) => prev + emoji + ' ');
+  }
+
+  onFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      this.selectedFile = input.files[0];
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.previewImg = e.target?.result as string;
+      };
+      reader.readAsDataURL(this.selectedFile);
+    }
+  }
+
+  isChecked(userId: string): boolean {
+    const selections = this.createGroupForm.get('selections') as FormArray;
+    return selections.controls.some((control) => control.value === userId);
+  }
+
+  canContinue() {
+    return this.groupMembers.length && this.groupName;
   }
 
   onCheckboxChange(event: any) {
@@ -50,6 +74,12 @@ export class CreateGroupModalComponent implements OnInit {
     }
 
     this.groupMembers.set(selections.length);
+  }
+
+  onClearGropuMembers() {
+    const selections = this.createGroupForm.get('selections') as FormArray;
+    selections.clear(); // Elimina todos los controles en el FormArray
+    this.groupMembers.set(0); // Resetea el contador de miembros del grupo a 0
   }
 
   onClickOutSide(event: MouseEvent) {
