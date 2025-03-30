@@ -25,24 +25,41 @@ export class ApiService {
   fetchApi<T>(
     endpoint: string,
     body?: unknown,
-    method: 'GET' | 'POST' | 'PATCH' | 'DELETE' = 'GET'
+    method: 'GET' | 'POST' | 'PATCH' | 'DELETE' = 'GET',
+    isFileUpload = false
   ): Observable<T> {
     const url = `${this.baseUrl}${endpoint}`;
     let request$: Observable<T>;
+    const options = isFileUpload
+      ? {
+          headers: new HttpHeaders(),
+          // No se establece 'Content-Type' cuando se usa FormData
+        }
+      : { headers: this.headers };
+
+    // Si estamos enviando archivos, usar FormData
+    if (isFileUpload && body instanceof FormData) {
+      // Si el body es FormData, no hay que hacer nada, se usará tal cual
+    } else if (body && !isFileUpload) {
+      // Si no es un archivo, aseguramos que el body esté en formato JSON
+      body = JSON.stringify(body);
+    }
 
     switch (method) {
       case 'POST':
-        request$ = this.http.post<T>(url, body, { headers: this.headers });
+        request$ = this.http.post<T>(url, body, options);
         break;
       case 'PATCH':
-        request$ = this.http.patch<T>(url, body, { headers: this.headers });
+        request$ = this.http.patch<T>(url, body, options);
         break;
       case 'DELETE':
-        request$ = this.http.delete<T>(url, { headers: this.headers });
+        request$ = this.http.delete<T>(url, options);
         break;
       default:
-        request$ = this.http.get<T>(url, { headers: this.headers });
+        request$ = this.http.get<T>(url, options);
     }
+
+    console.log('lega');
 
     return request$.pipe(catchError(this.handleError));
   }
