@@ -9,14 +9,15 @@ export interface ChatRoomI {
   isUserMessage: boolean;
   urlImg: string;
   isArchived: boolean;
-  notificationsSilenced: NotificationsSilencedEnum | false;
-  isPinned: Date | undefined;
+  notificationsSilenced: NotificationsSilencedEnum | null;
+  isPinned: Date | null;
   isRead: boolean;
   inFavorites: boolean;
   isBlocked: boolean;
   showOptions: boolean;
   type: 'private' | 'group';
   users: IUser[];
+  createdAt: Date;
 }
 
 export enum NotificationsSilencedEnum {
@@ -39,4 +40,5 @@ export enum ChatPreviewFiltersEnum {
   NO_READ = 'noRead',
   FAVORITE = 'favorite',
   GROUPS = 'groups',
+  ARCHIVED = 'archived',
 }

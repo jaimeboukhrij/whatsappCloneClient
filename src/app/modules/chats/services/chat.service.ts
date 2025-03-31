@@ -13,16 +13,23 @@ export class ChatService {
   private chatRoomApiServie = inject(ChatRoomApiService);
 
   public showArchivedChat = signal(false);
-  public showSilencedNotificationsModal = signal(false);
+  public showSilencedNotificationsModal = signal({
+    chatRoomId: '',
+    show: false,
+  });
+  public originalChatsRoom: WritableSignal<ChatRoomI[]> = signal([]);
   public chatsRoom: WritableSignal<ChatRoomI[]> = signal([]);
 
-  public getChatsRoom() {
+  public getChatsRoom(updateChatsRoom = true) {
     this.userApiService
       .getUserChatsRoom()
       .pipe(map((chatsRoom) => this.sortChats(chatsRoom)))
       .subscribe({
         next: (data) => {
-          this.chatsRoom.set(data);
+          console.log(data);
+          const chatsRoomVisibles = data.filter((chat) => !chat.isArchived);
+          if (updateChatsRoom) this.chatsRoom.set(chatsRoomVisibles);
+          this.originalChatsRoom.set(data);
         },
         error(err) {
           console.log(err);
@@ -30,31 +37,61 @@ export class ChatService {
       });
   }
 
-  public async deleteChat(id: string) {
+  public resetToOriginalChats() {
+    this.chatsRoom.set(
+      this.originalChatsRoom().filter((chats) => !chats.isArchived)
+    );
+  }
+
+  public async deleteChat(id: string, newChatsRoom: ChatRoomI[]) {
+    const prevChatsRoom = this.chatsRoom();
+    this.chatsRoom.set(newChatsRoom);
+
     this.chatRoomApiServie.deleteChatRoom(id).subscribe({
-      next: () => {
-        const newChats = this.chatsRoom().filter((chat) => chat.id !== id);
-        this.storageService.setItem<ChatRoomI[]>('originalChats', newChats)!;
-      },
-      error(err) {
-        console.log(err);
+      next: () => this.getChatsRoom(false),
+      error: (error) => {
+        this.chatsRoom.set(prevChatsRoom);
+        console.log(error);
       },
     });
   }
 
-  private sortChats(newChats: ChatRoomI[]) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public updateChatRoom(id: string, newChatsRoom: ChatRoomI[], data: any) {
+    const prevChatsRoom = this.chatsRoom();
+    this.chatsRoom.set(newChatsRoom);
+
+    this.chatRoomApiServie.updateChatRoom(id, data).subscribe({
+      next: () => this.getChatsRoom(false),
+      error: (error) => {
+        this.chatsRoom.set(prevChatsRoom);
+        console.log(error);
+      },
+    });
+  }
+
+  getArchivedChats() {
+    const archivedChats = this.chatsRoom().filter((chat) => chat.isArchived);
+    return archivedChats;
+  }
+
+  sortChats(newChats: ChatRoomI[]) {
     return [...newChats].sort((a, b) => {
-      if (a.isPinned && !b.isPinned) return -1;
-      if (!a.isPinned && b.isPinned) return 1;
+      const isPinnedA = a.isPinned ? new Date(a.isPinned).getTime() : 0;
+      const isPinnedB = b.isPinned ? new Date(b.isPinned).getTime() : 0;
 
-      if (a.isPinned && b.isPinned) {
-        const pinnedTimeA = new Date(a.isPinned).getTime();
-        const pinnedTimeB = new Date(b.isPinned).getTime();
-        return pinnedTimeB - pinnedTimeA;
-      }
+      if (isPinnedA && !isPinnedB) return -1;
+      if (!isPinnedA && isPinnedB) return 1;
+      if (isPinnedA && isPinnedB) return isPinnedB - isPinnedA;
 
-      const lastMessageTimeA = new Date(a.lastChatMessageHour).getTime();
-      const lastMessageTimeB = new Date(b.lastChatMessageHour).getTime();
+      const lastMessageTimeA = a.lastChatMessageHour
+        ? new Date(a.lastChatMessageHour).getTime()
+        : new Date(a.createdAt).getTime();
+
+      const lastMessageTimeB = b.lastChatMessageHour
+        ? new Date(b.lastChatMessageHour).getTime()
+        : new Date(b.createdAt).getTime();
+
       return lastMessageTimeB - lastMessageTimeA;
     });
   }

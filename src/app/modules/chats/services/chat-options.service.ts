@@ -1,16 +1,15 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { ChatRoomI, NotificationsSilencedEnum } from '../model';
 import { ChatService } from './chat.service';
-import { ChatFiltersService } from './chat-filters.service';
 
 @Injectable({ providedIn: 'root' })
 export class ChatOptionsService {
-  private chatService = inject(ChatService);
-  private chatFiltersService = inject(ChatFiltersService);
+  private readonly chatService = inject(ChatService);
+
   private currentIdNotificationsSilencedButton = signal<undefined | string>(
     undefined
   );
-  public selectedMuteDuration = signal<NotificationsSilencedEnum | false>(
+  public selectedMuteDuration = signal<NotificationsSilencedEnum | null>(
     NotificationsSilencedEnum.HOUR
   );
 
@@ -19,42 +18,26 @@ export class ChatOptionsService {
   }
 
   public onClickArchivedButton(id: string) {
-    const newChats = this.chatService.chatsRoom().map((chat) => {
+    const prevChatsRoom = this.chatService.chatsRoom();
+    const isChatRoomArchived = prevChatsRoom.find(
+      (chat) => chat.id === id
+    )?.isArchived;
+    const newChatsRoom = prevChatsRoom.map((chat) => {
       if (chat.id !== id) return chat;
       return { ...chat, isArchived: !chat.isArchived };
     });
 
-    this.chatService.chatsRoom.set(newChats);
-    if (this.chatService.showArchivedChat()) {
-      if (!this.areThereArchivedChats(newChats)) {
-        this.chatService.showArchivedChat.update((prev) => !prev);
-        this.chatFiltersService.filterChats('all', false);
-        return;
-      }
-      this.chatFiltersService.filterChats('', true);
-      return;
-    }
-    this.chatFiltersService.filterChats('', false);
+    this.chatService.updateChatRoom(id, newChatsRoom, {
+      isArchived: !isChatRoomArchived,
+    });
   }
 
   public async onClickDeletedButton(id: string) {
-    await this.chatService.deleteChat(id);
-    const newChats = this.chatService.chatsRoom().filter((chat) => {
-      if (chat.id === id) {
-        return false;
-      }
-      return true;
-    });
-    this.chatService.chatsRoom.set(newChats);
+    const newChatsRoom = this.chatService
+      .chatsRoom()
+      .filter((chat) => chat.id !== id);
 
-    // if (!this.areThereArchivedChats(this.chatService.chatsRoom())) {
-    //   this.chatService.showArchivedChat.update((prev) => !prev);
-    //   this.chatFiltersService.filterChats('all', false);
-    //   return;
-    // }
-
-    // this.chatFiltersService.filterChats('', true);
-    // this.chatService.chatsRoom.set(newChats);
+    this.chatService.deleteChat(id, newChatsRoom);
   }
   public setShowChatOptions = (id?: string) => {
     this.chatService.chatsRoom.update((values) =>
@@ -72,41 +55,49 @@ export class ChatOptionsService {
       this.chatService.chatsRoom().find((elem) => elem.id === id)
         ?.notificationsSilenced
     ) {
-      this.selectedMuteDuration.set(false);
-      this.onSubmitNotificationsSilencedButton();
+      this.selectedMuteDuration.set(null);
+      this.onSubmitNotificationsSilencedButton(id);
       return;
     }
-    this.chatService.showSilencedNotificationsModal.update((prev) => !prev);
+    this.chatService.showSilencedNotificationsModal.update((prev) => ({
+      chatRoomId: id ? id : prev.chatRoomId,
+      show: !prev.show,
+    }));
   }
 
-  public onSubmitNotificationsSilencedButton() {
+  public onSubmitNotificationsSilencedButton(id: string) {
     const newChats = this.chatService.chatsRoom().map((chat) => {
       if (chat.id !== this.currentIdNotificationsSilencedButton()) return chat;
       return { ...chat, notificationsSilenced: this.selectedMuteDuration() };
     });
 
-    this.chatService.chatsRoom.set(newChats);
-    this.chatFiltersService.filterChats(
-      !this.areThereArchivedChats(this.chatService.chatsRoom()) ? 'all' : '',
-      false
-    );
+    this.chatService.updateChatRoom(id, newChats, {
+      notificationsSilenced: this.selectedMuteDuration(),
+    });
   }
 
   public onClickIsPinned(id: string) {
+    const prevChatsRoom = this.chatService.chatsRoom();
+    const isChatRoomPinned = prevChatsRoom.find(
+      (chat) => chat.id === id
+    )?.isPinned;
     const newChats = this.chatService.chatsRoom().map((chat) => {
       if (chat.id !== id) return chat;
       return {
         ...chat,
-        isPinned: chat.isPinned ? undefined : new Date(),
+        isPinned: chat.isPinned ? null : new Date(),
       };
     });
-
-    this.chatService.chatsRoom.set(newChats);
-    this.chatFiltersService.filterChats('', false);
+    const sortedChatsRoom = this.chatService.sortChats(newChats);
+    this.chatService.updateChatRoom(id, sortedChatsRoom, {
+      isPinned: isChatRoomPinned ? null : new Date(),
+    });
   }
 
-  public onClickIsRead(id: string) {
-    const newChats = this.chatService.chatsRoom().map((chat) => {
+  public async onClickIsRead(id: string) {
+    const prevChatsRoom = this.chatService.chatsRoom();
+    const isChatRoomRead = prevChatsRoom.find((chat) => chat.id === id)?.isRead;
+    const newChatsRoom = prevChatsRoom.map((chat) => {
       if (chat.id !== id) return chat;
       return {
         ...chat,
@@ -114,12 +105,18 @@ export class ChatOptionsService {
       };
     });
 
-    this.chatService.chatsRoom.set(newChats);
-    this.chatFiltersService.filterChats('', false);
+    this.chatService.updateChatRoom(id, newChatsRoom, {
+      isRead: !isChatRoomRead,
+    });
   }
 
   public onClickInFavorites(id: string) {
-    const newChats = this.chatService.chatsRoom().map((chat) => {
+    const prevChatsRoom = this.chatService.chatsRoom();
+
+    const isChatRoomInFavorites = prevChatsRoom.find(
+      (chat) => chat.id === id
+    )?.inFavorites;
+    const newChatsRoom = prevChatsRoom.map((chat) => {
       if (chat.id !== id) return chat;
       return {
         ...chat,
@@ -127,7 +124,8 @@ export class ChatOptionsService {
       };
     });
 
-    this.chatService.chatsRoom.set(newChats);
-    this.chatFiltersService.filterChats('', false);
+    this.chatService.updateChatRoom(id, newChatsRoom, {
+      inFavorites: !isChatRoomInFavorites,
+    });
   }
 }

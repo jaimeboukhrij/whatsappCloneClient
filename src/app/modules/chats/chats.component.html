@@ -55,6 +55,7 @@
   }
   }
 </section>
-@if (showSilencedNotificationsModal()) {
-<chat-notifications-silenced-modal></chat-notifications-silenced-modal>
+@if (showSilencedNotificationsModal().show) {
+<chat-notifications-silenced-modal
+  [chatRoomId]="showSilencedNotificationsModal().chatRoomId"></chat-notifications-silenced-modal>
 }

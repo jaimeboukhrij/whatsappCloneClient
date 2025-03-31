@@ -55,7 +55,11 @@ export class ChatsComponent implements OnInit {
   }
 
   toggleShowArchivedChat() {
+    this.chatFiltersService.filterChats(
+      this.showArchivedChat
+        ? ChatPreviewFiltersEnum.ALL
+        : ChatPreviewFiltersEnum.ARCHIVED
+    );
     this.chatService.showArchivedChat.update((prev) => !prev);
-    this.chatFiltersService.filterChats('', this.showArchivedChat);
   }
 }

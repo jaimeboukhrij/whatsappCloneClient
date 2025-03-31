@@ -26,4 +26,11 @@ export class ChatRoomApiService {
       'DELETE'
     );
   }
+  updateChatRoom(chatRoomId: string, data: Partial<ChatRoomI>) {
+    return this.apiService.fetchApi<ChatRoomI[]>(
+      `/chats-room/${chatRoomId}`,
+      data,
+      'PATCH'
+    );
+  }
 }
