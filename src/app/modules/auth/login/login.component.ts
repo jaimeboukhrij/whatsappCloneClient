@@ -27,8 +27,6 @@ export class LoginComponent {
     if (this.loginForm.valid) {
       const { email, password } = this.loginForm.value;
       this.authService.login({ email: email!, password: password! });
-    } else {
-      console.log('formulario invalido');
     }
   }
 }

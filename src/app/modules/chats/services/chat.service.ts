@@ -26,7 +26,6 @@ export class ChatService {
       .pipe(map((chatsRoom) => this.sortChats(chatsRoom)))
       .subscribe({
         next: (data) => {
-          console.log(data);
           const chatsRoomVisibles = data.filter((chat) => !chat.isArchived);
           if (updateChatsRoom) this.chatsRoom.set(chatsRoomVisibles);
           this.originalChatsRoom.set(data);

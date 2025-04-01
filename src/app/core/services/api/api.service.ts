@@ -59,8 +59,6 @@ export class ApiService {
         request$ = this.http.get<T>(url, options);
     }
 
-    console.log('lega');
-
     return request$.pipe(catchError(this.handleError));
   }
 

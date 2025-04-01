@@ -1,5 +1,5 @@
 import { inject, Injectable, signal } from '@angular/core';
-import { ChatRoomI, NotificationsSilencedEnum } from '../model';
+import { NotificationsSilencedEnum } from '../model';
 import { ChatService } from './chat.service';
 
 @Injectable({ providedIn: 'root' })
@@ -13,19 +13,19 @@ export class ChatOptionsService {
     NotificationsSilencedEnum.HOUR
   );
 
-  private areThereArchivedChats(newChats: ChatRoomI[]): boolean {
-    return newChats.some((elem) => elem.isArchived);
-  }
-
   public onClickArchivedButton(id: string) {
     const prevChatsRoom = this.chatService.chatsRoom();
     const isChatRoomArchived = prevChatsRoom.find(
       (chat) => chat.id === id
     )?.isArchived;
-    const newChatsRoom = prevChatsRoom.map((chat) => {
-      if (chat.id !== id) return chat;
-      return { ...chat, isArchived: !chat.isArchived };
-    });
+    const newChatsRoom = prevChatsRoom
+      .map((chat) => {
+        if (chat.id !== id) return chat;
+        return { ...chat, isArchived: !chat.isArchived };
+      })
+      .filter((chat) =>
+        this.chatService.showArchivedChat() ? chat.isArchived : !chat.isArchived
+      );
 
     this.chatService.updateChatRoom(id, newChatsRoom, {
       isArchived: !isChatRoomArchived,
@@ -107,6 +107,24 @@ export class ChatOptionsService {
 
     this.chatService.updateChatRoom(id, newChatsRoom, {
       isRead: !isChatRoomRead,
+    });
+  }
+
+  public async onClickIsBlocked(id: string) {
+    const prevChatsRoom = this.chatService.chatsRoom();
+    const isChatRoomBlocked = prevChatsRoom.find(
+      (chat) => chat.id === id
+    )?.isBlocked;
+    const newChatsRoom = prevChatsRoom.map((chat) => {
+      if (chat.id !== id) return chat;
+      return {
+        ...chat,
+        isBlocked: !chat.isBlocked,
+      };
+    });
+
+    this.chatService.updateChatRoom(id, newChatsRoom, {
+      isBlocked: !isChatRoomBlocked,
     });
   }
 

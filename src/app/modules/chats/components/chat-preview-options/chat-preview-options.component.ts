@@ -82,6 +82,9 @@ export class ChatPreviewOptionsComponent {
       case 'inFavorites':
         this.onClickInFavorites();
         break;
+      case 'isBlocked':
+        this.onClickIsBlocked();
+        break;
       default:
         break;
     }
@@ -105,6 +108,9 @@ export class ChatPreviewOptionsComponent {
   }
   private onClickIsRead() {
     this.chatOptionsService.onClickIsRead(this._chatPreviewData()!.id);
+  }
+  private onClickIsBlocked() {
+    this.chatOptionsService.onClickIsBlocked(this._chatPreviewData()!.id);
   }
 
   private onClickInFavorites() {

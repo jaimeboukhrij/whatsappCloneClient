@@ -15,26 +15,31 @@ export class CreateGroupModalComponent implements OnInit {
   private readonly createGroupService = inject(CreateGroupService);
   private readonly contactsService = inject(ContactsService);
 
-  public userContacts = this.contactsService.userContacts;
+  public userContacts = this.createGroupService.userContacts;
   public createGroupForm: FormGroup;
   public groupMembers = signal(0);
   public groupName = signal('');
   public selectedFile: File | undefined = undefined;
   public previewImg = 'assets/images/add_image2.png';
+  public isDataLoading = this.createGroupService.isDataLoading;
+  public isDataInputLoading = this.createGroupService.isDataInputLoading;
 
   constructor(private fb: FormBuilder) {
     this.createGroupForm = this.fb.group({
       selections: this.fb.array([]),
     });
   }
-
   ngOnInit(): void {
-    this.contactsService.geUserContacts();
+    this.createGroupService.getUserContactsData();
   }
 
   onInputChange(event: Event) {
     const target = event.target as HTMLInputElement;
     this.groupName.set(target.value);
+  }
+
+  onInputMembersChange(q: string) {
+    this.createGroupService.onInputMembersChange(q);
   }
 
   onEmojiChange(emoji: string) {
@@ -97,15 +102,15 @@ export class CreateGroupModalComponent implements OnInit {
       'selections'
     ) as FormArray;
 
+    const members = membersFormArray.value.map((member: string) => member);
+
     const formData = new FormData();
+    formData.append('members', JSON.stringify(members));
     formData.append('name', this.groupName());
+
     if (this.selectedFile) {
       formData.append('image', this.selectedFile);
     }
-    membersFormArray.value.forEach((member: string) => {
-      formData.append('members', member);
-    });
-
     this.createGroupService.createGroup(formData);
   }
 }

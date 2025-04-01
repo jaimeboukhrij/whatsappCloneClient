@@ -37,7 +37,8 @@
             <button (click)="onClearGropuMembers()" class="font-semibold text-red-300 hover:text-red-500">Eliminar
               Seleccion</button>
           </div>
-          <chats-input [defaultPlaceHolder]="'Introduce un usuario'" />
+          <chats-input [defaultPlaceHolder]="'Introduce un usuario'" (messageEvent)="onInputMembersChange($event)"
+            [isChatInputLoading]="isDataInputLoading()" />
         </div>
         <form [formGroup]="createGroupForm" class="scroll_section h-[390px]">
           @for (user of userContacts(); track $index) {
@@ -58,8 +59,13 @@
         <article class="w-full flex justify-center items-center pt-[20px] h-[46px]">
           @if(groupMembers()){
           <button (click)="onSubmit()"
-            class="w-[46px] h-[46px] bg-[#04A784] rounded-full flex justify-center items-center ">
+            class="w-[46px] h-[46px] bg-[#04A784] rounded-full flex justify-center items-center "
+            [ngClass]="{'cursor-not-allowed pointer-events-none':isDataLoading()}">
+            @if (isDataLoading()) {
+            <shared-loading-spinner [color]="'black'" />
+            }@else {
             <shared-left-arrow-icon [arrowDirection]="'right'" [iconColor]="'white'" />
+            }
           </button>
           }
         </article>

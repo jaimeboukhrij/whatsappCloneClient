@@ -45,9 +45,12 @@ export class ContactsService {
   }
 
   public geUserContacts() {
-    this.contactApiService
-      .getApiContacts()
-      .subscribe((contacts) => this.userContacts.set(contacts));
+    return new Promise<IUser[]>((resolve) => {
+      this.contactApiService.getApiContacts().subscribe((contacts) => {
+        this.userContacts.set(contacts);
+        resolve(contacts);
+      });
+    });
   }
 
   public onInputQueryChange(query: string) {
