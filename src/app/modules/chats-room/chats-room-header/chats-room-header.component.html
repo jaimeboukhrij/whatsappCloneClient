@@ -1,0 +1,21 @@
+@if(chatRoomData()){
+<header style="box-shadow:  0 1px 3px rgba( 11, 20, 26, .4);"
+  class="w-full h-[64px] py-[10px] bg-[#202c33] flex justify-between px-4">
+  <section class="flex justify-center gap-4">
+    <img style="clip-path: circle();" class="w-[49px] h-[49px] clip" [src]="chatRoomData()!.urlImg" alt="">
+    <div class="flex flex-col">
+      <h2 class="text-[16px] text-[#e9edef] font-semibold text-left">{{chatRoomData()?.name}}</h2>
+      <p class="text-[13px] text-[#8696A0]">ult. vez hoy a la(s) 12:16</p>
+    </div>
+
+  </section>
+  <section class="flex items-center justify-end gap-4">
+    <button class="scale-125">
+      <shared-search-icon [iconColor]="'#ADBAC1'" />
+    </button>
+    <button class="scale-125">
+      <shared-options-icon [iconColor]="'#ADBAC1'" />
+    </button>
+  </section>
+</header>
+}

@@ -19,6 +19,9 @@ import { SilencedIconComponent } from './silenced-icon/silenced-icon.component';
 import { GroupIconComponent } from './group-icon/group-icon.component';
 import { ContactsIconComponent } from './contacts-icon/contacts-icon.component';
 import { EmojyIconComponent } from './emojy-icon/emojy-icon.component';
+import { PlusIconComponent } from './plus-icon/plus-icon.component';
+import { MicroIconComponent } from './micro-icon/micro-icon.component';
+import { ExpressionsIconComponent } from './expressions-icon/expressions-icon.component';
 
 @NgModule({
   declarations: [
@@ -42,6 +45,9 @@ import { EmojyIconComponent } from './emojy-icon/emojy-icon.component';
     GroupIconComponent,
     ContactsIconComponent,
     EmojyIconComponent,
+    PlusIconComponent,
+    MicroIconComponent,
+    ExpressionsIconComponent,
   ],
 
   exports: [
@@ -64,6 +70,9 @@ import { EmojyIconComponent } from './emojy-icon/emojy-icon.component';
     GroupIconComponent,
     ContactsIconComponent,
     EmojyIconComponent,
+    PlusIconComponent,
+    MicroIconComponent,
+    ExpressionsIconComponent,
   ],
 })
 export class IconsModule {}

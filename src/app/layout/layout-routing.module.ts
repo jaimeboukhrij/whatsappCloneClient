@@ -52,6 +52,7 @@ const routes: Routes = [
             (m) => m.ProfileModule
           ),
       },
+
       {
         path: '**',
         redirectTo: 'chats',

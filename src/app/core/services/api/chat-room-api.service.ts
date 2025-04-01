@@ -12,7 +12,7 @@ export class ChatRoomApiService {
       return;
     }
 
-    return this.apiService.fetchApi<ChatRoomI[]>(
+    return this.apiService.fetchApi<ChatRoomI>(
       '/chats-room',
       { users: [contactId], type },
       'POST'
@@ -20,17 +20,21 @@ export class ChatRoomApiService {
   }
 
   deleteChatRoom(chatRoomId: string) {
-    return this.apiService.fetchApi<ChatRoomI[]>(
+    return this.apiService.fetchApi<ChatRoomI>(
       `/chats-room/${chatRoomId}`,
       {},
       'DELETE'
     );
   }
   updateChatRoom(chatRoomId: string, data: Partial<ChatRoomI>) {
-    return this.apiService.fetchApi<ChatRoomI[]>(
+    return this.apiService.fetchApi<ChatRoomI>(
       `/chats-room/${chatRoomId}`,
       data,
       'PATCH'
     );
+  }
+
+  findOneChatRoom(chatRoomId: string) {
+    return this.apiService.fetchApi<ChatRoomI>(`/chats-room/${chatRoomId}`);
   }
 }

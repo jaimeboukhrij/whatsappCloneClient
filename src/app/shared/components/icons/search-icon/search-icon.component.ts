@@ -8,5 +8,7 @@ import { Component, Input } from '@angular/core';
   styles: ``,
 })
 export class SearchIconComponent {
-  @Input() iconColor: string = '#8696A0';
+  @Input() iconColor = '#8696A0';
+  @Input() width = '24';
+  @Input() height = '24';
 }

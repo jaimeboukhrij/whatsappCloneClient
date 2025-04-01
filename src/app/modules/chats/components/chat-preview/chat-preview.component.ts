@@ -2,6 +2,7 @@ import { Component, HostListener, inject, Input, signal } from '@angular/core';
 import { ChatRoomI } from '../../model';
 import { ChatOptionsService } from '../../services/chat-options.service';
 import { UtilsService } from '../../../../core/services/utils.service';
+import { ChatsRoomService } from '../../../chats-room/services/chats-room.service';
 
 @Component({
   selector: 'chat-preview',
@@ -12,6 +13,7 @@ import { UtilsService } from '../../../../core/services/utils.service';
 export class ChatPreviewComponent {
   private chatOptionsService = inject(ChatOptionsService);
   private utilsService = inject(UtilsService);
+  private chatsRoomService = inject(ChatsRoomService);
   @Input()
   set chatPreviewData(value: ChatRoomI) {
     this._chatPreviewData.set(value);
@@ -52,6 +54,7 @@ export class ChatPreviewComponent {
   }
 
   onClickChatPreview() {
+    this.chatsRoomService.showChatRoomData(this._chatPreviewData()?.id || '');
     if (!this._chatPreviewData()?.id || this._chatPreviewData()?.isRead) return;
     this.chatOptionsService.onClickIsRead(this._chatPreviewData()!.id);
   }
