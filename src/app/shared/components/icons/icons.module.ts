@@ -22,6 +22,7 @@ import { EmojyIconComponent } from './emojy-icon/emojy-icon.component';
 import { PlusIconComponent } from './plus-icon/plus-icon.component';
 import { MicroIconComponent } from './micro-icon/micro-icon.component';
 import { ExpressionsIconComponent } from './expressions-icon/expressions-icon.component';
+import { MessageIconComponent } from './message-icon/message-icon.component';
 
 @NgModule({
   declarations: [
@@ -48,6 +49,7 @@ import { ExpressionsIconComponent } from './expressions-icon/expressions-icon.co
     PlusIconComponent,
     MicroIconComponent,
     ExpressionsIconComponent,
+    MessageIconComponent,
   ],
 
   exports: [
@@ -73,6 +75,7 @@ import { ExpressionsIconComponent } from './expressions-icon/expressions-icon.co
     PlusIconComponent,
     MicroIconComponent,
     ExpressionsIconComponent,
+    MessageIconComponent,
   ],
 })
 export class IconsModule {}

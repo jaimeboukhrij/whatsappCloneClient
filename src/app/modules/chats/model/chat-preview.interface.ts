@@ -1,3 +1,4 @@
+import { ChatRoomMessageI } from './../../chats-room/interfaces/chat-room-messages.interface';
 import { IUser } from '../../../shared/interfaces/user.interface';
 
 export interface ChatRoomI {
@@ -7,6 +8,7 @@ export interface ChatRoomI {
   lastChatMessageHour: Date;
   messagesWithoutRead: number;
   isUserMessage: boolean;
+  messages: ChatRoomMessageI[];
   urlImg: string;
   isArchived: boolean;
   notificationsSilenced: NotificationsSilencedEnum | null;
@@ -18,6 +20,8 @@ export interface ChatRoomI {
   type: 'private' | 'group';
   users: IUser[];
   createdAt: Date;
+  contactUserId?: string;
+  lastSeen?: string;
 }
 
 export enum NotificationsSilencedEnum {

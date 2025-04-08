@@ -1,6 +1,6 @@
 import { ChatRoomI } from '../chats/model';
 import { ChatsRoomService } from './services/chats-room.service';
-import { Component, inject, WritableSignal } from '@angular/core';
+import { Component, inject, OnInit, WritableSignal } from '@angular/core';
 
 @Component({
   selector: 'app-chats-room',
@@ -9,8 +9,13 @@ import { Component, inject, WritableSignal } from '@angular/core';
   templateUrl: './chats-room.component.html',
   styles: ``,
 })
-export class ChatsRoomComponent {
+export class ChatsRoomComponent implements OnInit {
   private readonly chatsRoomService = inject(ChatsRoomService);
   currentChatRoomData: WritableSignal<ChatRoomI | null> =
     this.chatsRoomService.currentChatRoomData;
+  ngOnInit(): void {
+    this.chatsRoomService.usersLastSeenSocket();
+    this.chatsRoomService.usersOnlineSocket();
+    this.chatsRoomService.newMessageSocket();
+  }
 }

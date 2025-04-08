@@ -15,6 +15,10 @@ export class UserApiService {
     return this.apiService.fetchApi<IUser[]>('/users');
   }
 
+  getApiUsersFindOne(userId: string) {
+    return this.apiService.fetchApi<IUser>(`/users/${userId}`);
+  }
+
   getApiUsersByUserName(query: string) {
     return this.apiService.fetchApi<IUser[]>(
       `/users/search-by-username?prefix=${query}`

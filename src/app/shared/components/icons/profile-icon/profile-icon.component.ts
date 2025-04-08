@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'icon-profile',
@@ -10,11 +10,9 @@ import { Component } from '@angular/core';
       img {
         clip-path: circle();
       }
-
     `,
-  ]
+  ],
 })
 export class ProfileIconComponent {
-  public profile_img_url:string = '/assets/images/profile_img.jpeg'
-
+  @Input() public profile_img_url = '/assets/images/profile_img.jpeg';
 }

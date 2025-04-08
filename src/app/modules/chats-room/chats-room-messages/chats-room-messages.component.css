@@ -1,0 +1,125 @@
+.message-container {
+  width: 100%;
+  padding-inline: 32px;
+  z-index: 2;
+  display: flex;
+  align-items: end;
+
+  &.sent {
+    justify-content: end;
+  }
+
+  &.received {
+    justify-content: flex-start;
+  }
+}
+
+
+.message {
+  color: white;
+  clear: both;
+  line-height: 18px;
+  font-size: 15px;
+  padding: 8px;
+  position: relative;
+  max-width: 85%;
+  word-wrap: break-word;
+  border-radius: 30px;
+}
+
+.message:after {
+  position: absolute;
+  content: "";
+  width: 0;
+  height: 0;
+  border-style: solid;
+}
+
+.metadata {
+  display: inline-flex;
+  gap: 3px;
+  padding: 0 0 0 7px;
+  position: relative;
+  bottom: -4px;
+  float: inline-end;
+}
+
+.metadata .time {
+  color: #ffffff99;
+  font-size: 11px;
+  display: inline-block;
+  padding-top: 2px;
+}
+
+.metadata .tick {
+  display: inline-block;
+  margin-left: 2px;
+  position: relative;
+  top: 4px;
+  height: 16px;
+  width: 16px;
+}
+
+.metadata .tick svg {
+  position: absolute;
+  transition: .5s ease-in-out;
+}
+
+.metadata .tick svg:first-child {
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-transform: perspective(800px) rotateY(180deg);
+  transform: perspective(800px) rotateY(180deg);
+}
+
+.metadata .tick svg:last-child {
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-transform: perspective(800px) rotateY(0deg);
+  transform: perspective(800px) rotateY(0deg);
+}
+
+.metadata .tick-animation svg:first-child {
+  -webkit-transform: perspective(800px) rotateY(0);
+  transform: perspective(800px) rotateY(0);
+}
+
+.metadata .tick-animation svg:last-child {
+  -webkit-transform: perspective(800px) rotateY(-179.9deg);
+  transform: perspective(800px) rotateY(-179.9deg);
+}
+
+
+
+.message.received {
+  background: #202c33;
+  border-radius: 0px 10px 10px 10px;
+  float: left;
+  color: #e9edef;
+  box-shadow: 0 1px .5px rgba(11, 20, 26, .13);
+}
+
+.message.received .metadata {
+  padding: 0 0 0 16px;
+}
+
+.message.received:after {
+  border-width: 0px 10px 10px 0;
+  border-color: transparent #202c33 transparent transparent;
+  top: 0;
+  left: -10px;
+}
+
+.message.sent {
+  background: #015C4B;
+  border-radius: 10px 0px 10px 10px;
+  float: right;
+  color: white;
+}
+
+.message.sent:after {
+  border-width: 0px 0 10px 10px;
+  border-color: transparent transparent transparent #015C4B;
+  top: 0;
+  right: -10px;
+}

@@ -15,11 +15,11 @@
     </button>
   </section>
   <section class="flex flex-col gap-2 w-[40px]">
-    <button class="bg-transparent p-2 rounded-3xl" routerLink="/settings" routerLinkActive="active">
+    <button class="bg-transparent p-2 rounded-3xl" routerLink="/settings" routerLinkActive="active" (click)="logOut()">
       <icon-settings [iconColor]="iconColor" />
     </button>
     <button class="bg-transparent rounded-3xl" routerLink="/profile" routerLinkActive="active">
-      <icon-profile />
+      <icon-profile [profile_img_url]="userData()?.urlImg!" />
     </button>
   </section>
 </header>

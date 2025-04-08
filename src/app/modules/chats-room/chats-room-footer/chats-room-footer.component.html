@@ -6,7 +6,10 @@
     <button>
       <shared-expressions-icon />
     </button>
-    <textarea placeholder="Escribe un mensaje" class="auto-expand" (input)="autoExpand($event)"></textarea>
+    <textarea (keydown.enter)="onSubmit($event)" placeholder="Escribe un mensaje" [value]="textAreaValue()"
+      (input)="onInputChange($event)" class="auto-expand">
+  </textarea>
+
 
   </section>
   <button class="w-[40px]  flex justify-center items-center">

@@ -1,8 +1,11 @@
+import { SocketStatusService } from './../../../core/services/socket/socket-status.service';
 import { Injectable } from '@angular/core';
 import { AuthApiService } from '../../../core/services/api';
 import { tap } from 'rxjs';
 import { StorageService } from '../../../core/services/storage.service';
 import { Router } from '@angular/router';
+import { UserService } from '../../user/services/user.service';
+import { jwtDecode } from 'jwt-decode';
 
 interface LoginI {
   email: string;
@@ -14,7 +17,9 @@ export class AuthService {
   constructor(
     private readonly authApiService: AuthApiService,
     private readonly storageService: StorageService,
-    private router: Router
+    private router: Router,
+    private readonly userService: UserService,
+    private readonly socketStatusService: SocketStatusService
   ) {}
 
   login(data: LoginI) {
@@ -22,7 +27,8 @@ export class AuthService {
       .login(data)
       .pipe(tap((user) => this.storageService.setItem('jwtToken', user.token)))
       .subscribe({
-        next: () => {
+        next: (data) => {
+          this.userService.fetchCurrentUserData(data.id);
           this.router.navigate(['chats']);
         },
         error(err) {
@@ -31,13 +37,26 @@ export class AuthService {
       });
   }
 
-  isAuthenticated() {
-    const jwtToken = this.storageService.getItem('jwtToken')?.data;
-    return jwtToken ? true : false;
+  isAuthenticated(): boolean {
+    const jwtToken = this.storageService.getItem('jwtToken')?.data as string;
+
+    if (!jwtToken) return false;
+
+    try {
+      const decodedToken: { id: string } = jwtDecode(jwtToken);
+      this.userService.fetchCurrentUserData(decodedToken.id);
+      this.socketStatusService.connect(jwtToken);
+
+      return true;
+    } catch (error) {
+      console.error('Error decoding token:', error);
+      return false;
+    }
   }
 
   logOut() {
     this.storageService.clear();
     this.router.navigate(['auth/login']);
+    this.socketStatusService.disconnect();
   }
 }

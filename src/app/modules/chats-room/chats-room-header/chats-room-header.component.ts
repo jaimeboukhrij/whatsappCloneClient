@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { ChatsRoomService } from '../services/chats-room.service';
 
 @Component({
@@ -8,7 +8,19 @@ import { ChatsRoomService } from '../services/chats-room.service';
   templateUrl: './chats-room-header.component.html',
   styles: ``,
 })
-export class ChatsRoomHeaderComponent {
+export class ChatsRoomHeaderComponent implements OnInit {
   private readonly chatsRoomService = inject(ChatsRoomService);
   public chatRoomData = this.chatsRoomService.currentChatRoomData;
+  public isOnline = signal(false);
+
+  ngOnInit(): void {
+    this.chatsRoomService.onlineUsers$.subscribe((onlineUsers) => {
+      console.log('....', onlineUsers);
+      if (this.chatRoomData()!.contactUserId) {
+        this.isOnline.set(
+          onlineUsers.includes(this.chatRoomData()!.contactUserId || '')
+        );
+      }
+    });
+  }
 }

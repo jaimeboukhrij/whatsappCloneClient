@@ -6,12 +6,12 @@
       @if (_chatPreviewData()?.isRead) {
       <h2 class="text-[16px] text-left">{{_chatPreviewData()?.name}}</h2>
       <p class="text-[#8696A0] text-[14px] inline-flex gap-1">
-        @if (_chatPreviewData()?.isUserMessage) {<span><shared-dbcheck /></span>}
-        {{_chatPreviewData()?.lastChatMessage}}
+        @if (_chatPreviewData()?.type === 'group') {<span>{{lastMessageUser()}}: </span>}
+        {{lastMessage()}}
       </p>
       }@else {
       <h2 class="text-[16px] text-[#e9edef] font-semibold text-left">{{_chatPreviewData()?.name}}</h2>
-      <p class="text-[#e9edef] text-[14px] inline-flex gap-1 font-semibold">{{_chatPreviewData()?.lastChatMessage}}</p>
+      <p class="text-[#e9edef] text-[14px] inline-flex gap-1 font-semibold">{{lastMessage()}}</p>
 
       }
     </div>
