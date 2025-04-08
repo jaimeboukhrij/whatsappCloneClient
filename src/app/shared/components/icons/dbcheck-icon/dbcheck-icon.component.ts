@@ -1,12 +1,12 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input } from '@angular/core'
 
 @Component({
   selector: 'shared-dbcheck',
   standalone: false,
 
   templateUrl: './dbcheck-icon.component.html',
-  styles: ``,
+  styles: ''
 })
 export class DbcheckIconComponent {
-  @Input() iconColor = '#8696A0';
+  @Input() iconColor = '#8696A0'
 }

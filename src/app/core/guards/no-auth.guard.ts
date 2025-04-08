@@ -1,18 +1,18 @@
-import { Injectable } from '@angular/core';
-import { CanActivate, Router } from '@angular/router';
-import { AuthService } from '../../modules/auth/services/auth.service';
+import { Injectable } from '@angular/core'
+import {  CanActivate,   Router } from '@angular/router'
+import {  AuthService } from '../../modules/auth/services/auth.service'
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class NoAuthGuard implements CanActivate {
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor (private readonly authService: AuthService, private readonly router: Router) {}
 
-  canActivate(): boolean {
+  async canActivate (): Promise <boolean> {
     if (this.authService.isAuthenticated()) {
-      this.router.navigate(['/chats']);
-      return false;
+      await this.router.navigate(['/chats'])
+      return false
     }
-    return true;
+    return true
   }
 }

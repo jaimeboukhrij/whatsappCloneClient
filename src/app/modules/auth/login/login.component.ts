@@ -1,32 +1,37 @@
-import { Component } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { AuthService } from '../services/auth.service';
+import { Component } from '@angular/core'
+import { FormControl, FormGroup, Validators } from '@angular/forms'
+import { AuthService } from '../services/auth.service'
 
 @Component({
   selector: 'app-login',
   standalone: false,
-
   templateUrl: './login.component.html',
-  styles: ``,
+  styles: ''
 })
 export class LoginComponent {
-  constructor(private readonly authService: AuthService) {}
+  constructor (private readonly authService: AuthService) {}
 
   public loginForm = new FormGroup({
     email: new FormControl('adrian.martinez@example.com', [
       Validators.email,
-      Validators.required,
+      Validators.required
     ]),
     password: new FormControl('Abc123', [
       Validators.required,
-      Validators.minLength(3),
-    ]),
-  });
+      Validators.minLength(3)
+    ])
+  })
 
-  onSubmit() {
+  onSubmit () {
     if (this.loginForm.valid) {
-      const { email, password } = this.loginForm.value;
-      this.authService.login({ email: email!, password: password! });
+      const { email, password } = this.loginForm.value
+
+      // Verificación explícita antes de llamar al servicio
+      if (email && password) {
+        this.authService.login({ email, password })
+      } else {
+        console.error('Email or password is missing')
+      }
     }
   }
 }

@@ -1,31 +1,31 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core'
 import {
-  HttpEvent,
-  HttpHandler,
-  HttpInterceptor,
-  HttpRequest,
-} from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { StorageService } from '../services/storage.service';
+  type HttpEvent,
+  type HttpHandler,
+  type HttpInterceptor,
+  type HttpRequest
+} from '@angular/common/http'
+import { type Observable } from 'rxjs'
+import { StorageService } from '../services/storage.service'
 
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {
-  private readonly storageService = inject(StorageService);
-  intercept(
+  private readonly storageService = inject(StorageService)
+  intercept (
     req: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
-    const token = this.storageService.getItem('jwtToken')?.data;
-    if (token) {
+    const token: string = this.storageService.getItem('jwtToken')?.data as string
+    if (Boolean(token)) {
       const cloned = req.clone({
         setHeaders: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      return next.handle(cloned);
+          Authorization: `Bearer ${token}`
+        }
+      })
+      return next.handle(cloned)
     }
 
-    return next.handle(req);
+    return next.handle(req)
   }
 }

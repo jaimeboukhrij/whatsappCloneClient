@@ -1,10 +1,10 @@
-import { Component } from '@angular/core';
+import { Component } from '@angular/core'
 
 @Component({
   selector: 'chat-archived',
   standalone: false,
 
   templateUrl: './chat-archived.component.html',
-  styles: ``,
+  styles: ''
 })
 export class ChatArchivedComponent {}

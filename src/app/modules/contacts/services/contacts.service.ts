@@ -1,118 +1,118 @@
-import { inject, Injectable, signal } from '@angular/core';
-import { StorageService } from '../../../core/services/storage.service';
-import { ContactInterface } from '../model';
-import { debounceTime, Subject } from 'rxjs';
-import { ContactApiService } from '../../../core/services/api';
-import { IUser } from '../../../shared/interfaces/user.interface';
-import { ChatRoomApiService } from '../../../core/services/api/chat-room-api.service';
+import { inject, Injectable, signal } from '@angular/core'
+import { StorageService } from '../../../core/services/storage.service'
+import { type ContactInterface } from '../model'
+import { debounceTime, Subject } from 'rxjs'
+import { ContactApiService } from '../../../core/services/api'
+import { type IUser } from '../../../shared/interfaces/user.interface'
+import { ChatRoomApiService } from '../../../core/services/api/chat-room-api.service'
 
 @Injectable({ providedIn: 'root' })
 export class ContactsService {
-  private storageService = inject(StorageService);
-  private contactApiService = inject(ContactApiService);
-  private chatRoomApiService = inject(ChatRoomApiService);
+  private readonly storageService = inject(StorageService)
+  private readonly contactApiService = inject(ContactApiService)
+  private readonly chatRoomApiService = inject(ChatRoomApiService)
 
-  private searchQuery$ = new Subject<string>();
-  private firstLetterSet = new Set<string>();
-  private originalContactData = signal<IUser[]>([]);
-  public contactsData = signal<ContactInterface[]>([]);
-  public isChatInputLoading = signal(false);
-  public userContacts = signal<IUser[]>([]);
+  private readonly searchQuery$ = new Subject<string>()
+  private readonly firstLetterSet = new Set<string>()
+  private readonly originalContactData = signal<IUser[]>([])
+  public contactsData = signal<ContactInterface[]>([])
+  public isChatInputLoading = signal(false)
+  public userContacts = signal<IUser[]>([])
 
-  constructor() {
-    this.filterByQuery();
+  constructor () {
+    this.filterByQuery()
   }
 
-  public getContactsData(): void {
+  public getContactsData (): void {
     const storedData =
-      this.storageService.getItem<ContactInterface[]>('contactsData');
+      this.storageService.getItem<ContactInterface[]>('contactsData')
 
     if (storedData && Date.now() - storedData.timestamp < 60 * 60 * 1000) {
-      this.contactsData.set(storedData.data);
+      this.contactsData.set(storedData.data)
       this.originalContactData.set(
         this.getUserDataFromContact(storedData.data)
-      );
-      return;
+      )
+      return
     }
 
     this.contactApiService.getApiContacts().subscribe((contacts) => {
-      const transformedContactsData = this.transformContactsData(contacts);
-      this.contactsData.set(transformedContactsData);
-      this.storageService.setItem('contactsData', transformedContactsData);
+      const transformedContactsData = this.transformContactsData(contacts)
+      this.contactsData.set(transformedContactsData)
+      this.storageService.setItem('contactsData', transformedContactsData)
 
-      this.originalContactData.set(contacts);
-    });
+      this.originalContactData.set(contacts)
+    })
   }
 
-  public geUserContacts() {
-    return new Promise<IUser[]>((resolve) => {
+  public async geUserContacts () {
+    return await new Promise<IUser[]>((resolve) => {
       this.contactApiService.getApiContacts().subscribe((contacts) => {
-        this.userContacts.set(contacts);
-        resolve(contacts);
-      });
-    });
+        this.userContacts.set(contacts)
+        resolve(contacts)
+      })
+    })
   }
 
-  public onInputQueryChange(query: string) {
-    this.isChatInputLoading.set(true);
-    this.searchQuery$.next(query);
+  public onInputQueryChange (query: string) {
+    this.isChatInputLoading.set(true)
+    this.searchQuery$.next(query)
   }
 
-  public createChatRoom(contactId: string, type: 'private' | 'group') {
-    this.chatRoomApiService.createChatRoom(contactId, type)?.subscribe();
+  public createChatRoom (contactId: string, type: 'private' | 'group') {
+    this.chatRoomApiService.createChatRoom(contactId, type)?.subscribe()
   }
 
-  private filterByQuery(): void {
+  private filterByQuery (): void {
     this.searchQuery$.pipe(debounceTime(200)).subscribe((query) => {
-      this.isChatInputLoading.set(false);
+      this.isChatInputLoading.set(false)
       if (!query) {
         this.contactsData.set(
           this.transformContactsData(this.originalContactData())
-        );
-        return;
+        )
+        return
       }
-      this.filterContactsDataByQuery(query);
-    });
+      this.filterContactsDataByQuery(query)
+    })
   }
 
-  private filterContactsDataByQuery(query: string) {
-    const upperQuery = query.toUpperCase();
+  private filterContactsDataByQuery (query: string) {
+    const upperQuery = query.toUpperCase()
     const contactsFilterByQuery = this.originalContactData().filter(
       ({ firstName }) => firstName.toUpperCase().includes(upperQuery)
-    );
+    )
 
-    this.contactsData.set(this.transformContactsData(contactsFilterByQuery));
+    this.contactsData.set(this.transformContactsData(contactsFilterByQuery))
   }
 
-  private transformContactsData(contacts: IUser[]) {
-    this.getFirstLettersOfContactData(contacts);
-    return this.getSortedContactDataByLetter(contacts);
+  private transformContactsData (contacts: IUser[]) {
+    this.getFirstLettersOfContactData(contacts)
+    return this.getSortedContactDataByLetter(contacts)
   }
 
-  private getFirstLettersOfContactData(contacts: IUser[]) {
-    this.firstLetterSet.clear();
+  private getFirstLettersOfContactData (contacts: IUser[]) {
+    this.firstLetterSet.clear()
     contacts
       .sort((a, b) => a.firstName.localeCompare(b.firstName))
-      .forEach((contact) => this.firstLetterSet.add(contact.firstName[0]));
+      .forEach((contact) => this.firstLetterSet.add(contact.firstName[0]))
   }
 
-  private getSortedContactDataByLetter(contacts: IUser[]) {
-    const sortedContactsDataByLetter: ContactInterface[] = [];
+  private getSortedContactDataByLetter (contacts: IUser[]) {
+    const sortedContactsDataByLetter: ContactInterface[] = []
 
     this.firstLetterSet.forEach((letter) => {
       const filterContacts = contacts.filter(
         (elem) => elem.firstName[0].toUpperCase() === letter.toUpperCase()
-      );
-      if (filterContacts.length)
-        sortedContactsDataByLetter.push({ letter, data: filterContacts });
-    });
+      )
+      if (filterContacts.length > 0)
+        sortedContactsDataByLetter.push({ letter, data: filterContacts })
+    })
 
-    return sortedContactsDataByLetter;
+    return sortedContactsDataByLetter
   }
 
-  private getUserDataFromContact(contacts: ContactInterface[]): IUser[] {
-    const contactData: IUser[] = [];
-    contacts.forEach((contact) => contactData.push(...contact.data));
-    return contactData;
+  private getUserDataFromContact (contacts: ContactInterface[]): IUser[] {
+    const contactData: IUser[] = []
+    contacts.forEach((contact) => contactData.push(...contact.data))
+    return contactData
   }
 }

@@ -1,8 +1,8 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core'
+import { CommonModule } from '@angular/common'
 
-import { ChannelsRoutingModule } from './channels-routing.module';
-import { ChannelsComponent } from './channels.component';
+import { ChannelsRoutingModule } from './channels-routing.module'
+import { ChannelsComponent } from './channels.component'
 
 
 @NgModule({

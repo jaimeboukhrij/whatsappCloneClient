@@ -1,84 +1,93 @@
-import { Component, HostListener, inject, Input, signal } from '@angular/core';
-import { ChatRoomI } from '../../model';
-import { ChatOptionsService } from '../../services/chat-options.service';
-import { UtilsService } from '../../../../core/services/utils.service';
-import { ChatsRoomService } from '../../../chats-room/services/chats-room.service';
-import { UserService } from '../../../user/services/user.service';
+import {
+  Component,
+  HostListener,
+  inject,
+  Input,
+  type OnChanges,
+  signal
+} from '@angular/core'
+import { type ChatRoomI } from '../../model'
+import { ChatOptionsService } from '../../services/chat-options.service'
+import { UtilsService } from '../../../../core/services/utils.service'
+import { ChatsRoomService } from '../../../chats-room/services/chats-room.service'
+import { UserService } from '../../../user/services/user.service'
+import { ChatService } from '../../services/chat.service'
 
 @Component({
   selector: 'chat-preview',
   standalone: false,
   templateUrl: './chat-preview.component.html',
-  styles: ``,
+  styles: ''
 })
-export class ChatPreviewComponent {
-  private chatOptionsService = inject(ChatOptionsService);
-  private utilsService = inject(UtilsService);
-  private chatsRoomService = inject(ChatsRoomService);
-  private readonly userService = inject(UserService);
-  public lastMessage = signal<string | null>(null);
-  public lastMessageUser = signal<string | null>(null);
-  public isUsermessage = signal(false);
-  @Input()
-  set chatPreviewData(value: ChatRoomI) {
-    this._chatPreviewData.set(value);
-    const lastMessage = value.messages.at(-1);
-    this.lastMessage.set(lastMessage ? lastMessage.text : null);
-    this.lastMessageUser.set(lastMessage ? lastMessage.owner.firstName : null);
+export class ChatPreviewComponent implements OnChanges {
+  private readonly chatOptionsService = inject(ChatOptionsService)
+  private readonly utilsService = inject(UtilsService)
+  private readonly chatsRoomService = inject(ChatsRoomService)
+  private readonly userService = inject(UserService)
+  private readonly chatService = inject(ChatService)
+
+  public lastMessage = signal<string | null>(null)
+  public lastMessageUser = signal<string | null>(null)
+  public isUsermessage = signal(false)
+  public setShowChatOptions = this.chatOptionsService.setShowChatOptions
+  public chatPreviewOptionsCordenates = signal({ x: 0, y: 0 })
+  public isInCard = signal(false)
+
+  @Input() public _chatPreviewData: ChatRoomI | null = null
+
+  ngOnChanges (): void {
+    const lastMessage = this._chatPreviewData!.messages.at(-1)
+    this.lastMessage.set(lastMessage ? lastMessage.text : null)
+    this.lastMessageUser.set(lastMessage ? lastMessage.owner.firstName : null)
 
     this.isUsermessage.set(
       this.userService.loginUserData()?.id === lastMessage?.owner.id
-    );
+    )
   }
 
-  public _chatPreviewData = signal<ChatRoomI | null>(null);
-  public setShowChatOptions = this.chatOptionsService.setShowChatOptions;
-  public chatPreviewOptionsCordenates = signal({ x: 0, y: 0 });
-  public isInCard = signal(false);
-
-  mouseEnter() {
-    this.isInCard.set(true);
-  }
-  mouseLeave() {
-    this.isInCard.set(false);
+  mouseEnter () {
+    this.isInCard.set(true)
   }
 
-  onShowOption(event?: Event, id?: string) {
-    event?.stopImmediatePropagation();
+  mouseLeave () {
+    this.isInCard.set(false)
+  }
+
+  onShowOption (event?: Event, id?: string) {
+    event?.stopImmediatePropagation()
     if (event)
-      this.chatPreviewOptionsCordenates.set(this.getOptionsPosition(event));
-    if (this._chatPreviewData()?.showOptions)
-      this.setShowChatOptions(undefined);
-    else this.setShowChatOptions(id);
+      this.chatPreviewOptionsCordenates.set(this.getOptionsPosition(event))
+    if (this._chatPreviewData?.showOptions) this.setShowChatOptions(undefined)
+    else this.setShowChatOptions(id)
   }
 
-  private getOptionsPosition(event: Event) {
-    const coordinates = this.utilsService.getCoordinates(event as MouseEvent);
-    const optionsHeigth = 298;
+  private getOptionsPosition (event: Event) {
+    const coordinates = this.utilsService.getCoordinates(event as MouseEvent)
+    const optionsHeigth = 298
     const isBelow = this.utilsService.checkIfElementIsBelow(
       event as MouseEvent,
       optionsHeigth
-    );
+    )
 
-    if (isBelow) coordinates.y = coordinates.y - 331;
+    if (isBelow) coordinates.y = coordinates.y - 331
 
-    return coordinates;
+    return coordinates
   }
 
-  onClickChatPreview() {
-    this.chatsRoomService.showChatRoomData(this._chatPreviewData()?.id || '');
-    if (!this._chatPreviewData()?.id || this._chatPreviewData()?.isRead) return;
-    this.chatOptionsService.onClickIsRead(this._chatPreviewData()!.id);
+  onClickChatPreview () {
+    this.chatsRoomService.showChatRoomData(this._chatPreviewData?.id ?? '')
+    if (!this._chatPreviewData?.id || this._chatPreviewData?.isRead) return
+    this.chatOptionsService.onClickIsRead(this._chatPreviewData.id)
   }
 
   @HostListener('document:click', ['$event'])
-  onClickOutside(event: Event) {
-    const target = event.target as HTMLElement;
+  onClickOutside (event: Event) {
+    const target = event.target as HTMLElement
     if (
       !target.closest('.chat-options') &&
-      this._chatPreviewData()?.showOptions
+      this._chatPreviewData?.showOptions
     ) {
-      this.onShowOption();
+      this.onShowOption()
     }
   }
 }

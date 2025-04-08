@@ -1,12 +1,12 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input } from '@angular/core'
 
 @Component({
   selector: 'shared-micro-icon',
   standalone: false,
 
   templateUrl: './micro-icon.component.html',
-  styles: ``,
+  styles: ''
 })
 export class MicroIconComponent {
-  @Input() iconColor = '#8696A0';
+  @Input() iconColor = '#8696A0'
 }

@@ -1,12 +1,12 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input } from '@angular/core'
 
 @Component({
   selector: 'shared-expressions-icon',
   standalone: false,
 
   templateUrl: './expressions-icon.component.html',
-  styles: ``,
+  styles: ''
 })
 export class ExpressionsIconComponent {
-  @Input() iconColor = '#8696A0';
+  @Input() iconColor = '#8696A0'
 }

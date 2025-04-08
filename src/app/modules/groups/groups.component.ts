@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
+import { Component } from '@angular/core'
 
 @Component({
   selector: 'app-groups',
   standalone: false,
-  template: ``,
+  template: ''
 })
 export class GroupsComponent {}

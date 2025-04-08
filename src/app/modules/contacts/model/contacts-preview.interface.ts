@@ -1,20 +1,20 @@
 export interface ContactsPreviewInterface {
-  id: string;
-  name: string;
-  lastChatMessage: string;
-  lastChatMessageHour: Date;
-  messagesWithoutRead: number;
-  isUserMessage: boolean;
-  urlImg: string;
-  isArchived: boolean;
-  notificationsSilenced: NotificationsSilencedEnum | false;
-  isPinned: Date | undefined;
-  isRead: boolean;
-  inFavorites: boolean;
-  isBlocked: boolean;
-  showOptions: boolean;
-  isGroup: boolean;
-  status: string;
+  id: string
+  name: string
+  lastChatMessage: string
+  lastChatMessageHour: Date
+  messagesWithoutRead: number
+  isUserMessage: boolean
+  urlImg: string
+  isArchived: boolean
+  notificationsSilenced: NotificationsSilencedEnum | false
+  isPinned: Date | undefined
+  isRead: boolean
+  inFavorites: boolean
+  isBlocked: boolean
+  showOptions: boolean
+  isGroup: boolean
+  status: string
 }
 
 export enum NotificationsSilencedEnum {
@@ -24,11 +24,11 @@ export enum NotificationsSilencedEnum {
 }
 
 export interface ChatPreviewFiltersInterface {
-  query?: string;
-  all: boolean;
-  noRead?: boolean;
-  favorite?: boolean;
-  groups?: boolean;
+  query?: string
+  all: boolean
+  noRead?: boolean
+  favorite?: boolean
+  groups?: boolean
 }
 
 export enum ChatPreviewFiltersEnum {

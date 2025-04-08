@@ -1,38 +1,49 @@
 <button class="flex relative  w-full items-center cursor-pointer hover:bg-[#202c33] h-[72px] pl-[13px]"
   (mouseenter)="mouseEnter()" (mouseleave)="mouseLeave()" (click)="onClickChatPreview()">
-  <img style="clip-path: circle();" class="w-[49px] h-[49px] clip" [src]="_chatPreviewData()?.urlImg" alt="">
+  <img style="clip-path: circle();" class="w-[49px] h-[49px] clip" [src]="_chatPreviewData?.urlImg" alt="">
   <section class="flex flex-row gap-5 justify-between items-center flex-1 border-y-[.5px] h-full border-[#1F2C33]">
     <div class="flex flex-col px-4">
-      @if (_chatPreviewData()?.isRead) {
-      <h2 class="text-[16px] text-left">{{_chatPreviewData()?.name}}</h2>
+      @if (_chatPreviewData?.isRead) {
+      <h2 class="text-[16px] text-left">{{_chatPreviewData?.name}}</h2>
       <p class="text-[#8696A0] text-[14px] inline-flex gap-1">
-        @if (_chatPreviewData()?.type === 'group') {<span>{{lastMessageUser()}}: </span>}
+        @if (_chatPreviewData?.type === 'group') {<span>{{lastMessageUser()}}: </span>{{lastMessage()}}}
+        @else if(isUsermessage()){
+        <span><shared-dbcheck /></span>
         {{lastMessage()}}
+        }@else {
+        {{lastMessage()}}
+        }
+
       </p>
       }@else {
-      <h2 class="text-[16px] text-[#e9edef] font-semibold text-left">{{_chatPreviewData()?.name}}</h2>
-      <p class="text-[#e9edef] text-[14px] inline-flex gap-1 font-semibold">{{lastMessage()}}</p>
+      <h2 class="text-[16px] text-[#e9edef] font-semibold text-left">{{_chatPreviewData?.name}}</h2>
+      <p class="text-[#e9edef] text-[14px] inline-flex gap-1 font-semibold">
+        @if(isUsermessage()){
+        <span><shared-dbcheck /></span>
+        }
+        {{lastMessage()}}
+      </p>
 
       }
     </div>
     <div class="flex flex-col justify-center items-end px-4">
       <p class="text-[12px] text-center text-[#8696A0]"
-        [ngStyle]="{ color: !_chatPreviewData()?.isRead ? '#00a884' : '#8696A0' }">
+        [ngStyle]="{ color: !_chatPreviewData?.isRead ? '#00a884' : '#8696A0' }">
         10:49
       </p>
       <div class="inline-flex items-center h-[30px] justify-end gap-2">
-        @if(_chatPreviewData()?.notificationsSilenced){
+        @if(_chatPreviewData?.notificationsSilenced){
         <shared-silenced-icon />
         }
-        @if (_chatPreviewData()?.isPinned) {
+        @if (_chatPreviewData?.isPinned) {
         <shared-pinned-icon />
         }
-        @if(!_chatPreviewData()?.isRead) {
+        @if(!_chatPreviewData?.isRead) {
         <span
-          class="bg-[#00a884] text-black text-xs grid place-items-center rounded-full w-[20px] h-[20px]">{{_chatPreviewData()?.messagesWithoutRead}}</span>
+          class="bg-[#00a884] text-black text-xs grid place-items-center rounded-full w-[20px] h-[20px]">{{_chatPreviewData?.messagesWithoutRead}}</span>
         }
         @if (isInCard()) { <button
-          (click)="onShowOption($event,_chatPreviewData()?.id!); $event.stopPropagation()"><shared-chevron-icon /></button>}
+          (click)="onShowOption($event,_chatPreviewData?.id!); $event.stopPropagation()"><shared-chevron-icon /></button>}
 
       </div>
 
@@ -42,9 +53,9 @@
 
 </button>
 
-@if (_chatPreviewData()?.showOptions) {
+@if (_chatPreviewData?.showOptions) {
 <section class="absolute w-[235px] h-[298px] chat-options z-10"
   [ngStyle]="{ top: chatPreviewOptionsCordenates().y +30 + 'px', left: chatPreviewOptionsCordenates().x + 8 + 'px' }">
-  <chat-preview-options [chatPreviewData]="_chatPreviewData()!" />
+  <chat-preview-options [chatPreviewData]="_chatPreviewData!" />
 </section>
 }

@@ -1,1 +1,1 @@
-export * from './contacts.seed';
+export * from './contacts.seed'

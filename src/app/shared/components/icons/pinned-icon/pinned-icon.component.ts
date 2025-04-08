@@ -1,12 +1,12 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input } from '@angular/core'
 
 @Component({
   selector: 'shared-pinned-icon',
   standalone: false,
 
   templateUrl: './pinned-icon.component.html',
-  styles: ``,
+  styles: ''
 })
 export class PinnedIconComponent {
-  @Input() iconColor = '#8696A0';
+  @Input() iconColor = '#8696A0'
 }

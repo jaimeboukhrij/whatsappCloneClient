@@ -1,12 +1,12 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input } from '@angular/core'
 
 @Component({
   selector: 'shared-new-chat-icon',
   standalone: false,
 
   templateUrl: './new-chat-icon.component.html',
-  styles: ``,
+  styles: ''
 })
 export class NewChatIconComponent {
-  @Input() iconColor: string = '';
+  @Input() iconColor: string = ''
 }

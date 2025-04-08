@@ -1,11 +1,11 @@
-import { Component } from '@angular/core';
-import { StorageService } from './core/services/storage.service';
+import { Component } from '@angular/core'
+import { type StorageService } from './core/services/storage.service'
 
 @Component({
   selector: 'app-root',
-  template: ` <router-outlet /> `,
-  standalone: false,
+  template: ' <router-outlet /> ',
+  standalone: false
 })
 export class AppComponent {
-  constructor(private storageService: StorageService) {}
+  constructor (private readonly storageService: StorageService) {}
 }

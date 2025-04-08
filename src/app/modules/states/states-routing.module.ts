@@ -1,8 +1,8 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { StatesComponent } from './states.component';
+import { NgModule } from '@angular/core'
+import { RouterModule, type Routes } from '@angular/router'
+import { StatesComponent } from './states.component'
 
-const routes: Routes = [{ path: '', component: StatesComponent }];
+const routes: Routes = [{ path: '', component: StatesComponent }]
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],

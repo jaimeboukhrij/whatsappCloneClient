@@ -1,4 +1,4 @@
-import { v4 as uuid } from 'uuid';
+import { v4 as uuid } from 'uuid'
 
 export const contactsSeed = [
   {
@@ -17,7 +17,7 @@ export const contactsSeed = [
     isBlocked: false,
     showOptions: false,
     isGroup: false,
-    status: 'Disponible para hablar',
+    status: 'Disponible para hablar'
   },
   {
     id: uuid(),
@@ -35,7 +35,7 @@ export const contactsSeed = [
     isBlocked: false,
     showOptions: false,
     isGroup: false,
-    status: 'En la oficina',
+    status: 'En la oficina'
   },
   {
     id: uuid(),
@@ -53,7 +53,7 @@ export const contactsSeed = [
     isBlocked: false,
     showOptions: false,
     isGroup: false,
-    status: 'De vacaciones',
+    status: 'De vacaciones'
   },
   {
     id: uuid(),
@@ -71,7 +71,7 @@ export const contactsSeed = [
     isBlocked: false,
     showOptions: false,
     isGroup: false,
-    status: 'Estudiando',
+    status: 'Estudiando'
   },
   {
     id: uuid(),
@@ -89,7 +89,7 @@ export const contactsSeed = [
     isBlocked: false,
     showOptions: false,
     isGroup: false,
-    status: 'Entrenando',
+    status: 'Entrenando'
   },
   {
     id: uuid(),
@@ -107,7 +107,7 @@ export const contactsSeed = [
     isBlocked: false,
     showOptions: false,
     isGroup: false,
-    status: 'Comiendo',
+    status: 'Comiendo'
   },
   {
     id: uuid(),
@@ -125,7 +125,7 @@ export const contactsSeed = [
     isBlocked: false,
     showOptions: false,
     isGroup: false,
-    status: 'De viaje',
+    status: 'De viaje'
   },
   {
     id: uuid(),
@@ -143,7 +143,7 @@ export const contactsSeed = [
     isBlocked: false,
     showOptions: false,
     isGroup: false,
-    status: 'En línea',
+    status: 'En línea'
   },
   {
     id: uuid(),
@@ -161,7 +161,7 @@ export const contactsSeed = [
     isBlocked: false,
     showOptions: false,
     isGroup: false,
-    status: 'Durmiendo',
+    status: 'Durmiendo'
   },
   {
     id: uuid(),
@@ -179,7 +179,7 @@ export const contactsSeed = [
     isBlocked: false,
     showOptions: false,
     isGroup: false,
-    status: 'Estresada',
+    status: 'Estresada'
   },
   {
     id: uuid(),
@@ -197,7 +197,7 @@ export const contactsSeed = [
     isBlocked: false,
     showOptions: false,
     isGroup: false,
-    status: 'En una reunión',
+    status: 'En una reunión'
   },
   {
     id: uuid(),
@@ -215,7 +215,7 @@ export const contactsSeed = [
     isBlocked: false,
     showOptions: false,
     isGroup: false,
-    status: 'Leyendo',
+    status: 'Leyendo'
   },
   {
     id: uuid(),
@@ -233,7 +233,7 @@ export const contactsSeed = [
     isBlocked: false,
     showOptions: false,
     isGroup: false,
-    status: 'Haciendo ejercicio',
+    status: 'Haciendo ejercicio'
   },
   {
     id: uuid(),
@@ -251,6 +251,6 @@ export const contactsSeed = [
     isBlocked: false,
     showOptions: false,
     isGroup: false,
-    status: 'Disponible para hablar',
-  },
-];
+    status: 'Disponible para hablar'
+  }
+]

@@ -1,5 +1,5 @@
 export interface CreateGroupI {
-  name: string;
-  image?: File;
-  members: string[];
+  name: string
+  image?: File
+  members: string[]
 }

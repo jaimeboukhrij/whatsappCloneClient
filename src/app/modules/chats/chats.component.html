@@ -24,7 +24,7 @@
     @if (chatsPreviewData().length) {
     <section>
       @for (data of chatsPreviewData(); track $index) {
-      <chat-preview [chatPreviewData]="data" />
+      <chat-preview [_chatPreviewData]="data" />
       }
     </section>
     }@else {
@@ -51,7 +51,7 @@
     <div class=" h-[1px] bg-[#D8D8D8] ml-[20px] mr-[20px]"></div>
   </header>
   @for (data of chatsPreviewData(); track $index) {
-  <chat-preview [chatPreviewData]="data" />
+  <chat-preview [_chatPreviewData]="data" />
   }
   }
 </section>

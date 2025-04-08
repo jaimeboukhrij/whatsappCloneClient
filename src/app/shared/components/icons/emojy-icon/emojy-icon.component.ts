@@ -1,12 +1,12 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input } from '@angular/core'
 
 @Component({
   selector: 'shared-emojy-icon',
   standalone: false,
 
   templateUrl: './emojy-icon.component.html',
-  styles: ``,
+  styles: ''
 })
 export class EmojyIconComponent {
-  @Input() iconColor = '#8696A0';
+  @Input() iconColor = '#8696A0'
 }

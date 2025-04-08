@@ -1,12 +1,12 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input } from '@angular/core'
 
 @Component({
   selector: 'shared-contacts-icon',
   standalone: false,
 
   templateUrl: './contacts-icon.component.html',
-  styles: ``,
+  styles: ''
 })
 export class ContactsIconComponent {
-  @Input() iconColor = '#8696A0';
+  @Input() iconColor = '#8696A0'
 }

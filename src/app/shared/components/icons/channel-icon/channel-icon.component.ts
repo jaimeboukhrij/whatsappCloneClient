@@ -1,13 +1,13 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input } from '@angular/core'
 
 @Component({
   selector: 'icon-chanel',
   standalone: false,
 
   templateUrl: './channel-icon.component.html',
-  styles: ``
+  styles: ''
 })
 export class ChannelIconComponent {
-  @Input()iconColor:string = ''
+  @Input()iconColor: string = ''
 
 }

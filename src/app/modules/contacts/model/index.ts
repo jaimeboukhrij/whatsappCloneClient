@@ -1,2 +1,2 @@
-export * from './contacts-preview.interface';
-export * from './contact.interface';
+export * from './contacts-preview.interface'
+export * from './contact.interface'

@@ -1,1 +1,1 @@
-export * from './chat-preview.interface';
+export * from './chat-preview.interface'

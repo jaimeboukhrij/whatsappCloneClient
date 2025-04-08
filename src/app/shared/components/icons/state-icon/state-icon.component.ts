@@ -1,13 +1,13 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input } from '@angular/core'
 
 @Component({
   selector: 'icon-state',
   standalone: false,
 
   templateUrl: './state-icon.component.html',
-  styles: ``
+  styles: ''
 })
 export class StateIconComponent {
-  @Input()iconColor:string = ''
+  @Input()iconColor: string = ''
 
 }

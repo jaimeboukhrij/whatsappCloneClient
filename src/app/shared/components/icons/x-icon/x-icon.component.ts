@@ -1,12 +1,12 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input } from '@angular/core'
 
 @Component({
   selector: 'shared-x-icon',
   standalone: false,
 
   templateUrl: './x-icon.component.html',
-  styles: ``,
+  styles: ''
 })
 export class XIconComponent {
-  @Input() iconColor: string = '#8696A0';
+  @Input() iconColor: string = '#8696A0'
 }

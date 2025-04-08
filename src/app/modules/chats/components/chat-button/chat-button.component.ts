@@ -1,13 +1,13 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input } from '@angular/core'
 
 @Component({
   selector: 'chat-button',
   standalone: false,
 
   templateUrl: './chat-button.component.html',
-  styles: ``,
+  styles: ''
 })
 export class ChatButtonComponent {
-  @Input() buttonText: string = '';
-  @Input() isActive = false;
+  @Input() buttonText: string = ''
+  @Input() isActive = false
 }

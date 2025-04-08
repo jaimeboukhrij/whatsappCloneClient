@@ -1,15 +1,15 @@
-import { IUser } from '../../../shared/interfaces/user.interface';
+import { type IUser } from '../../../shared/interfaces/user.interface'
 
 export interface GroupI {
-  id: string;
+  id: string
 
-  name: string;
+  name: string
 
-  urlImg: string;
+  urlImg: string
 
-  description?: string;
+  description?: string
 
-  admins: IUser[];
+  admins: IUser[]
 
-  members: IUser[];
+  members: IUser[]
 }

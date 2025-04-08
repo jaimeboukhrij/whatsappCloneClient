@@ -1,12 +1,12 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input } from '@angular/core'
 
 @Component({
   selector: 'shared-archived-icon',
   standalone: false,
 
   templateUrl: './archived-icon.component.html',
-  styles: ``,
+  styles: ''
 })
 export class ArchivedIconComponent {
-  @Input() iconColor = '#04A784';
+  @Input() iconColor = '#04A784'
 }

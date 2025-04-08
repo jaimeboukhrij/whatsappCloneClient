@@ -1,12 +1,12 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input } from '@angular/core'
 
 @Component({
   selector: 'shared-group-icon',
   standalone: false,
 
   templateUrl: './group-icon.component.html',
-  styles: ``,
+  styles: ''
 })
 export class GroupIconComponent {
-  @Input() iconColor = '#8696A0';
+  @Input() iconColor = '#8696A0'
 }
