@@ -6,22 +6,23 @@
       @if (_chatPreviewData?.isRead) {
       <h2 class="text-[16px] text-left">{{_chatPreviewData?.name}}</h2>
       <p class="text-[#8696A0] text-[14px] inline-flex gap-1">
-        @if (_chatPreviewData?.type === 'group') {<span>{{lastMessageUser()}}: </span>{{lastMessage()}}}
-        @else if(isUsermessage()){
+        @if (_chatPreviewData?.type === 'group') {<span>{{messagesData().lastMessageUser}}:
+        </span>{{messagesData().lastMessage}}}
+        @else if(messagesData().isUserMessage){
         <span><shared-dbcheck /></span>
-        {{lastMessage()}}
+        {{messagesData().lastMessage}}
         }@else {
-        {{lastMessage()}}
+        {{messagesData().lastMessage}}
         }
 
       </p>
       }@else {
       <h2 class="text-[16px] text-[#e9edef] font-semibold text-left">{{_chatPreviewData?.name}}</h2>
       <p class="text-[#e9edef] text-[14px] inline-flex gap-1 font-semibold">
-        @if(isUsermessage()){
+        @if(messagesData().isUserMessage){
         <span><shared-dbcheck /></span>
         }
-        {{lastMessage()}}
+        {{messagesData().lastMessage}}
       </p>
 
       }
@@ -40,7 +41,7 @@
         }
         @if(!_chatPreviewData?.isRead) {
         <span
-          class="bg-[#00a884] text-black text-xs grid place-items-center rounded-full w-[20px] h-[20px]">{{_chatPreviewData?.messagesWithoutRead}}</span>
+          class="bg-[#00a884] text-black text-xs grid place-items-center rounded-full w-[20px] h-[20px]">{{messagesData()!.messagesWithOutRead}}</span>
         }
         @if (isInCard()) { <button
           (click)="onShowOption($event,_chatPreviewData?.id!); $event.stopPropagation()"><shared-chevron-icon /></button>}

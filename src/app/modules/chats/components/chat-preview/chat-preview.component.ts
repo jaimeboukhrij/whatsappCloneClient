@@ -1,3 +1,4 @@
+import { ChatRoomMessageI } from './../../../chats-room/interfaces/chat-room-messages.interface'
 import {
   Component,
   HostListener,
@@ -11,39 +12,46 @@ import { ChatOptionsService } from '../../services/chat-options.service'
 import { UtilsService } from '../../../../core/services/utils.service'
 import { ChatsRoomService } from '../../../chats-room/services/chats-room.service'
 import { UserService } from '../../../user/services/user.service'
-import { ChatService } from '../../services/chat.service'
 
+interface MessagesDataI {
+  lastMessage: string | null
+  lastMessageUser: string | null
+  isUserMessage: boolean
+  lastTwentyMessage: ChatRoomMessageI[] | null
+  messagesWithOutRead: number | null
+}
 @Component({
   selector: 'chat-preview',
   standalone: false,
   templateUrl: './chat-preview.component.html',
   styles: ''
 })
+
 export class ChatPreviewComponent implements OnChanges {
   private readonly chatOptionsService = inject(ChatOptionsService)
   private readonly utilsService = inject(UtilsService)
   private readonly chatsRoomService = inject(ChatsRoomService)
   private readonly userService = inject(UserService)
-  private readonly chatService = inject(ChatService)
-
-  public lastMessage = signal<string | null>(null)
-  public lastMessageUser = signal<string | null>(null)
-  public isUsermessage = signal(false)
   public setShowChatOptions = this.chatOptionsService.setShowChatOptions
   public chatPreviewOptionsCordenates = signal({ x: 0, y: 0 })
   public isInCard = signal(false)
 
+  public messagesData = signal<MessagesDataI>({
+    lastMessage: null,
+    lastMessageUser: null,
+    isUserMessage: false,
+    lastTwentyMessage: null,
+    messagesWithOutRead: null
+  })
+
   @Input() public _chatPreviewData: ChatI | null = null
 
   ngOnChanges (): void {
-    const lastMessage = this._chatPreviewData!.messages.at(-1)
-    this.lastMessage.set(lastMessage ? lastMessage.text : null)
-    this.lastMessageUser.set(lastMessage ? lastMessage.owner.firstName : null)
-
-    this.isUsermessage.set(
-      this.userService.loginUserData()?.id === lastMessage?.owner.id
-    )
+    this.updateMessagesData()
+    this._chatPreviewData!.isRead = this.messagesData().lastTwentyMessage?.some(message => message.isRead) ?? false
   }
+
+
 
   mouseEnter () {
     this.isInCard.set(true)
@@ -61,6 +69,23 @@ export class ChatPreviewComponent implements OnChanges {
     else this.setShowChatOptions(id)
   }
 
+  private updateMessagesData () {
+
+    const lastMessage = this._chatPreviewData!.messages.at(-1)
+    const lastTwentyMessage = this._chatPreviewData!.messages.slice(-20)
+
+    this.messagesData.update(prev => ({
+      ...prev,
+      lastMessage: lastMessage ? lastMessage.text : null,
+      lastTwentyMessage,
+      isUserMessage: this.userService.loginUserData()?.id === lastMessage?.owner.id,
+      lastMessageUser: lastMessage ? lastMessage.owner.firstName : null,
+      messagesWithOutRead: lastTwentyMessage.filter(message => !message.isRead).length
+
+    }))
+
+  }
+
   private getOptionsPosition (event: Event) {
     const coordinates = this.utilsService.getCoordinates(event as MouseEvent)
     const optionsHeigth = 298
@@ -75,6 +100,7 @@ export class ChatPreviewComponent implements OnChanges {
   }
 
   onClickChatPreview () {
+    this._chatPreviewData!.isRead = true
     this.chatsRoomService.showChatRoomData(this._chatPreviewData?.id ?? '')
     if (!this._chatPreviewData?.id || this._chatPreviewData?.isRead) return
     this.chatOptionsService.onClickIsRead(this._chatPreviewData.id)

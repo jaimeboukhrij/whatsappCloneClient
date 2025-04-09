@@ -11,6 +11,7 @@ import {
 @Injectable({ providedIn: 'root' })
 export class ChatRoomMessagesService {
   chatRoomMessages: WritableSignal<ChatRoomMessageI[]> = signal([])
+  lastTwentyMessages: WritableSignal<ChatRoomMessageI[]> = signal([])
 
   constructor (
     private readonly userService: UserService,
@@ -40,6 +41,9 @@ export class ChatRoomMessagesService {
 
   updateChatRoomMessage (messages: ChatRoomMessageI[]) {
     this.chatRoomMessages.set(this.transformMessageData(messages))
+    const lastTwentyMessages = messages.slice(-20)
+    this.lastTwentyMessages.set(lastTwentyMessages)
+
   }
 
   createMessage (text: string) {

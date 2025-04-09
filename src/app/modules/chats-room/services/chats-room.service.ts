@@ -1,5 +1,5 @@
 import { Injectable, signal,  WritableSignal } from '@angular/core'
-import {  ChatApiService } from '../../../core/services/api'
+import {  ChatRoomApiService } from '../../../core/services/api'
 import {  ChatI } from '../../chats/model'
 
 import {  SocketStatusService } from '../../../core/services/socket/socket-status.service'
@@ -13,14 +13,15 @@ export class ChatsRoomService {
   onlineUsers$ = this.onlineUsersSubject.asObservable()
 
   constructor (
-    private readonly chatApiService: ChatApiService,
+    private readonly chatRoomApiService: ChatRoomApiService,
     private readonly socketStatusService: SocketStatusService
   ) {}
 
   showChatRoomData (id: string) {
     if (id !== this.currentChatRoomId()) this.currentChatRoomData.set(null)
-    this.chatApiService.findOneChat(id).subscribe({
+    this.chatRoomApiService.findOneChatRoom(id).subscribe({
       next: (data) => {
+        console.log(data)
         this.currentChatRoomData.set(data)
         this.currentChatRoomId.set(data.id)
       }
@@ -39,9 +40,5 @@ export class ChatsRoomService {
     })
   }
 
-  // newMessageSocket() {
-  //   this.socketStatusService.em('new-message', (uids: string[]) => {
-  //     this.onlineUsersSubject.next(uids);
-  //   });
-  // }
+
 }

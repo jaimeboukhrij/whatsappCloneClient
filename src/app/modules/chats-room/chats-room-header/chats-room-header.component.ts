@@ -15,7 +15,6 @@ export class ChatsRoomHeaderComponent implements OnInit {
 
   ngOnInit (): void {
     this.chatsRoomService.onlineUsers$.subscribe((onlineUsers) => {
-      console.log('....', onlineUsers)
       if (this.chatRoomData()!.contactUserId) {
         this.isOnline.set(
           onlineUsers.includes(this.chatRoomData()!.contactUserId ?? '')

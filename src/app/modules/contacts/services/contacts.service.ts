@@ -4,7 +4,7 @@ import {  ContactInterface } from '../model'
 import { debounceTime, Subject } from 'rxjs'
 import { ContactApiService } from '../../../core/services/api'
 import {  IUser } from '../../../shared/interfaces/user.interface'
-import { ChatApiService } from '../../../core/services/api/chat-room-api.service'
+import { ChatApiService } from '../../../core/services/api/chat-api.service'
 
 @Injectable({ providedIn: 'root' })
 export class ContactsService {

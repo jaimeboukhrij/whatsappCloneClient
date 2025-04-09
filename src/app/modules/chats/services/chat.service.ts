@@ -1,7 +1,7 @@
 import { inject, Injectable, signal,  WritableSignal } from '@angular/core'
 import { ChatI } from '../model'
 import { map } from 'rxjs'
-import { ChatApiService, UserApiService } from '../../../core/services/api'
+import { ChatApiService, ChatRoomApiService, UserApiService } from '../../../core/services/api'
 
 @Injectable({
   providedIn: 'root'
@@ -10,6 +10,7 @@ export class ChatService {
 
   private readonly userApiService = inject(UserApiService)
   private readonly chatApiServie = inject(ChatApiService)
+  private readonly chatRoomApiServie = inject(ChatRoomApiService)
 
   public showArchivedChat = signal(false)
   public showSilencedNotificationsModal = signal({
@@ -26,7 +27,6 @@ export class ChatService {
       .pipe(map((chats) => this.sortChats(chats)))
       .subscribe({
         next: (data) => {
-          console.log(data)
           const chatsVisibles = data.filter((chat) => !chat.isArchived)
           if (updateChats) this.chats.set(chatsVisibles)
           this.originalChats.set(data)
@@ -61,7 +61,7 @@ export class ChatService {
     const prevChats = this.chats()
     this.chats.set(newChats)
 
-    this.chatApiServie.updateChat(id, data).subscribe({
+    this.chatRoomApiServie.updateChatRoom(id, data).subscribe({
       next: () => { this.getChats(false) },
       error: (error) => {
         this.chats.set(prevChats)
@@ -95,4 +95,6 @@ export class ChatService {
       return lastMessageTimeB - lastMessageTimeA
     })
   }
+
+
 }
