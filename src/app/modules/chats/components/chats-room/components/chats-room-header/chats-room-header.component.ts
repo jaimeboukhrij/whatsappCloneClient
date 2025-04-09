@@ -1,5 +1,5 @@
 import { Component, inject,  OnInit, signal } from '@angular/core'
-import { ChatsRoomService } from '../services/chats-room.service'
+import { ChatsRoomService } from '../../../../services/chats-room.service'
 
 @Component({
   selector: 'chats-room-header',

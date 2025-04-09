@@ -6,7 +6,7 @@ import {  UserService } from '../../user/services/user.service'
 import {
   ChatRoomMessageI,
   ChatRoomCreateMessageI
-} from '../interfaces/chat-room-messages.interface'
+} from '../model/chat-room-messages.interface'
 
 @Injectable({ providedIn: 'root' })
 export class ChatRoomMessagesService {

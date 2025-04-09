@@ -1,4 +1,3 @@
-import { ChatRoomMessageI } from './../../../chats-room/interfaces/chat-room-messages.interface'
 import {
   Component,
   HostListener,
@@ -10,8 +9,9 @@ import {
 import { type ChatI } from '../../model'
 import { ChatOptionsService } from '../../services/chat-options.service'
 import { UtilsService } from '../../../../core/services/utils.service'
-import { ChatsRoomService } from '../../../chats-room/services/chats-room.service'
 import { UserService } from '../../../user/services/user.service'
+import { ChatRoomMessageI } from '../../model/chat-room-messages.interface'
+import { ChatsRoomService } from '../../services/chats-room.service'
 
 interface MessagesDataI {
   lastMessage: string | null

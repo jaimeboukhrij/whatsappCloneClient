@@ -1,5 +1,5 @@
-import {  ChatRoomMessageI } from './../../chats-room/interfaces/chat-room-messages.interface'
 import {  IUser } from '../../../shared/interfaces/user.interface'
+import { ChatRoomMessageI } from './chat-room-messages.interface'
 
 export interface ChatI {
   id: string

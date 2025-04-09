@@ -13,6 +13,12 @@ import { SpinnersModule } from '../../shared/components/spinners/spinners.module
 import { ChatArchivedComponent } from './components/chat-archived/chat-archived.component'
 import { FormsModule } from '@angular/forms'
 import { ChatNotificationsSilencedModalComponent } from './components/chat-preview-options/components/chat-notifications-silenced-modal/chat-notifications-silenced-modal.component'
+import { ChatsRoomComponent } from './components/chats-room/chats-room.component'
+import { ChatsRoomBodyComponent } from './components/chats-room/components/chats-room-body/chats-room-body.component'
+import { ChatsRoomFooterComponent } from './components/chats-room/components/chats-room-footer/chats-room-footer.component'
+import { ChatsRoomHeaderComponent } from './components/chats-room/components/chats-room-header/chats-room-header.component'
+import { ChatsRoomMessagesComponent } from './components/chats-room/components/chats-room-messages/chats-room-messages.component'
+
 
 @NgModule({
   declarations: [
@@ -22,7 +28,12 @@ import { ChatNotificationsSilencedModalComponent } from './components/chat-previ
     ChatPreviewComponent,
     ChatPreviewOptionsComponent,
     ChatArchivedComponent,
-    ChatNotificationsSilencedModalComponent
+    ChatNotificationsSilencedModalComponent,
+    ChatsRoomComponent,
+    ChatsRoomHeaderComponent,
+    ChatsRoomBodyComponent,
+    ChatsRoomFooterComponent,
+    ChatsRoomMessagesComponent
   ],
   imports: [
     CommonModule,
@@ -31,6 +42,7 @@ import { ChatNotificationsSilencedModalComponent } from './components/chat-previ
     IconsModule,
     SpinnersModule,
     FormsModule
-  ]
+  ],
+  exports: [ChatsRoomComponent]
 })
 export class ChatsModule {}

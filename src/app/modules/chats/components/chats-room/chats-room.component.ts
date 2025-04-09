@@ -1,6 +1,6 @@
-import {  ChatI } from '../chats/model'
-import { ChatRoomMessagesService } from './services/chats-room-messages.service'
-import { ChatsRoomService } from './services/chats-room.service'
+import { ChatI } from '../../model'
+import { ChatRoomMessagesService } from '../../services/chats-room-messages.service'
+import { ChatsRoomService } from '../../services/chats-room.service'
 import { Component, inject,  OnInit,  WritableSignal } from '@angular/core'
 
 @Component({

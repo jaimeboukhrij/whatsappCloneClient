@@ -4,9 +4,9 @@ import { HomeComponent } from './home/home.component'
 import { SharedModule } from '../shared/shared.module'
 import { LayoutRoutingModule } from './layout-routing.module'
 import { GroupsModule } from '../modules/groups/groups.module'
-import { ChatsRoomModule } from '../modules/chats-room/chats-room.module'
 import { UserModule } from '../modules/user/user.module'
 import { AuthModule } from '../modules/auth/auth.module'
+import { ChatsModule } from '../modules/chats/chats.module'
 
 @NgModule({
   declarations: [HomeComponent],
@@ -15,9 +15,9 @@ import { AuthModule } from '../modules/auth/auth.module'
     SharedModule,
     LayoutRoutingModule,
     GroupsModule,
-    ChatsRoomModule,
     UserModule,
-    AuthModule
+    AuthModule,
+    ChatsModule
   ]
 })
 export class LayoutModule {}

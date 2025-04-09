@@ -1,5 +1,5 @@
 import { Component, signal } from '@angular/core'
-import {  ChatRoomMessagesService } from '../services/chats-room-messages.service'
+import { ChatRoomMessagesService } from '../../../../services/chats-room-messages.service'
 
 @Component({
   selector: 'chats-room-footer',

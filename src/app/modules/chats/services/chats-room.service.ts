@@ -4,6 +4,7 @@ import {  ChatI } from '../../chats/model'
 
 import {  SocketStatusService } from '../../../core/services/socket/socket-status.service'
 import { BehaviorSubject } from 'rxjs'
+import { ChatService } from './chat.service'
 
 @Injectable({ providedIn: 'root' })
 export class ChatsRoomService {
@@ -14,14 +15,15 @@ export class ChatsRoomService {
 
   constructor (
     private readonly chatRoomApiService: ChatRoomApiService,
-    private readonly socketStatusService: SocketStatusService
+    private readonly socketStatusService: SocketStatusService,
+    private readonly chatService: ChatService
   ) {}
 
   showChatRoomData (id: string) {
     if (id !== this.currentChatRoomId()) this.currentChatRoomData.set(null)
+
     this.chatRoomApiService.findOneChatRoom(id).subscribe({
       next: (data) => {
-        console.log(data)
         this.currentChatRoomData.set(data)
         this.currentChatRoomId.set(data.id)
       }

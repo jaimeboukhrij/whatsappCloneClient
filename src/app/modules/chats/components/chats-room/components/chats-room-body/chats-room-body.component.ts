@@ -1,7 +1,7 @@
 import { Component, inject,  OnInit,  WritableSignal } from '@angular/core'
-import { ChatsRoomService } from '../services/chats-room.service'
-import {  ChatRoomMessageI } from '../interfaces/chat-room-messages.interface'
-import { ChatRoomMessagesService } from '../services/chats-room-messages.service'
+import { ChatsRoomService } from '../../../../services/chats-room.service'
+import {  ChatRoomMessageI } from '../../../../model/chat-room-messages.interface'
+import { ChatRoomMessagesService } from '../../../../services/chats-room-messages.service'
 
 @Component({
   selector: 'chats-room-body',
