@@ -1,6 +1,6 @@
-import { type AddNewcontactService } from '../../services/add-new-contact.service'
-import { Component, type OnInit, type WritableSignal } from '@angular/core'
-import { type IUser } from '../../../../shared/interfaces/user.interface'
+import {  AddNewcontactService } from '../../services/add-new-contact.service'
+import { Component,  OnInit,  WritableSignal } from '@angular/core'
+import {  IUser } from '../../../../shared/interfaces/user.interface'
 
 @Component({
   selector: 'contacts-add-new-contact-modal',

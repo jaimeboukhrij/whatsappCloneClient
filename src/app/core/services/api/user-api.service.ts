@@ -1,13 +1,12 @@
-import { type HttpClient } from '@angular/common/http'
+
 import { Injectable } from '@angular/core'
-import { type ApiService } from './api.service'
-import { type IUser } from '../../../shared/interfaces/user.interface'
-import { type ChatRoomI } from '../../../modules/chats/model'
+import {  ApiService } from './api.service'
+import {  IUser } from '../../../shared/interfaces/user.interface'
+import {  ChatI } from '../../../modules/chats/model'
 
 @Injectable({ providedIn: 'root' })
 export class UserApiService {
   constructor (
-    private readonly http: HttpClient,
     private readonly apiService: ApiService
   ) {}
 
@@ -25,8 +24,8 @@ export class UserApiService {
     )
   }
 
-  getUserChatsRoom () {
-    return this.apiService.fetchApi<ChatRoomI[]>('/users/chats-room')
+  getUserChats () {
+    return this.apiService.fetchApi<ChatI[]>('/users/chats-room')
   }
 
   getUsersRecommended () {

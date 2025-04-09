@@ -1,10 +1,10 @@
-import { type SocketStatusService } from './../../../core/services/socket/socket-status.service'
+import {  SocketStatusService } from './../../../core/services/socket/socket-status.service'
 import { Injectable } from '@angular/core'
-import { type AuthApiService } from '../../../core/services/api'
+import {  AuthApiService } from '../../../core/services/api'
 import { tap } from 'rxjs'
-import { type StorageService } from '../../../core/services/storage.service'
-import { type Router } from '@angular/router'
-import { type UserService } from '../../user/services/user.service'
+import {  StorageService } from '../../../core/services/storage.service'
+import {  Router } from '@angular/router'
+import {  UserService } from '../../user/services/user.service'
 import { jwtDecode } from 'jwt-decode'
 
 interface LoginI {

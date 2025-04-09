@@ -3,10 +3,10 @@ import {
   HostListener,
   inject,
   Input,
-  type OnChanges,
+  OnChanges,
   signal
 } from '@angular/core'
-import { type ChatRoomI } from '../../model'
+import { type ChatI } from '../../model'
 import { ChatOptionsService } from '../../services/chat-options.service'
 import { UtilsService } from '../../../../core/services/utils.service'
 import { ChatsRoomService } from '../../../chats-room/services/chats-room.service'
@@ -33,7 +33,7 @@ export class ChatPreviewComponent implements OnChanges {
   public chatPreviewOptionsCordenates = signal({ x: 0, y: 0 })
   public isInCard = signal(false)
 
-  @Input() public _chatPreviewData: ChatRoomI | null = null
+  @Input() public _chatPreviewData: ChatI | null = null
 
   ngOnChanges (): void {
     const lastMessage = this._chatPreviewData!.messages.at(-1)

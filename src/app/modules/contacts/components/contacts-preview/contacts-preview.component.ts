@@ -1,5 +1,5 @@
 import { Component, inject, Input } from '@angular/core'
-import { type IUser } from '../../../../shared/interfaces/user.interface'
+import {  IUser } from '../../../../shared/interfaces/user.interface'
 import { ContactsService } from '../../services'
 
 @Component({

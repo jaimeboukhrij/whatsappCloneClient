@@ -1,13 +1,13 @@
 import {
-  type HttpClient,
-  type HttpErrorResponse,
+  HttpClient,
+  HttpErrorResponse,
   HttpHeaders
 } from '@angular/common/http'
 import { Injectable } from '@angular/core'
-import { catchError, type Observable, throwError } from 'rxjs'
+import { catchError,  Observable, throwError } from 'rxjs'
 import { environment } from '../../../../environments/environment'
-import { type StorageService } from '../storage.service'
-import { type Router } from '@angular/router'
+import {  StorageService } from '../storage.service'
+import {  Router } from '@angular/router'
 
 @Injectable({
   providedIn: 'root'

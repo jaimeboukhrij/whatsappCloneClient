@@ -1,4 +1,4 @@
-import { Component, inject, type OnInit, signal } from '@angular/core'
+import { Component, inject,  OnInit, signal } from '@angular/core'
 import { ChatsRoomService } from '../services/chats-room.service'
 
 @Component({

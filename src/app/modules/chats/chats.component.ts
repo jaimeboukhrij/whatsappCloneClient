@@ -1,4 +1,4 @@
-import { Component, inject, type OnInit, signal } from '@angular/core'
+import { Component, inject,  OnInit, signal } from '@angular/core'
 import { ChatPreviewFiltersEnum } from './model'
 import { ChatFiltersService } from './services/chat-filters.service'
 import { ChatService } from './services/chat.service'
@@ -13,7 +13,7 @@ export class ChatsComponent implements OnInit {
   public showSilencedNotificationsModal =
     this.chatService.showSilencedNotificationsModal
 
-  public chatsPreviewData = this.chatService.chatsRoom
+  public chatsPreviewData = this.chatService.chats
   public isChatInputLoading = this.chatFiltersService.isChatInputLoading
 
   public buttonText = [
@@ -38,7 +38,7 @@ export class ChatsComponent implements OnInit {
   public currenIndexBtnActive = signal('all')
 
   ngOnInit (): void {
-    this.chatService.getChatsRoom()
+    this.chatService.getChats()
   }
 
   get showArchivedChat () {

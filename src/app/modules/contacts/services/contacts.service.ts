@@ -1,16 +1,16 @@
 import { inject, Injectable, signal } from '@angular/core'
 import { StorageService } from '../../../core/services/storage.service'
-import { type ContactInterface } from '../model'
+import {  ContactInterface } from '../model'
 import { debounceTime, Subject } from 'rxjs'
 import { ContactApiService } from '../../../core/services/api'
-import { type IUser } from '../../../shared/interfaces/user.interface'
-import { ChatRoomApiService } from '../../../core/services/api/chat-room-api.service'
+import {  IUser } from '../../../shared/interfaces/user.interface'
+import { ChatApiService } from '../../../core/services/api/chat-room-api.service'
 
 @Injectable({ providedIn: 'root' })
 export class ContactsService {
   private readonly storageService = inject(StorageService)
   private readonly contactApiService = inject(ContactApiService)
-  private readonly chatRoomApiService = inject(ChatRoomApiService)
+  private readonly chatApiService = inject(ChatApiService)
 
   private readonly searchQuery$ = new Subject<string>()
   private readonly firstLetterSet = new Set<string>()
@@ -59,7 +59,7 @@ export class ContactsService {
   }
 
   public createChatRoom (contactId: string, type: 'private' | 'group') {
-    this.chatRoomApiService.createChatRoom(contactId, type)?.subscribe()
+    this.chatApiService.createChat(contactId, type)?.subscribe()
   }
 
   private filterByQuery (): void {

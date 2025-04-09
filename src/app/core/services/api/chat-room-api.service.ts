@@ -1,41 +1,41 @@
 import { Injectable } from '@angular/core'
-import { type ChatRoomI } from '../../../modules/chats/model'
-import { type ApiService } from './api.service'
+import {  ChatI } from '../../../modules/chats/model'
+import {  ApiService } from './api.service'
 
 @Injectable({ providedIn: 'root' })
-export class ChatRoomApiService {
+export class ChatApiService {
   constructor (private readonly apiService: ApiService) {}
 
-  createChatRoom (contactId: string, type: 'private' | 'group') {
+  createChat (contactId: string, type: 'private' | 'group') {
     if (!contactId) {
       console.error('Contact ID is required to create a chat room')
       return
     }
 
-    return this.apiService.fetchApi<ChatRoomI>(
+    return this.apiService.fetchApi<ChatI>(
       '/chats-room',
       { users: [contactId], type },
       'POST'
     )
   }
 
-  deleteChatRoom (chatRoomId: string) {
-    return this.apiService.fetchApi<ChatRoomI>(
-      `/chats-room/${chatRoomId}`,
+  deleteChat (ChatId: string) {
+    return this.apiService.fetchApi<ChatI>(
+      `/chats-room/${ChatId}`,
       {},
       'DELETE'
     )
   }
 
-  updateChatRoom (chatRoomId: string, data: Partial<ChatRoomI>) {
-    return this.apiService.fetchApi<ChatRoomI>(
-      `/chats-room/${chatRoomId}`,
+  updateChat (ChatId: string, data: Partial<ChatI>) {
+    return this.apiService.fetchApi<ChatI>(
+      `/chats-room/${ChatId}`,
       data,
       'PATCH'
     )
   }
 
-  findOneChatRoom (chatRoomId: string) {
-    return this.apiService.fetchApi<ChatRoomI>(`/chats-room/${chatRoomId}`)
+  findOneChat (ChatId: string) {
+    return this.apiService.fetchApi<ChatI>(`/chats-room/${ChatId}`)
   }
 }

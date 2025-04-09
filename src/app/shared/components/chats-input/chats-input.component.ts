@@ -2,7 +2,7 @@ import {
   Component,
   EventEmitter,
   Input,
-  type OnInit,
+  OnInit,
   Output,
   signal
 } from '@angular/core'

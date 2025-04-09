@@ -1,4 +1,4 @@
-import { type IUser } from '../../../shared/interfaces/user.interface'
+import {  IUser } from '../../../shared/interfaces/user.interface'
 
 export interface ChatRoomMessageI {
   id: string
@@ -7,6 +7,7 @@ export interface ChatRoomMessageI {
   owner: IUser
   chatRoomId: string
   type: 'received' | 'sent'
+  isRead: boolean
 }
 
 export interface ChatRoomCreateMessageI {

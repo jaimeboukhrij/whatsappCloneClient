@@ -1,6 +1,6 @@
-import { Injectable, type WritableSignal, signal } from '@angular/core'
-import { type UserApiService } from '../../../core/services/api'
-import { type IUser } from '../../../shared/interfaces/user.interface'
+import { Injectable,  WritableSignal, signal } from '@angular/core'
+import {  UserApiService } from '../../../core/services/api'
+import {  IUser } from '../../../shared/interfaces/user.interface'
 
 @Injectable({ providedIn: 'root' })
 export class UserService {

@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core'
 import { ApiService } from './api.service'
 import {
-  type ChatRoomCreateMessageI,
-  type ChatRoomMessageI
+  ChatRoomCreateMessageI,
+  ChatRoomMessageI
 } from '../../../modules/chats-room/interfaces/chat-room-messages.interface'
 
 @Injectable({ providedIn: 'root' })

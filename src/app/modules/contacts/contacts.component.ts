@@ -1,4 +1,4 @@
-import { Component, inject, type OnInit, type WritableSignal } from '@angular/core'
+import { Component, inject,  OnInit,  WritableSignal } from '@angular/core'
 import { ContactsService } from './services/contacts.service'
 import { AddNewcontactService } from './services/add-new-contact.service'
 import { CreateGroupService } from '../groups/services/create-group.service'

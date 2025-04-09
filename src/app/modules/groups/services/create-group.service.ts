@@ -1,9 +1,9 @@
-import { Injectable, signal, type WritableSignal } from '@angular/core'
-import { type GroupApiService } from '../../../core/services/api'
-import { type Router } from '@angular/router'
+import { Injectable, signal,  WritableSignal } from '@angular/core'
+import {  GroupApiService } from '../../../core/services/api'
+import {  Router } from '@angular/router'
 import { debounceTime, Subject } from 'rxjs'
-import { type ContactsService } from '../../contacts/services'
-import { type IUser } from '../../../shared/interfaces/user.interface'
+import {  ContactsService } from '../../contacts/services'
+import {  IUser } from '../../../shared/interfaces/user.interface'
 
 @Injectable({ providedIn: 'root' })
 export class CreateGroupService {

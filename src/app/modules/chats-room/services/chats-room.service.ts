@@ -1,25 +1,25 @@
-import { Injectable, signal, type WritableSignal } from '@angular/core'
-import { type ChatRoomApiService } from '../../../core/services/api'
-import { type ChatRoomI } from '../../chats/model'
+import { Injectable, signal,  WritableSignal } from '@angular/core'
+import {  ChatApiService } from '../../../core/services/api'
+import {  ChatI } from '../../chats/model'
 
-import { type SocketStatusService } from '../../../core/services/socket/socket-status.service'
+import {  SocketStatusService } from '../../../core/services/socket/socket-status.service'
 import { BehaviorSubject } from 'rxjs'
 
 @Injectable({ providedIn: 'root' })
 export class ChatsRoomService {
   currentChatRoomId = signal('')
-  currentChatRoomData: WritableSignal<ChatRoomI | null> = signal(null)
+  currentChatRoomData: WritableSignal<ChatI | null> = signal(null)
   onlineUsersSubject = new BehaviorSubject<string[]>([])
   onlineUsers$ = this.onlineUsersSubject.asObservable()
 
   constructor (
-    private readonly chatRoomApiService: ChatRoomApiService,
+    private readonly chatApiService: ChatApiService,
     private readonly socketStatusService: SocketStatusService
   ) {}
 
   showChatRoomData (id: string) {
     if (id !== this.currentChatRoomId()) this.currentChatRoomData.set(null)
-    this.chatRoomApiService.findOneChatRoom(id).subscribe({
+    this.chatApiService.findOneChat(id).subscribe({
       next: (data) => {
         this.currentChatRoomData.set(data)
         this.currentChatRoomId.set(data.id)

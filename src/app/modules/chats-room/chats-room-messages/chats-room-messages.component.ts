@@ -1,5 +1,5 @@
-import { Component, inject, Input, type OnInit, signal } from '@angular/core'
-import { type ChatRoomMessageI } from '../interfaces/chat-room-messages.interface'
+import { Component, inject, Input,  OnInit, signal } from '@angular/core'
+import {  ChatRoomMessageI } from '../interfaces/chat-room-messages.interface'
 import { UserService } from '../../user/services/user.service'
 import { ChatsRoomService } from '../services/chats-room.service'
 
@@ -23,10 +23,6 @@ export class ChatsRoomMessagesComponent implements OnInit {
     const messageOwnerId = this.messageData?.owner.id
     const currentUserId = this.userService.loginUserData()?.id
     const type = this.chatsRoomService.currentChatRoomData()?.type
-    this.showName.set(
-      messageOwnerId !== currentUserId &&
-        type === 'group' &&
-        this.messageData?.type === 'received'
-    )
+    this.showName.set( messageOwnerId !== currentUserId && type === 'group' && this.messageData?.type === 'received')
   }
 }

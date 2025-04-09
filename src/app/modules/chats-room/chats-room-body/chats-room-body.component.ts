@@ -1,12 +1,11 @@
-import { Component, inject, type OnInit, type WritableSignal } from '@angular/core'
+import { Component, inject,  OnInit,  WritableSignal } from '@angular/core'
 import { ChatsRoomService } from '../services/chats-room.service'
-import { type ChatRoomMessageI } from '../interfaces/chat-room-messages.interface'
+import {  ChatRoomMessageI } from '../interfaces/chat-room-messages.interface'
 import { ChatRoomMessagesService } from '../services/chats-room-messages.service'
 
 @Component({
   selector: 'chats-room-body',
   standalone: false,
-
   templateUrl: './chats-room-body.component.html',
   styleUrl: './chats-room-body.component.css'
 })
@@ -19,5 +18,6 @@ export class ChatsRoomBodyComponent implements OnInit {
   ngOnInit (): void {
     const currentChatRoomDataMessages = this.chatsRoomService.currentChatRoomData()?.messages ?? []
     this.chatRoomMessagesService.updateChatRoomMessage(currentChatRoomDataMessages)
+
   }
 }

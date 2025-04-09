@@ -15,11 +15,11 @@ export class ChatOptionsService {
   )
 
   public onClickArchivedButton (id: string) {
-    const prevChatsRoom = this.chatService.chatsRoom()
-    const isChatRoomArchived = prevChatsRoom.find(
+    const prevChats = this.chatService.chats()
+    const isChatArchived = prevChats.find(
       (chat) => chat.id === id
     )?.isArchived
-    const newChatsRoom = prevChatsRoom
+    const newChats = prevChats
       .map((chat) => {
         if (chat.id !== id) return chat
         return { ...chat, isArchived: !chat.isArchived }
@@ -28,21 +28,21 @@ export class ChatOptionsService {
         this.chatService.showArchivedChat() ? chat.isArchived : !chat.isArchived
       )
 
-    this.chatService.updateChatRoom(id, newChatsRoom, {
-      isArchived: !isChatRoomArchived
+    this.chatService.updateChat(id, newChats, {
+      isArchived: !isChatArchived
     })
   }
 
   public async onClickDeletedButton (id: string) {
-    const newChatsRoom = this.chatService
-      .chatsRoom()
+    const newChats = this.chatService
+      .chats()
       .filter((chat) => chat.id !== id)
 
-    this.chatService.deleteChat(id, newChatsRoom)
+    this.chatService.deleteChat(id, newChats)
   }
 
   public setShowChatOptions = (id?: string) => {
-    this.chatService.chatsRoom.update((values) =>
+    this.chatService.chats.update((values) =>
       values.map((elem) => ({
         ...elem,
         showOptions: elem.id === id
@@ -54,7 +54,7 @@ export class ChatOptionsService {
     this.currentIdNotificationsSilencedButton.set(id)
 
     if (
-      (this.chatService.chatsRoom().find((elem) => elem.id === id)
+      (this.chatService.chats().find((elem) => elem.id === id)
         ?.notificationsSilenced) != null
     ) {
       this.selectedMuteDuration.set(null)
@@ -62,44 +62,46 @@ export class ChatOptionsService {
       return
     }
     this.chatService.showSilencedNotificationsModal.update((prev) => ({
-      chatRoomId: id ? id : prev.chatRoomId,
+      chatId: id ? id : prev.chatId,
       show: !prev.show
     }))
   }
 
   public onSubmitNotificationsSilencedButton (id: string) {
-    const newChats = this.chatService.chatsRoom().map((chat) => {
+    const newChats = this.chatService.chats().map((chat) => {
       if (chat.id !== this.currentIdNotificationsSilencedButton()) return chat
       return { ...chat, notificationsSilenced: this.selectedMuteDuration() }
     })
 
-    this.chatService.updateChatRoom(id, newChats, {
+    this.chatService.updateChat(id, newChats, {
       notificationsSilenced: this.selectedMuteDuration()
     })
   }
 
   public onClickIsPinned (id: string) {
-    const prevChatsRoom = this.chatService.chatsRoom()
-    const isChatRoomPinned = prevChatsRoom.find(
+    const prevChats = this.chatService.chats()
+    const isChatPinned = prevChats.find(
       (chat) => chat.id === id
     )?.isPinned
-    const newChats = this.chatService.chatsRoom().map((chat) => {
+    const newChats = this.chatService.chats().map((chat) => {
       if (chat.id !== id) return chat
       return {
         ...chat,
         isPinned: chat.isPinned ? null : new Date()
       }
     })
-    const sortedChatsRoom = this.chatService.sortChats(newChats)
-    this.chatService.updateChatRoom(id, sortedChatsRoom, {
-      isPinned: isChatRoomPinned ? null : new Date()
-    })
+    const sortedChats = this.chatService.sortChats(newChats)
+    this.chatService.updateChat(
+      id,
+      sortedChats,
+      { isPinned: isChatPinned ? null : new Date() }
+    )
   }
 
   public async onClickIsRead (id: string) {
-    const prevChatsRoom = this.chatService.chatsRoom()
-    const isChatRoomRead = prevChatsRoom.find((chat) => chat.id === id)?.isRead
-    const newChatsRoom = prevChatsRoom.map((chat) => {
+    const prevChats = this.chatService.chats()
+    const isChatRead = prevChats.find((chat) => chat.id === id)?.isRead
+    const newChats = prevChats.map((chat) => {
       if (chat.id !== id) return chat
       return {
         ...chat,
@@ -107,17 +109,17 @@ export class ChatOptionsService {
       }
     })
 
-    this.chatService.updateChatRoom(id, newChatsRoom, {
-      isRead: !isChatRoomRead
+    this.chatService.updateChat(id, newChats, {
+      isRead: !isChatRead
     })
   }
 
   public async onClickIsBlocked (id: string) {
-    const prevChatsRoom = this.chatService.chatsRoom()
-    const isChatRoomBlocked = prevChatsRoom.find(
+    const prevChats = this.chatService.chats()
+    const isChatBlocked = prevChats.find(
       (chat) => chat.id === id
     )?.isBlocked
-    const newChatsRoom = prevChatsRoom.map((chat) => {
+    const newChats = prevChats.map((chat) => {
       if (chat.id !== id) return chat
       return {
         ...chat,
@@ -125,18 +127,18 @@ export class ChatOptionsService {
       }
     })
 
-    this.chatService.updateChatRoom(id, newChatsRoom, {
-      isBlocked: !isChatRoomBlocked
+    this.chatService.updateChat(id, newChats, {
+      isBlocked: !isChatBlocked
     })
   }
 
   public onClickInFavorites (id: string) {
-    const prevChatsRoom = this.chatService.chatsRoom()
+    const prevChats = this.chatService.chats()
 
-    const isChatRoomInFavorites = prevChatsRoom.find(
+    const isChatInFavorites = prevChats.find(
       (chat) => chat.id === id
     )?.inFavorites
-    const newChatsRoom = prevChatsRoom.map((chat) => {
+    const newChats = prevChats.map((chat) => {
       if (chat.id !== id) return chat
       return {
         ...chat,
@@ -144,8 +146,8 @@ export class ChatOptionsService {
       }
     })
 
-    this.chatService.updateChatRoom(id, newChatsRoom, {
-      inFavorites: !isChatRoomInFavorites
+    this.chatService.updateChat(id, newChats, {
+      inFavorites: !isChatInFavorites
     })
   }
 }

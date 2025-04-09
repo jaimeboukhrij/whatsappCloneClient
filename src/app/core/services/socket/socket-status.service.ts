@@ -1,6 +1,6 @@
 // src/app/services/socket.service.ts
 import { Injectable } from '@angular/core'
-import { Manager, type Socket } from 'socket.io-client'
+import { Manager,  Socket } from 'socket.io-client'
 import { BehaviorSubject, Observable } from 'rxjs'
 import { environment } from '../../../../environments/environment'
 

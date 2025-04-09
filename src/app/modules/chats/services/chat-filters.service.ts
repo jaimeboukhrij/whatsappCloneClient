@@ -1,7 +1,7 @@
 import { Injectable, signal } from '@angular/core'
 import { ChatPreviewFiltersEnum } from '../model'
 import { debounceTime, Subject } from 'rxjs'
-import { type ChatService } from './chat.service'
+import {  ChatService } from './chat.service'
 
 @Injectable({
   providedIn: 'root'
@@ -31,30 +31,30 @@ export class ChatFiltersService {
         this.chatService.resetToOriginalChats()
         break
       case ChatPreviewFiltersEnum.NO_READ:
-        this.chatService.chatsRoom.set(
+        this.chatService.chats.set(
           this.chatService
-            .originalChatsRoom()
+            .originalChats()
             .filter((chat) => !chat.isRead && !chat.isArchived)
         )
         break
       case ChatPreviewFiltersEnum.FAVORITE:
-        this.chatService.chatsRoom.set(
+        this.chatService.chats.set(
           this.chatService
-            .originalChatsRoom()
+            .originalChats()
             .filter((chat) => chat.inFavorites && !chat.isArchived)
         )
         break
       case ChatPreviewFiltersEnum.GROUPS:
-        this.chatService.chatsRoom.set(
+        this.chatService.chats.set(
           this.chatService
-            .originalChatsRoom()
+            .originalChats()
             .filter((chat) => chat.type === 'group' && !chat.isArchived)
         )
         break
 
       case ChatPreviewFiltersEnum.ARCHIVED:
-        this.chatService.chatsRoom.set(
-          this.chatService.originalChatsRoom().filter((chat) => chat.isArchived)
+        this.chatService.chats.set(
+          this.chatService.originalChats().filter((chat) => chat.isArchived)
         )
         break
 

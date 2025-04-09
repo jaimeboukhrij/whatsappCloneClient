@@ -1,5 +1,5 @@
 import { Component, inject, Input, signal } from '@angular/core'
-import { type ChatRoomI } from '../../model'
+import {  ChatI } from '../../model'
 import { ChatOptionsService } from '../../services/chat-options.service'
 
 @Component({
@@ -12,12 +12,12 @@ export class ChatPreviewOptionsComponent {
   private readonly chatOptionsService = inject(ChatOptionsService)
   public chatPreviewOptions: Array<{ id: string, name: string }> = []
 
-  public _chatPreviewData = signal<ChatRoomI | null>(null)
+  public _chatPreviewData = signal<ChatI | null>(null)
 
   @Input() showOption = false
 
   @Input()
-  set chatPreviewData (value: ChatRoomI) {
+  set chatPreviewData (value: ChatI) {
     this._chatPreviewData.set(value)
     this.chatPreviewOptions = [
       {

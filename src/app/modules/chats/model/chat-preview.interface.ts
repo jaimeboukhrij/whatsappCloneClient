@@ -1,7 +1,7 @@
-import { type ChatRoomMessageI } from './../../chats-room/interfaces/chat-room-messages.interface'
-import { type IUser } from '../../../shared/interfaces/user.interface'
+import {  ChatRoomMessageI } from './../../chats-room/interfaces/chat-room-messages.interface'
+import {  IUser } from '../../../shared/interfaces/user.interface'
 
-export interface ChatRoomI {
+export interface ChatI {
   id: string
   name: string
   lastChatMessage: string

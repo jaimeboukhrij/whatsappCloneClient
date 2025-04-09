@@ -1,36 +1,35 @@
-import { inject, Injectable, signal, type WritableSignal } from '@angular/core'
-import { type ChatRoomI } from '../model'
-import { StorageService } from '../../../core/services/storage.service'
+import { inject, Injectable, signal,  WritableSignal } from '@angular/core'
+import { ChatI } from '../model'
 import { map } from 'rxjs'
-import { ChatRoomApiService, UserApiService } from '../../../core/services/api'
+import { ChatApiService, UserApiService } from '../../../core/services/api'
 
 @Injectable({
   providedIn: 'root'
 })
 export class ChatService {
-  private readonly storageService = inject(StorageService)
+
   private readonly userApiService = inject(UserApiService)
-  private readonly chatRoomApiServie = inject(ChatRoomApiService)
+  private readonly chatApiServie = inject(ChatApiService)
 
   public showArchivedChat = signal(false)
   public showSilencedNotificationsModal = signal({
-    chatRoomId: '',
+    chatId: '',
     show: false
   })
 
-  public originalChatsRoom: WritableSignal<ChatRoomI[]> = signal([])
-  public chatsRoom: WritableSignal<ChatRoomI[]> = signal([])
+  public originalChats: WritableSignal<ChatI[]> = signal([])
+  public chats: WritableSignal<ChatI[]> = signal([])
 
-  public getChatsRoom (updateChatsRoom = true) {
+  public getChats (updateChats = true) {
     this.userApiService
-      .getUserChatsRoom()
-      .pipe(map((chatsRoom) => this.sortChats(chatsRoom)))
+      .getUserChats()
+      .pipe(map((chats) => this.sortChats(chats)))
       .subscribe({
         next: (data) => {
           console.log(data)
-          const chatsRoomVisibles = data.filter((chat) => !chat.isArchived)
-          if (updateChatsRoom) this.chatsRoom.set(chatsRoomVisibles)
-          this.originalChatsRoom.set(data)
+          const chatsVisibles = data.filter((chat) => !chat.isArchived)
+          if (updateChats) this.chats.set(chatsVisibles)
+          this.originalChats.set(data)
         },
         error (err) {
           console.log(err)
@@ -39,44 +38,44 @@ export class ChatService {
   }
 
   public resetToOriginalChats () {
-    this.chatsRoom.set(
-      this.originalChatsRoom().filter((chats) => !chats.isArchived)
+    this.chats.set(
+      this.originalChats().filter((chats) => !chats.isArchived)
     )
   }
 
-  public async deleteChat (id: string, newChatsRoom: ChatRoomI[]) {
-    const prevChatsRoom = this.chatsRoom()
-    this.chatsRoom.set(newChatsRoom)
+  public async deleteChat (id: string, newChats: ChatI[]) {
+    const prevChats = this.chats()
+    this.chats.set(newChats)
 
-    this.chatRoomApiServie.deleteChatRoom(id).subscribe({
-      next: () => { this.getChatsRoom(false) },
+    this.chatApiServie.deleteChat(id).subscribe({
+      next: () => { this.getChats(false) },
       error: (error) => {
-        this.chatsRoom.set(prevChatsRoom)
+        this.chats.set(prevChats)
         console.log(error)
       }
     })
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public updateChatRoom (id: string, newChatsRoom: ChatRoomI[], data: Partial<ChatRoomI>) {
-    const prevChatsRoom = this.chatsRoom()
-    this.chatsRoom.set(newChatsRoom)
+  public updateChat (id: string, newChats: ChatI[], data: Partial<ChatI>) {
+    const prevChats = this.chats()
+    this.chats.set(newChats)
 
-    this.chatRoomApiServie.updateChatRoom(id, data).subscribe({
-      next: () => { this.getChatsRoom(false) },
+    this.chatApiServie.updateChat(id, data).subscribe({
+      next: () => { this.getChats(false) },
       error: (error) => {
-        this.chatsRoom.set(prevChatsRoom)
+        this.chats.set(prevChats)
         console.log(error)
       }
     })
   }
 
   getArchivedChats () {
-    const archivedChats = this.chatsRoom().filter((chat) => chat.isArchived)
+    const archivedChats = this.chats().filter((chat) => chat.isArchived)
     return archivedChats
   }
 
-  sortChats (newChats: ChatRoomI[]) {
+  sortChats (newChats: ChatI[]) {
     return [...newChats].sort((a, b) => {
       const isPinnedA = a.isPinned ? new Date(a.isPinned).getTime() : 0
       const isPinnedB = b.isPinned ? new Date(b.isPinned).getTime() : 0

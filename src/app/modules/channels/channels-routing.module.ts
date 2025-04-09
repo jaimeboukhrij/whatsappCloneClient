@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core'
-import { RouterModule, type Routes } from '@angular/router'
+import { RouterModule,  Routes } from '@angular/router'
 import { ChannelsComponent } from './channels.component'
 
 const routes: Routes = [{ path: '', component: ChannelsComponent }]

@@ -1,4 +1,4 @@
-import { type IUser } from '../../../shared/interfaces/user.interface'
+import {  IUser } from '../../../shared/interfaces/user.interface'
 
 export interface ContactInterface {
   letter: string

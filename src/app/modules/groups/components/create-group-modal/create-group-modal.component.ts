@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Component, inject, type OnInit, signal } from '@angular/core'
+import { Component, inject,  OnInit, signal } from '@angular/core'
 import { FormArray,  FormBuilder, FormControl,  FormGroup } from '@angular/forms'
 import { CreateGroupService } from '../../services/create-group.service'
 import { ContactsService } from '../../../contacts/services'

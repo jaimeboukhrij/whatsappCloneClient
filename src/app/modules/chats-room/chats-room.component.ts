@@ -1,7 +1,7 @@
-import { type ChatRoomI } from '../chats/model'
+import {  ChatI } from '../chats/model'
 import { ChatRoomMessagesService } from './services/chats-room-messages.service'
 import { ChatsRoomService } from './services/chats-room.service'
-import { Component, inject, type OnInit, type WritableSignal } from '@angular/core'
+import { Component, inject,  OnInit,  WritableSignal } from '@angular/core'
 
 @Component({
   selector: 'app-chats-room',
@@ -14,7 +14,7 @@ export class ChatsRoomComponent implements OnInit {
   private readonly chatsRoomService = inject(ChatsRoomService)
   private readonly chatRoomMessagesService = inject(ChatRoomMessagesService)
 
-  public currentChatRoomData: WritableSignal<ChatRoomI | null> =
+  public currentChatRoomData: WritableSignal<ChatI | null> =
     this.chatsRoomService.currentChatRoomData
 
   ngOnInit (): void {

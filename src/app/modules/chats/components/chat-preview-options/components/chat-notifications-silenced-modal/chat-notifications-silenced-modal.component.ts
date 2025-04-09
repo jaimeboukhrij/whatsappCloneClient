@@ -14,7 +14,7 @@ export class ChatNotificationsSilencedModalComponent {
   private readonly chatService = inject(ChatService)
   private readonly chatOptionsService = inject(ChatOptionsService)
   public selectedMuteDuration = NotificationsSilencedEnum.HOUR
-  @Input() chatRoomId!: string
+  @Input() chatId!: string
 
   onSubmit (event: Event) {
     event.preventDefault()
@@ -24,7 +24,7 @@ export class ChatNotificationsSilencedModalComponent {
     }))
     this.chatOptionsService.selectedMuteDuration.set(this.selectedMuteDuration)
     this.chatOptionsService.onSubmitNotificationsSilencedButton(
-      this.chatRoomId
+      this.chatId
     )
   }
 

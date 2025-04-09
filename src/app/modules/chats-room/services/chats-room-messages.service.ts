@@ -1,11 +1,11 @@
-import { type ChatsRoomService } from './chats-room.service'
-import { Injectable, signal, type WritableSignal } from '@angular/core'
-import { type SocketStatusService } from '../../../core/services/socket/socket-status.service'
-import { type ChatService } from '../../chats/services/chat.service'
-import { type UserService } from '../../user/services/user.service'
+import {  ChatsRoomService } from './chats-room.service'
+import { Injectable, signal,  WritableSignal } from '@angular/core'
+import {  SocketStatusService } from '../../../core/services/socket/socket-status.service'
+import {  ChatService } from '../../chats/services/chat.service'
+import {  UserService } from '../../user/services/user.service'
 import {
-  type ChatRoomMessageI,
-  type ChatRoomCreateMessageI
+  ChatRoomMessageI,
+  ChatRoomCreateMessageI
 } from '../interfaces/chat-room-messages.interface'
 
 @Injectable({ providedIn: 'root' })
@@ -27,6 +27,7 @@ export class ChatRoomMessagesService {
       .map((message) => {
         return {
           ...message,
+          isRead: true,
           type:
             userId === message.owner.id
               ? ('sent' as 'sent' | 'received')
@@ -51,16 +52,12 @@ export class ChatRoomMessagesService {
   }
 
   newMessageSocket () {
-    this.socketStatusService.on(
-      'message-from-server',
-      (message: ChatRoomMessageI) => {
-        if (message) {
-          this.chatRoomMessages.update((prev) =>
-            this.transformMessageData([...prev, message])
-          )
-          this.chatsService.getChatsRoom()
-        }
+    this.socketStatusService.on('message-from-server', (message: ChatRoomMessageI) => {
+      if (message) {
+        this.chatRoomMessages.update((prev) => this.transformMessageData([...prev, message]))
+        this.chatsService.getChats()
       }
+    }
     )
   }
 }
