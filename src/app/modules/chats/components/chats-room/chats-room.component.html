@@ -1,8 +1,8 @@
-@if(currentChatRoomData()){
+@if(!isLoading() && this.currentChatRoomData()){
 <section class="flex flex-col h-full">
   <chats-room-header />
-  <section class="flex-1">
-    <chats-room-body />
+  <section #scrollContainer class="flex-1 scroll_section">
+    <chats-room-body class="flex h-auto min-h-full" />
   </section>
   <chats-room-footer />
 </section>

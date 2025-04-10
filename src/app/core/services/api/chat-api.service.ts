@@ -8,7 +8,6 @@ export class ChatApiService {
 
   createChat (contactId: string, type: 'private' | 'group') {
     if (!contactId) {
-      console.error('Contact ID is required to create a chat room')
       return
     }
 

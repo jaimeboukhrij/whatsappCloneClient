@@ -5,7 +5,11 @@
     <img style="clip-path: circle();" class="w-[49px] h-[49px] clip" [src]="chatRoomData()!.urlImg" alt="">
     <div class="flex flex-col">
       <h2 class="text-[16px] text-[#e9edef] font-semibold text-left">{{chatRoomData()?.name}}</h2>
+      @if (isWriting()) {
+      <p class="text-[13px] text-[#8696A0]">escribiendo...</p>
+      }@else {
       <p class="text-[13px] text-[#8696A0]">{{isOnline()? 'en linea': chatRoomData()?.lastSeen}}</p>
+      }
     </div>
 
   </section>

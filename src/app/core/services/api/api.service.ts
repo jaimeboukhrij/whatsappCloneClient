@@ -25,7 +25,7 @@ export class ApiService {
   fetchApi<T>(
     endpoint: string,
     body?: unknown,
-    method: 'GET' | 'POST' | 'PATCH' | 'DELETE' = 'GET',
+    method: 'GET' | 'POST' | 'PATCH' | 'DELETE' | 'PUT' = 'GET',
     isFileUpload = false
   ): Observable<T> {
     const url = `${this.baseUrl}${endpoint}`
@@ -54,6 +54,9 @@ export class ApiService {
         break
       case 'DELETE':
         request$ = this.http.delete<T>(url, options)
+        break
+      case 'PUT':
+        request$ = this.http.put<T>(url, body, options)
         break
       default:
         request$ = this.http.get<T>(url, options)

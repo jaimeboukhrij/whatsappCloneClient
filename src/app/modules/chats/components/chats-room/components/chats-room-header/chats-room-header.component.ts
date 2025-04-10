@@ -12,13 +12,18 @@ export class ChatsRoomHeaderComponent implements OnInit {
   private readonly chatsRoomService = inject(ChatsRoomService)
   public chatRoomData = this.chatsRoomService.currentChatRoomData
   public isOnline = signal(false)
+  public isWriting = signal(false)
 
   ngOnInit (): void {
     this.chatsRoomService.onlineUsers$.subscribe((onlineUsers) => {
       if (this.chatRoomData()!.contactUserId) {
-        this.isOnline.set(
-          onlineUsers.includes(this.chatRoomData()!.contactUserId ?? '')
-        )
+        this.isOnline.set(onlineUsers.includes(this.chatRoomData()!.contactUserId ?? ''))
+      }
+    })
+
+    this.chatsRoomService.writingUsers$.subscribe(writingUsers =>{
+      if (this.chatRoomData()!.contactUserId) {
+        this.isWriting.set(writingUsers.includes(this.chatRoomData()!.contactUserId ?? ''))
       }
     })
   }

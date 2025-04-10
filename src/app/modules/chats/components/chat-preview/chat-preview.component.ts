@@ -100,8 +100,8 @@ export class ChatPreviewComponent implements OnChanges {
   }
 
   onClickChatPreview () {
-    this._chatPreviewData!.isRead = true
-    this.chatsRoomService.showChatRoomData(this._chatPreviewData?.id ?? '')
+    // this._chatPreviewData!.isRead = true
+    this.chatsRoomService.changeChatRoomData(this._chatPreviewData?.id ?? '')
     if (!this._chatPreviewData?.id || this._chatPreviewData?.isRead) return
     this.chatOptionsService.onClickIsRead(this._chatPreviewData.id)
   }

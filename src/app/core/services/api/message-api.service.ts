@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core'
 import { ApiService } from './api.service'
-import {
-  ChatRoomCreateMessageI,
-  ChatRoomMessageI
-} from '../../../modules/chats-room/interfaces/chat-room-messages.interface'
+import { ChatRoomCreateMessageI, ChatRoomMessageI } from '../../../modules/chats/model/chat-room-messages.interface'
 
+interface updateManymessagesI {
+  id: string
+  isRead: boolean
+}
 @Injectable({ providedIn: 'root' })
 export class MessageApiService {
   constructor (private readonly apiService: ApiService) {}
@@ -20,6 +21,15 @@ export class MessageApiService {
       '/messages',
       messageToSend,
       'POST'
+    )
+  }
+
+
+  updateMany (message: updateManymessagesI[]) {
+    return this.apiService.fetchApi<ChatRoomMessageI>(
+      '/messages/update-many',
+      message,
+      'PUT'
     )
   }
 }
