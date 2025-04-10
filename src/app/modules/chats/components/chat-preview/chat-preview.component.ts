@@ -50,7 +50,6 @@ export class ChatPreviewComponent implements OnChanges {
 
   ngOnChanges (): void {
     this.updateMessagesData()
-    console.log(this.messagesData())
     // this._chatPreviewData!.isRead = this.messagesData().lastTwentyMessage?.some(message => message.isRead) ?? false
   }
 
@@ -84,7 +83,7 @@ export class ChatPreviewComponent implements OnChanges {
       isUserMessage: this.userService.loginUserData()?.id === lastMessage?.owner.id,
       lastMessageUser: lastMessage ? lastMessage.owner.firstName : null,
       messagesWithOutRead: lastTwentyMessage.filter(message => !message.isRead).length,
-      isRead: ((lastTwentyMessage.every(message => message.isRead)) ?? false )
+      isRead: !(((lastTwentyMessage.some(message => !message.isRead)) ?? false ) && lastMessage?.owner.id === this._chatPreviewData?.contactUserId)
 
     }))
 

@@ -9,12 +9,15 @@ import {
 } from '../model/chat-room-messages.interface'
 import { MessageApiService } from '../../../core/services/api/message-api.service'
 import { ChatI } from '../model'
+import { BehaviorSubject } from 'rxjs'
 
 @Injectable({ providedIn: 'root' })
 export class ChatRoomMessagesService {
   chatRoomMessages: WritableSignal<ChatRoomMessageI[]> = signal([])
   lastTwentyMessages: WritableSignal<ChatRoomMessageI[]> = signal([])
   currentChatRoomData: WritableSignal< ChatI | null> = signal(null)
+  private  readonly areMessageRead = new BehaviorSubject(false)
+  areMessageRead$ = this.areMessageRead.asObservable()
 
   constructor (
     private readonly userService: UserService,
@@ -33,12 +36,19 @@ export class ChatRoomMessagesService {
     if (!currentChatRoomData) return
     const messages = currentChatRoomData?.messages ?? []
     this.chatRoomMessages.set(messages)
-    this.updateMessagesToRead(currentChatRoomData.id, messages)
+
+    this.updateMessagesToRead( messages)
   }
 
 
 
-  private async updateMessagesToRead (chatRoomId: string, messages:  ChatRoomMessageI[]) {
+  private async updateMessagesToRead ( messages:  ChatRoomMessageI[]) {
+    const isMessageFromOtherUser = messages?.at(-1)?.owner.id !== this.userService.loginUserData()?.id
+
+    if (!isMessageFromOtherUser) return
+
+    this.socketStatusService.emit('message-is-read-client', messages?.at(-1)?.owner.id)
+
     const updatedMessages = messages.map(message =>  ({ id: message.id, isRead: true }))
     this.messageApiServcice.updateMany(updatedMessages).subscribe({
       next: ()=>{ this.chatsService.getChats() },
@@ -57,13 +67,33 @@ export class ChatRoomMessagesService {
 
   newMessageSocket () {
     this.socketStatusService.on('message-from-server', (message: ChatRoomMessageI) => {
-      if (message && this.currentChatRoomData()?.id === message.chatRoomId) {
-        this.chatRoomMessages.update((prev) => this.transformMessageData([...prev, { ...message, isRead: true }]))
+      if (!message) return
+
+      const currentChatRoomId = this.currentChatRoomData()?.id
+      const isCurrentChatRoom = currentChatRoomId === message.chatRoomId
+      const isMessageFromOtherUser = message.owner.id !== this.userService.loginUserData()?.id
+
+      if (isCurrentChatRoom) {
+        this.chatRoomMessages.update(prev => this.transformMessageData([...prev, message]))
+
+        if (isMessageFromOtherUser) {
+          this.updateMessagesToRead([message])
+        }
+      } else {
+        this.chatsService.getChats()
       }
-      this.chatsService.getChats()
-    }
-    )
+    })
   }
+
+  messageIsReadSocket () {
+    this.socketStatusService.on('message-is-read-server', ()=>{
+      this.areMessageRead.next(true)
+      this.chatRoomMessages.update(prevMess => {
+        return prevMess.map(message => ({ ...message, isRead: true }))
+      })
+    })
+  }
+
 
 
 

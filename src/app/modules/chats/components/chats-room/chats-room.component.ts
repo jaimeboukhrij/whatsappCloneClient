@@ -32,5 +32,6 @@ export class ChatsRoomComponent implements OnInit {
     this.chatsRoomService.usersOnlineSocket()
     this.chatsRoomService.usersWritingSocket()
     this.chatRoomMessagesService.newMessageSocket()
+    this.chatRoomMessagesService.messageIsReadSocket()
   }
 }
