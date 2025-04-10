@@ -8,11 +8,13 @@ import {
   ChatRoomCreateMessageI
 } from '../model/chat-room-messages.interface'
 import { MessageApiService } from '../../../core/services/api/message-api.service'
+import { ChatI } from '../model'
 
 @Injectable({ providedIn: 'root' })
 export class ChatRoomMessagesService {
   chatRoomMessages: WritableSignal<ChatRoomMessageI[]> = signal([])
   lastTwentyMessages: WritableSignal<ChatRoomMessageI[]> = signal([])
+  currentChatRoomData: WritableSignal< ChatI | null> = signal(null)
 
   constructor (
     private readonly userService: UserService,
@@ -26,13 +28,15 @@ export class ChatRoomMessagesService {
 
 
   getChatRoomMessages () {
-    const currentChatRoomData = this.chatsRoomService.currentChatRoomData()
-
+    this.currentChatRoomData.set(this.chatsRoomService.currentChatRoomData())
+    const currentChatRoomData =  this.currentChatRoomData()
     if (!currentChatRoomData) return
     const messages = currentChatRoomData?.messages ?? []
     this.chatRoomMessages.set(messages)
     this.updateMessagesToRead(currentChatRoomData.id, messages)
   }
+
+
 
   private async updateMessagesToRead (chatRoomId: string, messages:  ChatRoomMessageI[]) {
     const updatedMessages = messages.map(message =>  ({ id: message.id, isRead: true }))
@@ -40,12 +44,7 @@ export class ChatRoomMessagesService {
       next: ()=>{ this.chatsService.getChats() },
       error: (err) => { console.log(err) }
     })
-
   }
-
-
-
-
 
   createMessage (text: string) {
     const message: ChatRoomCreateMessageI = {
@@ -58,10 +57,10 @@ export class ChatRoomMessagesService {
 
   newMessageSocket () {
     this.socketStatusService.on('message-from-server', (message: ChatRoomMessageI) => {
-      if (message) {
-        this.chatRoomMessages.update((prev) => this.transformMessageData([...prev, message]))
-        this.chatsService.getChats()
+      if (message && this.currentChatRoomData()?.id === message.chatRoomId) {
+        this.chatRoomMessages.update((prev) => this.transformMessageData([...prev, { ...message, isRead: true }]))
       }
+      this.chatsService.getChats()
     }
     )
   }

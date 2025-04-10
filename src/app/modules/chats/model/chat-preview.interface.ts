@@ -46,3 +46,12 @@ export enum ChatPreviewFiltersEnum {
   GROUPS = 'groups',
   ARCHIVED = 'archived',
 }
+
+export interface MessagesDataI {
+  lastMessage: string | null
+  lastMessageUser: string | null
+  isUserMessage: boolean
+  lastTwentyMessage: ChatRoomMessageI[] | null
+  messagesWithOutRead: number | null
+  isRead: boolean
+}

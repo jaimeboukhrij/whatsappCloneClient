@@ -19,6 +19,7 @@ interface MessagesDataI {
   isUserMessage: boolean
   lastTwentyMessage: ChatRoomMessageI[] | null
   messagesWithOutRead: number | null
+  isRead: boolean
 }
 @Component({
   selector: 'chat-preview',
@@ -41,14 +42,16 @@ export class ChatPreviewComponent implements OnChanges {
     lastMessageUser: null,
     isUserMessage: false,
     lastTwentyMessage: null,
-    messagesWithOutRead: null
+    messagesWithOutRead: null,
+    isRead: true
   })
 
   @Input() public _chatPreviewData: ChatI | null = null
 
   ngOnChanges (): void {
     this.updateMessagesData()
-    this._chatPreviewData!.isRead = this.messagesData().lastTwentyMessage?.some(message => message.isRead) ?? false
+    console.log(this.messagesData())
+    // this._chatPreviewData!.isRead = this.messagesData().lastTwentyMessage?.some(message => message.isRead) ?? false
   }
 
 
@@ -80,7 +83,8 @@ export class ChatPreviewComponent implements OnChanges {
       lastTwentyMessage,
       isUserMessage: this.userService.loginUserData()?.id === lastMessage?.owner.id,
       lastMessageUser: lastMessage ? lastMessage.owner.firstName : null,
-      messagesWithOutRead: lastTwentyMessage.filter(message => !message.isRead).length
+      messagesWithOutRead: lastTwentyMessage.filter(message => !message.isRead).length,
+      isRead: ((lastTwentyMessage.every(message => message.isRead)) ?? false )
 
     }))
 

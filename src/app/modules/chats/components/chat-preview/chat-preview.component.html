@@ -3,7 +3,7 @@
   <img style="clip-path: circle();" class="w-[49px] h-[49px] clip" [src]="_chatPreviewData?.urlImg" alt="">
   <section class="flex flex-row gap-5 justify-between items-center flex-1 border-y-[.5px] h-full border-[#1F2C33]">
     <div class="flex flex-col px-4">
-      @if (_chatPreviewData?.isRead) {
+      @if (this.messagesData().isRead) {
       <h2 class="text-[16px] text-left">{{_chatPreviewData?.name}}</h2>
       <p class="text-[#8696A0] text-[14px] inline-flex gap-1">
         @if (_chatPreviewData?.type === 'group') {<span>{{messagesData().lastMessageUser}}:
@@ -29,7 +29,7 @@
     </div>
     <div class="flex flex-col justify-center items-end px-4">
       <p class="text-[12px] text-center text-[#8696A0]"
-        [ngStyle]="{ color: !_chatPreviewData?.isRead ? '#00a884' : '#8696A0' }">
+        [ngStyle]="{ color: !this.messagesData().isRead ? '#00a884' : '#8696A0' }">
         10:49
       </p>
       <div class="inline-flex items-center h-[30px] justify-end gap-2">
@@ -39,7 +39,7 @@
         @if (_chatPreviewData?.isPinned) {
         <shared-pinned-icon />
         }
-        @if(!_chatPreviewData?.isRead) {
+        @if(!this.messagesData().isRead) {
         <span
           class="bg-[#00a884] text-black text-xs grid place-items-center rounded-full w-[20px] h-[20px]">{{messagesData()!.messagesWithOutRead}}</span>
         }
