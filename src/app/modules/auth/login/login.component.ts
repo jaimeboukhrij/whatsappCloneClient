@@ -25,8 +25,6 @@ export class LoginComponent {
   onSubmit () {
     if (this.loginForm.valid) {
       const { email, password } = this.loginForm.value
-
-      // Verificación explícita antes de llamar al servicio
       if (email && password) {
         this.authService.login({ email, password })
       } else {

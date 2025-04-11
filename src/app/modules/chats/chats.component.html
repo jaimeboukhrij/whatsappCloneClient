@@ -7,7 +7,7 @@
     <chats-input [isChatInputLoading]="isChatInputLoading()" (messageEvent)="onChangeQueryInput($event)"
       [defaultPlaceHolder]="'Buscar'" />
     <section class="flex items-center gap-2 flex-wrap">
-      @for (item of buttonText; track $index) {
+      @for (item of buttonFilterText; track $index) {
       <chat-button (click)="onClickButton(item.id)" [buttonText]="item.text"
         [isActive]="item.id === currenIndexBtnActive()" />
       }

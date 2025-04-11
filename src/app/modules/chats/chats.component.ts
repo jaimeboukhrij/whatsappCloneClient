@@ -16,24 +16,9 @@ export class ChatsComponent implements OnInit {
   public chatsPreviewData = this.chatService.chats
   public isChatInputLoading = this.chatFiltersService.isChatInputLoading
 
-  public buttonText = [
-    {
-      text: 'Todos',
-      id: ChatPreviewFiltersEnum.ALL
-    },
-    {
-      text: 'No leídos',
-      id: ChatPreviewFiltersEnum.NO_READ
-    },
-    {
-      text: 'Favoritos',
-      id: ChatPreviewFiltersEnum.FAVORITE
-    },
-    {
-      text: 'Grupos',
-      id: ChatPreviewFiltersEnum.GROUPS
-    }
-  ]
+  public buttonFilterText = this.chatFiltersService.buttonFilterText
+
+
 
   public currenIndexBtnActive = signal('all')
 

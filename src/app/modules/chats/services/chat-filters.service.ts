@@ -10,6 +10,24 @@ export class ChatFiltersService {
   private readonly searchQuery$ = new Subject<string>()
   public isChatInputLoading = signal(false)
   private readonly currenInputQuery = signal('')
+  public buttonFilterText = [
+    {
+      text: 'Todos',
+      id: ChatPreviewFiltersEnum.ALL
+    },
+    {
+      text: 'No leídos',
+      id: ChatPreviewFiltersEnum.NO_READ
+    },
+    {
+      text: 'Favoritos',
+      id: ChatPreviewFiltersEnum.FAVORITE
+    },
+    {
+      text: 'Grupos',
+      id: ChatPreviewFiltersEnum.GROUPS
+    }
+  ]
 
   constructor (private readonly chatService: ChatService) {
     this.filterChats('')
