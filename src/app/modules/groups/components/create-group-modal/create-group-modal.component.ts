@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Component, inject,  OnInit, signal } from '@angular/core'
-import { FormArray,  FormBuilder, FormControl,  FormGroup } from '@angular/forms'
+import { Component, inject,  OnInit } from '@angular/core'
+import { FormBuilder } from '@angular/forms'
 import { CreateGroupService } from '../../services/create-group.service'
-import { ContactsService } from '../../../contacts/services'
 
 @Component({
   selector: 'groups-create-group-modal',
@@ -13,21 +12,19 @@ import { ContactsService } from '../../../contacts/services'
 })
 export class CreateGroupModalComponent implements OnInit {
   private readonly createGroupService = inject(CreateGroupService)
-  private readonly contactsService = inject(ContactsService)
 
-  public userContacts = this.createGroupService.userContacts
-  public createGroupForm: FormGroup
-  public groupMembers = signal(0)
-  public groupName = signal('')
-  public selectedFile: File | undefined = undefined
-  public previewImg = 'assets/images/add_image2.png'
-  public isDataLoading = this.createGroupService.isDataLoading
+  public groupMembers = this.createGroupService.groupMembers
   public isDataInputLoading = this.createGroupService.isDataInputLoading
+  public createGroupForm = this.createGroupService.createGroupForm
+  public userContacts = this.createGroupService.userContacts
+  public isDataLoading = this.createGroupService.isDataLoading
+  public previewImg = this.createGroupService.previewImg
+  public groupName = this.createGroupService.groupName
+
+
 
   constructor (private readonly fb: FormBuilder) {
-    this.createGroupForm = this.fb.group({
-      selections: this.fb.array([])
-    })
+
   }
 
   ngOnInit (): void {
@@ -35,8 +32,7 @@ export class CreateGroupModalComponent implements OnInit {
   }
 
   onInputChange (event: Event) {
-    const target = event.target as HTMLInputElement
-    this.groupName.set(target.value)
+    this.createGroupService.onInputChange(event)
   }
 
   onInputMembersChange (q: string) {
@@ -44,50 +40,27 @@ export class CreateGroupModalComponent implements OnInit {
   }
 
   onEmojiChange (emoji: string) {
-    this.groupName.update((prev) => prev + emoji + ' ')
+    this.createGroupService.onEmojiChange(emoji)
   }
 
   onFileSelected (event: Event) {
-    const input = event.target as HTMLInputElement
-    if (input.files?.[0]) {
-      this.selectedFile = input.files[0]
-
-      const reader = new FileReader()
-      reader.onload = (e) => {
-        this.previewImg = e.target?.result as string
-      }
-      reader.readAsDataURL(this.selectedFile)
-    }
+    this.createGroupService.onFileSelected(event)
   }
 
   isChecked (userId: string): boolean {
-    const selections = this.createGroupForm.get('selections') as FormArray
-    return selections.controls.some((control) => control.value === userId)
+    return this.createGroupService.isChecked(userId)
   }
 
   canContinue () {
-    return this.groupMembers.length && this.groupName
+    return this.createGroupService.canContinue()
   }
 
   onCheckboxChange (event: any) {
-    const selections = this.createGroupForm.get('selections') as FormArray
-
-    if (event.target.checked) {
-      selections.push(new FormControl(event.target.value))
-    } else {
-      const index = selections.controls.findIndex(
-        (control) => control.value === event.target.value
-      )
-      selections.removeAt(index)
-    }
-
-    this.groupMembers.set(selections.length)
+    this.createGroupService.onCheckboxChange(event)
   }
 
   onClearGropuMembers () {
-    const selections = this.createGroupForm.get('selections') as FormArray
-    selections.clear()
-    this.groupMembers.set(0)
+    this.createGroupService.onClearGropuMembers()
   }
 
   onClickOutSide (event: MouseEvent) {
@@ -100,19 +73,6 @@ export class CreateGroupModalComponent implements OnInit {
   }
 
   onSubmit () {
-    const membersFormArray = this.createGroupForm.get(
-      'selections'
-    ) as FormArray
-
-    const members = membersFormArray.value.map((member: string) => member)
-
-    const formData = new FormData()
-    formData.append('members', JSON.stringify(members))
-    formData.append('name', this.groupName())
-
-    if (this.selectedFile) {
-      formData.append('image', this.selectedFile)
-    }
-    this.createGroupService.createGroup(formData)
+    this.createGroupService.onSubmit()
   }
 }

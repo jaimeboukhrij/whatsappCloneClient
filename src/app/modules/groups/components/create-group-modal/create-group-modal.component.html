@@ -10,7 +10,7 @@
       <section class=" flex justify-start gap-12">
         <section class="flex justify-center items-center">
           <label for="group_img">
-            <img [src]="previewImg" alt="no hay imagen"
+            <img [src]="previewImg()" alt="no hay imagen"
               class="w-[200px] h-[200px] rounded-full object-cover cursor-pointer">
           </label>
           <input type="file" id="group_img" name="group_img" accept="image/*" (change)="onFileSelected($event)"
