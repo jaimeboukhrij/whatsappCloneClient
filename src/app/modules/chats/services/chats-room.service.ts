@@ -26,7 +26,11 @@ export class ChatsRoomService {
 
   }
 
-  changeChatRoomData (id: string) {
+  changeChatRoomData (id: string | null) {
+    if (!id) {
+      this.currentChatRoomData.set(null)
+      return
+    }
     this.currentChatRoomId.set(id)
     this.updateChatRoomData()
   }
@@ -39,7 +43,7 @@ export class ChatsRoomService {
     if (foundChat) this.currentChatRoomData.set(foundChat)
     setTimeout(() => {
       this.isLoading.set(false)
-    }, 0)
+    }, 1)
   }
 
 
@@ -57,10 +61,14 @@ export class ChatsRoomService {
     }, 1000)
   }
 
+  getChatRoomByContactUserId (contactId: string) {
+    return this.chatRoomApiService.getChatRoomByContactUserId(contactId)
+  }
+
 
   usersOnlineSocket () {
     this.socketStatusService.on('users-online-updated', (uids: string[]) => {
-      this.chatService.getChats()
+      this.chatService.getChats().subscribe()
       this.onlineUsersSubject.next(uids)
     })
   }

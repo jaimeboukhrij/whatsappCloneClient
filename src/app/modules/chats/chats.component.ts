@@ -38,7 +38,7 @@ export class ChatsComponent implements OnInit {
   public currenIndexBtnActive = signal('all')
 
   ngOnInit (): void {
-    this.chatService.getChats()
+    this.chatService.getChats().subscribe()
   }
 
   get showArchivedChat () {

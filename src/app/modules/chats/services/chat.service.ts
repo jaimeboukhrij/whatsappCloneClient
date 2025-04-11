@@ -1,6 +1,6 @@
 import { inject, Injectable, signal,  WritableSignal } from '@angular/core'
 import { ChatI } from '../model'
-import { map } from 'rxjs'
+import { catchError, map, Observable, of, tap } from 'rxjs'
 import { ChatApiService, ChatRoomApiService, UserApiService } from '../../../core/services/api'
 
 @Injectable({
@@ -21,22 +21,22 @@ export class ChatService {
   public originalChats: WritableSignal<ChatI[]> = signal([])
   public chats: WritableSignal<ChatI[]> = signal([])
 
-  public getChats (updateChats = true) {
-    this.userApiService
-      .getUserChats()
-      .pipe(map((chats) => this.sortChats(chats)))
-      .subscribe({
-        next: (data) => {
-          console.log(data)
-          const chatsVisibles = data.filter((chat) => !chat.isArchived)
-          if (updateChats) this.chats.set(chatsVisibles)
-          this.originalChats.set(data)
-        },
-        error (err) {
-          console.log(err)
-        }
+  public getChats (updateChats = true): Observable<ChatI[]> {
+    return this.userApiService.getUserChats().pipe(
+      map((chats) => this.sortChats(chats)),
+      tap((data) => {
+        console.log(data)
+        const chatsVisibles = data.filter((chat) => !chat.isArchived)
+        if (updateChats) this.chats.set(chatsVisibles)
+        this.originalChats.set(data)
+      }),
+      catchError((error) => {
+        console.log(error)
+        return of([])
       })
+    )
   }
+
 
   public resetToOriginalChats () {
     this.chats.set(
@@ -49,7 +49,9 @@ export class ChatService {
     this.chats.set(newChats)
 
     this.chatApiServie.deleteChat(id).subscribe({
-      next: () => { this.getChats(false) },
+      next: () => {
+        this.getChats().subscribe()
+      },
       error: (error) => {
         this.chats.set(prevChats)
         console.log(error)
@@ -63,12 +65,16 @@ export class ChatService {
     this.chats.set(newChats)
 
     this.chatRoomApiServie.updateChatRoom(id, data).subscribe({
-      next: () => { this.getChats(false) },
+      next: () => { this.getChats(false).subscribe() },
       error: (error) => {
         this.chats.set(prevChats)
         console.log(error)
       }
     })
+  }
+
+  createChat (contactId: string,  type: 'private' | 'group'): Observable<ChatI> {
+    return this.chatApiServie.createChat(contactId, type)
   }
 
   getArchivedChats () {

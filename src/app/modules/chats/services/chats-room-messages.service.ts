@@ -51,7 +51,7 @@ export class ChatRoomMessagesService {
 
     const updatedMessages = messages.map(message =>  ({ id: message.id, isRead: true }))
     this.messageApiServcice.updateMany(updatedMessages).subscribe({
-      next: ()=>{ this.chatsService.getChats() },
+      next: ()=>{ this.chatsService.getChats().subscribe() },
       error: (err) => { console.log(err) }
     })
   }
@@ -80,7 +80,7 @@ export class ChatRoomMessagesService {
           this.updateMessagesToRead([message])
         }
       } else {
-        this.chatsService.getChats()
+        this.chatsService.getChats().subscribe()
       }
     })
   }

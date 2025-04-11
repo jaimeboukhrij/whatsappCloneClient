@@ -1,16 +1,22 @@
+import { ChatsRoomService } from './../../chats/services/chats-room.service'
 import { inject, Injectable, signal } from '@angular/core'
 import { StorageService } from '../../../core/services/storage.service'
 import {  ContactInterface } from '../model'
-import { debounceTime, Subject } from 'rxjs'
+import { debounceTime, EMPTY, from, Subject, switchMap, tap } from 'rxjs'
 import { ContactApiService } from '../../../core/services/api'
 import {  IUser } from '../../../shared/interfaces/user.interface'
 import { ChatApiService } from '../../../core/services/api/chat-api.service'
+import { Router } from '@angular/router'
+import { ChatService } from '../../chats/services/chat.service'
 
 @Injectable({ providedIn: 'root' })
 export class ContactsService {
   private readonly storageService = inject(StorageService)
   private readonly contactApiService = inject(ContactApiService)
   private readonly chatApiService = inject(ChatApiService)
+  private readonly router = inject(Router)
+  private readonly chatsRoomService = inject(ChatsRoomService)
+  private readonly chatService = inject(ChatService)
 
   private readonly searchQuery$ = new Subject<string>()
   private readonly firstLetterSet = new Set<string>()
@@ -59,8 +65,34 @@ export class ContactsService {
   }
 
   public createChatRoom (contactId: string, type: 'private' | 'group') {
-    this.chatApiService.createChat(contactId, type)?.subscribe()
+    this.chatsRoomService.getChatRoomByContactUserId(contactId).pipe(
+      switchMap((chatRoom) => {
+        if (!chatRoom) {
+          return this.chatService.createChat(contactId, type).pipe(
+            switchMap(async (chat) =>
+              await this.router.navigate(['/chats']).then(() => chat)
+            ),
+            switchMap((chat) =>
+              this.chatService.getChats().pipe(
+                tap(() => { this.chatsRoomService.changeChatRoomData(chat.id) })
+              )
+            )
+          )
+        } else {
+          return from(this.router.navigate(['/chats'])).pipe(
+            switchMap((chat) =>
+              this.chatService.getChats().pipe(
+                tap(() => { this.chatsRoomService.changeChatRoomData(chatRoom.id) })
+              )
+            ),
+            switchMap(() => EMPTY)
+          )
+        }
+      })
+    ).subscribe()
   }
+
+
 
   private filterByQuery (): void {
     this.searchQuery$.pipe(debounceTime(200)).subscribe((query) => {

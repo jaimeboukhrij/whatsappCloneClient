@@ -83,7 +83,7 @@ export class ChatPreviewComponent implements OnChanges {
       isUserMessage: this.userService.loginUserData()?.id === lastMessage?.owner.id,
       lastMessageUser: lastMessage ? lastMessage.owner.firstName : null,
       messagesWithOutRead: lastTwentyMessage.filter(message => !message.isRead).length,
-      isRead: !(((lastTwentyMessage.some(message => !message.isRead)) ?? false ) && lastMessage?.owner.id === this._chatPreviewData?.contactUserId)
+      isRead: this._chatPreviewData?.isRead ?? false
 
     }))
 
@@ -103,7 +103,6 @@ export class ChatPreviewComponent implements OnChanges {
   }
 
   onClickChatPreview () {
-    // this._chatPreviewData!.isRead = true
     this.chatsRoomService.changeChatRoomData(this._chatPreviewData?.id ?? '')
     if (!this._chatPreviewData?.id || this._chatPreviewData?.isRead) return
     this.chatOptionsService.onClickIsRead(this._chatPreviewData.id)

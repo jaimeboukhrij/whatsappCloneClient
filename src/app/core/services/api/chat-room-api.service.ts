@@ -19,4 +19,8 @@ export class ChatRoomApiService {
   findOneChatRoom (ChatId: string) {
     return this.apiService.fetchApi<ChatI>(`/chats-room/${ChatId}`)
   }
+
+  getChatRoomByContactUserId (contactId: string) {
+    return this.apiService.fetchApi<ChatI>(`/chats-room/find-contact-chat-room/${contactId}`)
+  }
 }

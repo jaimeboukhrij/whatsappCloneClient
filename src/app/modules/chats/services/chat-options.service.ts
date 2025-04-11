@@ -1,10 +1,12 @@
 import { inject, Injectable, signal } from '@angular/core'
 import { NotificationsSilencedEnum } from '../model'
 import { ChatService } from './chat.service'
+import { ChatsRoomService } from './chats-room.service'
 
 @Injectable({ providedIn: 'root' })
 export class ChatOptionsService {
   private readonly chatService = inject(ChatService)
+  private readonly chatRoomService = inject(ChatsRoomService)
 
   private readonly currentIdNotificationsSilencedButton = signal<undefined | string>(
     undefined
@@ -38,6 +40,7 @@ export class ChatOptionsService {
       .chats()
       .filter((chat) => chat.id !== id)
 
+    this.chatRoomService.changeChatRoomData('')
     this.chatService.deleteChat(id, newChats)
   }
 

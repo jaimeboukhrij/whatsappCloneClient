@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core'
 import {  ChatI } from '../../../modules/chats/model'
 import {  ApiService } from './api.service'
+import { of } from 'rxjs'
 
 @Injectable({ providedIn: 'root' })
 export class ChatApiService {
@@ -8,7 +9,7 @@ export class ChatApiService {
 
   createChat (contactId: string, type: 'private' | 'group') {
     if (!contactId) {
-      return
+      return of()
     }
 
     return this.apiService.fetchApi<ChatI>(
