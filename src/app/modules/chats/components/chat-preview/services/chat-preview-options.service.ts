@@ -1,7 +1,7 @@
 import { inject, Injectable, signal } from '@angular/core'
-import { NotificationsSilencedEnum } from '../model'
-import { ChatService } from './chat.service'
-import { ChatsRoomService } from './chats-room.service'
+import { ChatI, NotificationsSilencedEnum } from '../../../model'
+import { ChatService } from '../../../services/chat.service'
+import { ChatsRoomService } from '../../../services/chats-room.service'
 
 @Injectable({ providedIn: 'root' })
 export class ChatOptionsService {
@@ -12,11 +12,100 @@ export class ChatOptionsService {
     undefined
   )
 
-  public selectedMuteDuration = signal<NotificationsSilencedEnum | null>(
+  private readonly chatPreviewData = signal<ChatI | null>(null)
+  public chatPreviewOptions: Array<{ id: string, name: string }> = []
+
+
+
+
+  updateChatPreviewData (data: ChatI) {
+    this.chatPreviewData.set(data)
+    this.chatPreviewOptions = [
+      {
+        id: 'isArchived',
+        name: this.chatPreviewData()?.isArchived
+          ? 'Desarchivar chat'
+          : 'Archivar chat'
+      },
+      {
+        id: 'notificationsSilenced',
+        name: ((this.chatPreviewData()?.notificationsSilenced) != null)
+          ? 'Desactivar silencio de notificaciones'
+          : 'Silenciar notificaciones'
+      },
+      {
+        id: 'isPinned',
+        name: this.chatPreviewData()?.isPinned
+          ? 'Desfijar chat'
+          : 'Fijar chat'
+      },
+      {
+        id: 'isRead',
+        name: this.chatPreviewData()?.isRead
+          ? 'Marcar como no leído'
+          : 'Marcar como leído'
+      },
+      {
+        id: 'inFavorites',
+        name: this.chatPreviewData()?.inFavorites
+          ? 'Eliminar de favoritos'
+          : 'Añadir a favoritos'
+      },
+      {
+        id: 'isBlocked',
+        name: this.chatPreviewData()?.isBlocked ? 'Desbloquear' : 'Bloquear'
+      },
+      {
+        id: 'deleteChat',
+        name: 'Eliminar chat'
+      }
+    ]
+  }
+
+  public onClickOptions (id: string, event: MouseEvent, chatId: string) {
+    event.stopPropagation()
+    switch (id) {
+      case 'isArchived':
+        this.onClickArchivedButton(chatId)
+        break
+      case 'deleteChat':
+        this.onClickDeletedButton(chatId)
+        break
+      case 'notificationsSilenced':
+        this.onClickNotificationsSilencedButton(chatId)
+        break
+      case 'isPinned':
+        this.onClickIsPinned(chatId)
+        break
+      case 'isRead':
+        this.onClickIsRead(chatId)
+        break
+      case 'inFavorites':
+        this.onClickInFavorites(chatId)
+        break
+      case 'isBlocked':
+        this.onClickIsBlocked(chatId)
+        break
+      default:
+        break
+    }
+
+  }
+
+  public setShowChatOptions = (id?: string) => {
+    this.chatService.chats.update((values) =>
+      values.map((elem) => ({
+        ...elem,
+        showOptions: elem.id === id
+      }))
+    )
+  }
+
+  readonly selectedMuteDuration = signal<NotificationsSilencedEnum | null>(
     NotificationsSilencedEnum.HOUR
   )
 
-  public onClickArchivedButton (id: string) {
+  private onClickArchivedButton (id: string) {
     const prevChats = this.chatService.chats()
     const isChatArchived = prevChats.find(
       (chat) => chat.id === id
@@ -35,7 +124,7 @@ export class ChatOptionsService {
     })
   }
 
-  public async onClickDeletedButton (id: string) {
+  private async onClickDeletedButton (id: string) {
     const newChats = this.chatService
       .chats()
       .filter((chat) => chat.id !== id)
@@ -44,16 +133,9 @@ export class ChatOptionsService {
     this.chatService.deleteChat(id, newChats)
   }
 
-  public setShowChatOptions = (id?: string) => {
-    this.chatService.chats.update((values) =>
-      values.map((elem) => ({
-        ...elem,
-        showOptions: elem.id === id
-      }))
-    )
-  }
 
-  public onClickNotificationsSilencedButton (id: string) {
+
+  private onClickNotificationsSilencedButton (id: string) {
     this.currentIdNotificationsSilencedButton.set(id)
 
     if (
@@ -70,7 +152,7 @@ export class ChatOptionsService {
     }))
   }
 
-  public onSubmitNotificationsSilencedButton (id: string) {
+  onSubmitNotificationsSilencedButton (id: string) {
     const newChats = this.chatService.chats().map((chat) => {
       if (chat.id !== this.currentIdNotificationsSilencedButton()) return chat
       return { ...chat, notificationsSilenced: this.selectedMuteDuration() }
@@ -81,7 +163,7 @@ export class ChatOptionsService {
     })
   }
 
-  public onClickIsPinned (id: string) {
+  private onClickIsPinned (id: string) {
     const prevChats = this.chatService.chats()
     const isChatPinned = prevChats.find(
       (chat) => chat.id === id
@@ -101,7 +183,7 @@ export class ChatOptionsService {
     )
   }
 
-  public async onClickIsRead (id: string) {
+  async onClickIsRead (id: string) {
     const prevChats = this.chatService.chats()
     const isChatRead = prevChats.find((chat) => chat.id === id)?.isRead
     const newChats = prevChats.map((chat) => {
@@ -117,7 +199,7 @@ export class ChatOptionsService {
     })
   }
 
-  public async onClickIsBlocked (id: string) {
+  private async onClickIsBlocked (id: string) {
     const prevChats = this.chatService.chats()
     const isChatBlocked = prevChats.find(
       (chat) => chat.id === id
@@ -135,7 +217,7 @@ export class ChatOptionsService {
     })
   }
 
-  public onClickInFavorites (id: string) {
+  private onClickInFavorites (id: string) {
     const prevChats = this.chatService.chats()
 
     const isChatInFavorites = prevChats.find(

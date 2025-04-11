@@ -7,7 +7,7 @@ import {
   signal
 } from '@angular/core'
 import { type ChatI } from '../../model'
-import { ChatOptionsService } from '../../services/chat-options.service'
+import { ChatOptionsService } from './services/chat-preview-options.service'
 import { UtilsService } from '../../../../core/services/utils.service'
 import { UserService } from '../../../user/services/user.service'
 import { ChatRoomMessageI } from '../../model/chat-room-messages.interface'
