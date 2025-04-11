@@ -50,7 +50,6 @@ export class ChatPreviewComponent implements OnChanges {
 
   ngOnChanges (): void {
     this.updateMessagesData()
-    // this._chatPreviewData!.isRead = this.messagesData().lastTwentyMessage?.some(message => message.isRead) ?? false
   }
 
 

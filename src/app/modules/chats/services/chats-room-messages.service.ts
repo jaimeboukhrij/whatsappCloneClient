@@ -9,15 +9,13 @@ import {
 } from '../model/chat-room-messages.interface'
 import { MessageApiService } from '../../../core/services/api/message-api.service'
 import { ChatI } from '../model'
-import { BehaviorSubject } from 'rxjs'
 
 @Injectable({ providedIn: 'root' })
 export class ChatRoomMessagesService {
   chatRoomMessages: WritableSignal<ChatRoomMessageI[]> = signal([])
   lastTwentyMessages: WritableSignal<ChatRoomMessageI[]> = signal([])
   currentChatRoomData: WritableSignal< ChatI | null> = signal(null)
-  private  readonly areMessageRead = new BehaviorSubject(false)
-  areMessageRead$ = this.areMessageRead.asObservable()
+
 
   constructor (
     private readonly userService: UserService,
@@ -87,7 +85,6 @@ export class ChatRoomMessagesService {
 
   messageIsReadSocket () {
     this.socketStatusService.on('message-is-read-server', ()=>{
-      this.areMessageRead.next(true)
       this.chatRoomMessages.update(prevMess => {
         return prevMess.map(message => ({ ...message, isRead: true }))
       })
