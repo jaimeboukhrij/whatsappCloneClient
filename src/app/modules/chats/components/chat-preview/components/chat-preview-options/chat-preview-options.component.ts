@@ -1,6 +1,6 @@
 import { Component, Input, OnChanges } from '@angular/core'
 import { ChatI } from '../../../../model'
-import { ChatOptionsService } from '../../services/chat-preview-options.service'
+import { ChatPreviewOptionsService } from '../../services/chat-preview-options.service'
 
 @Component({
   selector: 'chat-preview-options',
@@ -15,19 +15,19 @@ export class ChatPreviewOptionsComponent implements OnChanges {
   @Input() chatPreviewData: ChatI | null = null
 
   constructor (
-    private readonly chatOptionsService: ChatOptionsService
+    private readonly chatPreviewOptionsService: ChatPreviewOptionsService
   ) {
   }
 
   ngOnChanges (): void {
-    this.chatOptionsService.updateChatPreviewData(this.chatPreviewData!)
-    this.chatPreviewOptions = this.chatOptionsService.chatPreviewOptions
+    this.chatPreviewOptionsService.updateChatPreviewData(this.chatPreviewData!)
+    this.chatPreviewOptions = this.chatPreviewOptionsService.chatPreviewOptions
 
   }
 
   onClickOptions (id: string, event: MouseEvent) {
     const chatId = this.chatPreviewData?.id
-    this.chatOptionsService.onClickOptions(id, event, chatId ?? '')
+    this.chatPreviewOptionsService.onClickOptions(id, event, chatId ?? '')
   }
 
 

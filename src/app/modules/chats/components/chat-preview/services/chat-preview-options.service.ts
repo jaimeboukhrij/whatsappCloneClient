@@ -4,7 +4,7 @@ import { ChatService } from '../../../services/chat.service'
 import { ChatsRoomService } from '../../../services/chats-room.service'
 
 @Injectable({ providedIn: 'root' })
-export class ChatOptionsService {
+export class ChatPreviewOptionsService {
   private readonly chatService = inject(ChatService)
   private readonly chatRoomService = inject(ChatsRoomService)
 
