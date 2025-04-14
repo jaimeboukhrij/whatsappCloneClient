@@ -18,6 +18,11 @@ export class ChatService {
     show: false
   })
 
+  public showLeaveGroupModal = signal({
+    chatId: '',
+    show: false
+  })
+
   public originalChats: WritableSignal<ChatI[]> = signal([])
   public chats: WritableSignal<ChatI[]> = signal([])
 
@@ -25,7 +30,6 @@ export class ChatService {
     return this.userApiService.getUserChats().pipe(
       map((chats) => this.sortChats(chats)),
       tap((data) => {
-        console.log(data)
         const chatsVisibles = data.filter((chat) => !chat.isArchived)
         if (updateChats) this.chats.set(chatsVisibles)
         this.originalChats.set(data)
@@ -59,7 +63,7 @@ export class ChatService {
     })
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   public updateChat (id: string, newChats: ChatI[], data: Partial<ChatI>) {
     const prevChats = this.chats()
     this.chats.set(newChats)

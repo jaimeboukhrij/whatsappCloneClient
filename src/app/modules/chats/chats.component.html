@@ -59,3 +59,7 @@
 <chat-notifications-silenced-modal
   [chatId]="showSilencedNotificationsModal().chatId"></chat-notifications-silenced-modal>
 }
+
+@if (showLeaveGroupModal().show) {
+<chat-preview-leave-group-modal [chatId]="showLeaveGroupModal().chatId"></chat-preview-leave-group-modal>
+}

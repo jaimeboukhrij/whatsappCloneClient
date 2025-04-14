@@ -58,8 +58,19 @@ export class ChatPreviewOptionsService {
       {
         id: 'deleteChat',
         name: 'Eliminar chat'
+      },
+      {
+        id: 'leaveGroup',
+        name: 'Salir del grupo'
       }
     ]
+
+    if (data.type === 'private') {
+      this.chatPreviewOptions = this.chatPreviewOptions.filter(options => options.id !== 'leaveGroup' )
+      return
+
+    }
+    this.chatPreviewOptions = this.chatPreviewOptions.filter(options => options.id !== 'deleteChat' && options.id !== 'isBlocked')
   }
 
   public onClickOptions (id: string, event: MouseEvent, chatId: string) {
@@ -85,6 +96,9 @@ export class ChatPreviewOptionsService {
         break
       case 'isBlocked':
         this.onClickIsBlocked(chatId)
+        break
+      case 'leaveGroup':
+        this.onClickLeaveGroup(chatId)
         break
       default:
         break
@@ -234,5 +248,12 @@ export class ChatPreviewOptionsService {
     this.chatService.updateChat(id, newChats, {
       inFavorites: !isChatInFavorites
     })
+  }
+
+  private onClickLeaveGroup (chatId: string) {
+    this.chatService.showLeaveGroupModal.update((prev) => ({
+      chatId: chatId ? chatId : prev.chatId,
+      show: !prev.show
+    }))
   }
 }

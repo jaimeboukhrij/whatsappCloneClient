@@ -34,7 +34,6 @@ export class ChatPreviewComponent implements OnChanges {
   ngOnChanges (): void {
     this.chatPreviewService.updateData( this._chatPreviewData)
     this._chatPreviewData = this.chatPreviewService._chatPreviewData
-
   }
 
 

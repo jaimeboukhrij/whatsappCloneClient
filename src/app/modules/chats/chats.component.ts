@@ -10,8 +10,9 @@ import { ChatService } from './services/chat.service'
 export class ChatsComponent implements OnInit {
   private readonly chatFiltersService = inject(ChatFiltersService)
   private readonly chatService = inject(ChatService)
-  public showSilencedNotificationsModal =
-    this.chatService.showSilencedNotificationsModal
+  public showSilencedNotificationsModal = this.chatService.showSilencedNotificationsModal
+  public showLeaveGroupModal = this.chatService.showLeaveGroupModal
+
 
   public chatsPreviewData = this.chatService.chats
   public isChatInputLoading = this.chatFiltersService.isChatInputLoading
