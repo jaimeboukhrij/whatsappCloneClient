@@ -1,10 +1,11 @@
 import { Injectable, signal,  WritableSignal } from '@angular/core'
-import {  ChatRoomApiService } from '../../../core/services/api'
-import {  ChatI } from '../../chats/model'
 
-import {  SocketStatusService } from '../../../core/services/socket/socket-status.service'
-import { BehaviorSubject } from 'rxjs'
-import { ChatService } from './chat.service'
+import { BehaviorSubject, Observable, tap } from 'rxjs'
+import { ChatRoomApiService } from '../../../../../core/services/api'
+import { SocketStatusService } from '../../../../../core/services/socket/socket-status.service'
+import { ChatI } from '../../../model'
+import { ChatService } from '../../../services/chats.service'
+import { UpdateChatRoomDto } from '../interfaces/update-chat-room-dto'
 
 
 @Injectable({ providedIn: 'root' })
@@ -24,6 +25,47 @@ export class ChatsRoomService {
     private readonly chatService: ChatService
   ) {
 
+  }
+
+  public async deleteChatRoom (id: string, newChats: ChatI[]) {
+    const prevChats = this.chatService.chats()
+    this.chatService.chats.set(newChats)
+
+    this.chatRoomApiService.deleteChatRoom(id).subscribe({
+      next: () => {
+        this.chatService.getChats().subscribe()
+      },
+      error: (error) => {
+        this.chatService.chats.set(prevChats)
+        console.log(error)
+      }
+    })
+  }
+
+  findOneChatRoom (chatId: string) {
+    return this.chatRoomApiService.findOneChatRoom(chatId)
+  }
+
+
+  public updateChatRoom (id: string, data: Partial<UpdateChatRoomDto>, newChats?: ChatI[]): Observable<any> {
+
+    const prevChats = this.chatService.chats()
+    if (newChats?.length) this.chatService.chats.set(newChats)
+
+    return this.chatRoomApiService.updateChatRoom(id, data).pipe(
+      tap({
+        next: () => this.chatService.getChats().subscribe(),
+        error: () => { this.chatService.chats.set(prevChats) }
+      })
+    )
+  }
+
+
+
+
+
+  createChatRoom (contactId: string,  type: 'private' | 'group'): Observable<ChatI> {
+    return this.chatRoomApiService.createChatRoom(contactId, type)
   }
 
   changeChatRoomData (id: string | null) {

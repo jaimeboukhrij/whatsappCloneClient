@@ -2,10 +2,11 @@ import { inject, signal } from '@angular/core'
 import { UtilsService } from '../../../../../core/services/utils.service'
 import { UserService } from '../../../../user/services/user.service'
 import { MessagesDataI, ChatI } from '../../../model'
-import { ChatsRoomService } from '../../../services/chats-room.service'
 import { ChatPreviewOptionsService } from './chat-preview-options.service'
 import { ChatRoomMessageI } from '../../../model/chat-room-messages.interface'
-import { ChatService } from '../../../services/chat.service'
+import { ChatService } from '../../../services/chats.service'
+import { ChatsRoomService } from '../../chats-room/services/chats-room.service'
+import { catchError, map, of, switchMap, tap } from 'rxjs'
 
 export class ChatPreviewService {
   private readonly chatPreviewOptionsService = inject(ChatPreviewOptionsService)
@@ -110,13 +111,29 @@ export class ChatPreviewService {
   }
 
   onCancelLeaveGroupModal (chatId: string) {
-    this.chatService.showLeaveGroupModal.update((prev) => ({
+    this.chatService.showLeaveGroupModal.set({
       chatId,
       show: false
-    }))
+    })
   }
 
   leaveGroup (chatId: string) {
+    const currentUserId = this.userService.loginUserData()?.id
+    this.chatsRoomService.findOneChatRoom(chatId)
+      .pipe(
+        map(chatRoom => {
+          const filterUsers = chatRoom.users.filter(user => user.id !== currentUserId).map(user => user.id)
+          return filterUsers
+        }),
+        switchMap(filteredUsers =>this.chatsRoomService.updateChatRoom(chatId, { users: filteredUsers })),
+        tap(() => { this.onCancelLeaveGroupModal(chatId) } ),
+        catchError(error => {
+          console.error('Error al dejar el grupo:', error)
+          return of(null)
+        })
+      )
+      .subscribe()
+
 
   }
 

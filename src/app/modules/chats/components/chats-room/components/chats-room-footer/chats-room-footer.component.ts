@@ -1,6 +1,6 @@
 import { Component, signal } from '@angular/core'
-import { ChatRoomMessagesService } from '../../../../services/chats-room-messages.service'
-import { ChatsRoomService } from '../../../../services/chats-room.service'
+import { ChatRoomMessagesService } from '../../services/chats-room-messages.service'
+import { ChatsRoomService } from '../../services/chats-room.service'
 
 @Component({
   selector: 'chats-room-footer',
@@ -15,6 +15,7 @@ export class ChatsRoomFooterComponent {
     private readonly chatRoomMessagesService: ChatRoomMessagesService,
     private readonly chatsRoomService: ChatsRoomService
   ) {}
+
 
   autoExpand (event: Event): void {
     const textarea = event.target as HTMLTextAreaElement

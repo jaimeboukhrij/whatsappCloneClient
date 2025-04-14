@@ -1,4 +1,3 @@
-import { ChatsRoomService } from './../../chats/services/chats-room.service'
 import { inject, Injectable, signal } from '@angular/core'
 import { StorageService } from '../../../core/services/storage.service'
 import {  ContactInterface } from '../model'
@@ -7,7 +6,8 @@ import { ContactApiService } from '../../../core/services/api'
 import {  IUser } from '../../../shared/interfaces/user.interface'
 import { ChatApiService } from '../../../core/services/api/chat-api.service'
 import { Router } from '@angular/router'
-import { ChatService } from '../../chats/services/chat.service'
+import { ChatService } from '../../chats/services/chats.service'
+import { ChatsRoomService } from '../../chats/components/chats-room/services/chats-room.service'
 
 @Injectable({ providedIn: 'root' })
 export class ContactsService {
@@ -68,7 +68,7 @@ export class ContactsService {
     this.chatsRoomService.getChatRoomByContactUserId(contactId).pipe(
       switchMap((chatRoom) => {
         if (!chatRoom) {
-          return this.chatService.createChat(contactId, type).pipe(
+          return this.chatsRoomService.createChatRoom(contactId, type).pipe(
             switchMap(async (chat) =>
               await this.router.navigate(['/chats']).then(() => chat)
             ),

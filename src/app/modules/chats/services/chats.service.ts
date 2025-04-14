@@ -1,7 +1,7 @@
 import { inject, Injectable, signal,  WritableSignal } from '@angular/core'
 import { ChatI } from '../model'
 import { catchError, map, Observable, of, tap } from 'rxjs'
-import { ChatApiService, ChatRoomApiService, UserApiService } from '../../../core/services/api'
+import {  UserApiService } from '../../../core/services/api'
 
 @Injectable({
   providedIn: 'root'
@@ -9,8 +9,6 @@ import { ChatApiService, ChatRoomApiService, UserApiService } from '../../../cor
 export class ChatService {
 
   private readonly userApiService = inject(UserApiService)
-  private readonly chatApiServie = inject(ChatApiService)
-  private readonly chatRoomApiServie = inject(ChatRoomApiService)
 
   public showArchivedChat = signal(false)
   public showSilencedNotificationsModal = signal({
@@ -48,38 +46,7 @@ export class ChatService {
     )
   }
 
-  public async deleteChat (id: string, newChats: ChatI[]) {
-    const prevChats = this.chats()
-    this.chats.set(newChats)
 
-    this.chatApiServie.deleteChat(id).subscribe({
-      next: () => {
-        this.getChats().subscribe()
-      },
-      error: (error) => {
-        this.chats.set(prevChats)
-        console.log(error)
-      }
-    })
-  }
-
-
-  public updateChat (id: string, newChats: ChatI[], data: Partial<ChatI>) {
-    const prevChats = this.chats()
-    this.chats.set(newChats)
-
-    this.chatRoomApiServie.updateChatRoom(id, data).subscribe({
-      next: () => { this.getChats(false).subscribe() },
-      error: (error) => {
-        this.chats.set(prevChats)
-        console.log(error)
-      }
-    })
-  }
-
-  createChat (contactId: string,  type: 'private' | 'group'): Observable<ChatI> {
-    return this.chatApiServie.createChat(contactId, type)
-  }
 
   getArchivedChats () {
     const archivedChats = this.chats().filter((chat) => chat.isArchived)

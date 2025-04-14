@@ -1,14 +1,14 @@
 import {  ChatsRoomService } from './chats-room.service'
 import { Injectable, signal,  WritableSignal } from '@angular/core'
-import {  SocketStatusService } from '../../../core/services/socket/socket-status.service'
-import {  ChatService } from '../../chats/services/chat.service'
-import {  UserService } from '../../user/services/user.service'
+import {  SocketStatusService } from '../../../../../core/services/socket/socket-status.service'
+import {  ChatService } from '../../../services/chats.service'
+import {  UserService } from '../../../../user/services/user.service'
 import {
   ChatRoomMessageI,
   ChatRoomCreateMessageI
-} from '../model/chat-room-messages.interface'
-import { MessageApiService } from '../../../core/services/api/message-api.service'
-import { ChatI } from '../model'
+} from '../../../model/chat-room-messages.interface'
+import { MessageApiService } from '../../../../../core/services/api/message-api.service'
+import { ChatI } from '../../../model'
 
 @Injectable({ providedIn: 'root' })
 export class ChatRoomMessagesService {

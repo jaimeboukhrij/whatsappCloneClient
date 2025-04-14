@@ -1,7 +1,7 @@
 import { ChatI } from '../../model'
-import { ChatRoomMessagesService } from '../../services/chats-room-messages.service'
-import { ChatsRoomService } from '../../services/chats-room.service'
+import { ChatRoomMessagesService } from './services/chats-room-messages.service'
 import { Component, ElementRef, inject,  OnInit,  ViewChild,  WritableSignal } from '@angular/core'
+import { ChatsRoomService } from './services/chats-room.service'
 
 @Component({
   selector: 'app-chats-room',

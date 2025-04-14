@@ -1,7 +1,7 @@
 import { inject, Injectable, signal } from '@angular/core'
 import { ChatI, NotificationsSilencedEnum } from '../../../model'
-import { ChatService } from '../../../services/chat.service'
-import { ChatsRoomService } from '../../../services/chats-room.service'
+import { ChatService } from '../../../services/chats.service'
+import { ChatsRoomService } from '../../chats-room/services/chats-room.service'
 
 @Injectable({ providedIn: 'root' })
 export class ChatPreviewOptionsService {
@@ -133,9 +133,9 @@ export class ChatPreviewOptionsService {
         this.chatService.showArchivedChat() ? chat.isArchived : !chat.isArchived
       )
 
-    this.chatService.updateChat(id, newChats, {
+    this.chatRoomService.updateChatRoom(id, {
       isArchived: !isChatArchived
-    })
+    }, newChats ).subscribe()
   }
 
   private async onClickDeletedButton (id: string) {
@@ -144,7 +144,7 @@ export class ChatPreviewOptionsService {
       .filter((chat) => chat.id !== id)
 
     this.chatRoomService.changeChatRoomData('')
-    this.chatService.deleteChat(id, newChats)
+    this.chatRoomService.deleteChatRoom(id, newChats)
   }
 
 
@@ -172,9 +172,9 @@ export class ChatPreviewOptionsService {
       return { ...chat, notificationsSilenced: this.selectedMuteDuration() }
     })
 
-    this.chatService.updateChat(id, newChats, {
+    this.chatRoomService.updateChatRoom(id, {
       notificationsSilenced: this.selectedMuteDuration()
-    })
+    }, newChats).subscribe()
   }
 
   private onClickIsPinned (id: string) {
@@ -190,11 +190,11 @@ export class ChatPreviewOptionsService {
       }
     })
     const sortedChats = this.chatService.sortChats(newChats)
-    this.chatService.updateChat(
+    this.chatRoomService.updateChatRoom(
       id,
-      sortedChats,
-      { isPinned: isChatPinned ? null : new Date() }
-    )
+      { isPinned: isChatPinned ? null : new Date() },
+      sortedChats
+    ).subscribe()
   }
 
   async onClickIsRead (id: string) {
@@ -208,9 +208,9 @@ export class ChatPreviewOptionsService {
       }
     })
 
-    this.chatService.updateChat(id, newChats, {
+    this.chatRoomService.updateChatRoom(id, {
       isRead: !isChatRead
-    })
+    }, newChats).subscribe()
   }
 
   private async onClickIsBlocked (id: string) {
@@ -226,9 +226,9 @@ export class ChatPreviewOptionsService {
       }
     })
 
-    this.chatService.updateChat(id, newChats, {
+    this.chatRoomService.updateChatRoom(id, {
       isBlocked: !isChatBlocked
-    })
+    }, newChats).subscribe()
   }
 
   private onClickInFavorites (id: string) {
@@ -245,9 +245,9 @@ export class ChatPreviewOptionsService {
       }
     })
 
-    this.chatService.updateChat(id, newChats, {
+    this.chatRoomService.updateChatRoom(id, {
       inFavorites: !isChatInFavorites
-    })
+    }, newChats).subscribe()
   }
 
   private onClickLeaveGroup (chatId: string) {

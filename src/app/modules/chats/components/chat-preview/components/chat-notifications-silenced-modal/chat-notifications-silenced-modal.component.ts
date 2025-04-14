@@ -1,5 +1,5 @@
 import { Component, inject, Input } from '@angular/core'
-import { ChatService } from '../../../../services/chat.service'
+import { ChatService } from '../../../../services/chats.service'
 import { NotificationsSilencedEnum } from '../../../../model'
 import { ChatPreviewOptionsService } from '../../services/chat-preview-options.service'
 

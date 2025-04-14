@@ -1,7 +1,7 @@
 import { Component, inject,  OnInit, signal } from '@angular/core'
 import { ChatPreviewFiltersEnum } from './model'
-import { ChatFiltersService } from './services/chat-filters.service'
-import { ChatService } from './services/chat.service'
+import { ChatFiltersService } from './services/chats-filters.service'
+import { ChatService } from './services/chats.service'
 
 @Component({
   standalone: false,

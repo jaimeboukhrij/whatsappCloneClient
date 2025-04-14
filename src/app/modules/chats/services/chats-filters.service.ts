@@ -1,7 +1,7 @@
 import { Injectable, signal } from '@angular/core'
 import { ChatPreviewFiltersEnum } from '../model'
 import { debounceTime, Subject } from 'rxjs'
-import {  ChatService } from './chat.service'
+import {  ChatService } from './chats.service'
 
 @Injectable({
   providedIn: 'root'
