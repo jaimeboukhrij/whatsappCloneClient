@@ -8,7 +8,7 @@ import { ContactsPreviewComponent } from './components/contacts-preview/contacts
 import { ContactsRoutingModule } from './contacts-routing.module'
 import { AddNewContactModalComponent } from './components/add-new-contact-modal/add-new-contact-modal.component'
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
-import { GroupsModule } from '../groups/groups.module'
+import { ChatsModule } from '../chats/chats.module'
 
 @NgModule({
   declarations: [
@@ -21,9 +21,9 @@ import { GroupsModule } from '../groups/groups.module'
     CommonModule,
     ContactsRoutingModule,
     SharedModule,
-    GroupsModule,
     ReactiveFormsModule,
-    FormsModule
+    FormsModule,
+    ChatsModule
   ]
 })
 export class ContactsModule {}

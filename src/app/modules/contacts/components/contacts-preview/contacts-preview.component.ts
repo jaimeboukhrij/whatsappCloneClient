@@ -14,6 +14,6 @@ export class ContactsPreviewComponent {
   @Input() public title: string | undefined = undefined
 
   onClickContact () {
-    this.contactsService.createChatRoom(this.contactsData.id, 'private')
+    this.contactsService.createChatRoom(this.contactsData.id)
   }
 }

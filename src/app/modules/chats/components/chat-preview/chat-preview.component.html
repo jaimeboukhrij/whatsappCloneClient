@@ -6,7 +6,8 @@
       @if (this.messagesData().isRead) {
       <h2 class="text-[16px] text-left">{{_chatPreviewData?.name}}</h2>
       <p class="text-[#8696A0] text-[14px] inline-flex gap-1">
-        @if (_chatPreviewData?.type === 'group') {<span>{{messagesData().lastMessageUser}}:
+        @if (_chatPreviewData?.type === 'group' && messagesData().lastMessage)
+        {<span>{{messagesData().lastMessageUser}}:
         </span>{{messagesData().lastMessage}}}
         @else if(messagesData().isUserMessage){
         <span><shared-dbcheck /></span>

@@ -8,6 +8,7 @@ import { ChatApiService } from '../../../core/services/api/chat-api.service'
 import { Router } from '@angular/router'
 import { ChatService } from '../../chats/services/chats.service'
 import { ChatsRoomService } from '../../chats/components/chats-room/services/chats-room.service'
+import { CreateChatRoomDto } from '../../chats/components/chats-room/interfaces'
 
 @Injectable({ providedIn: 'root' })
 export class ContactsService {
@@ -64,11 +65,16 @@ export class ContactsService {
     this.searchQuery$.next(query)
   }
 
-  public createChatRoom (contactId: string, type: 'private' | 'group') {
-    this.chatsRoomService.getChatRoomByContactUserId(contactId).pipe(
+  public createChatRoom (memberId: string) {
+    const data = {
+      membersIds: [memberId],
+      type: 'private'
+    } as CreateChatRoomDto
+
+    this.chatsRoomService.getChatRoomByContactUserId(memberId).pipe(
       switchMap((chatRoom) => {
         if (!chatRoom) {
-          return this.chatsRoomService.createChatRoom(contactId, type).pipe(
+          return this.chatsRoomService.createChatRoom(data).pipe(
             switchMap(async (chat) =>
               await this.router.navigate(['/chats']).then(() => chat)
             ),

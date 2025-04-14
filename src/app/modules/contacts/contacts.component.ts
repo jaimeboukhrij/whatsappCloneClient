@@ -1,7 +1,7 @@
 import { Component, inject,  OnInit,  WritableSignal } from '@angular/core'
 import { ContactsService } from './services/contacts.service'
 import { AddNewcontactService } from './services/add-new-contact.service'
-import { CreateGroupService } from '../groups/services/create-group.service'
+import { CreateGroupService } from '../chats/components/chats-room/components/chat-groups/services/create-group.service'
 
 @Component({
   standalone: false,

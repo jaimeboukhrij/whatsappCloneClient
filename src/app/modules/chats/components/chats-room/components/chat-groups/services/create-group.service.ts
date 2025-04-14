@@ -1,10 +1,12 @@
+import { ChatsRoomService } from './../../../services/chats-room.service'
 import { Injectable, signal,  WritableSignal } from '@angular/core'
-import {  GroupApiService } from '../../../core/services/api'
 import {  Router } from '@angular/router'
 import { debounceTime, Subject } from 'rxjs'
-import {  ContactsService } from '../../contacts/services'
-import {  IUser } from '../../../shared/interfaces/user.interface'
+import {  ContactsService } from '../../../../../../contacts/services'
+import {  IUser } from '../../../../../../../shared/interfaces/user.interface'
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms'
+import { CreateChatRoomDto } from '../../../interfaces'
+import { CloudinaryService } from '../../../../../../../core/services/api/cloudinary-api.service'
 
 @Injectable({ providedIn: 'root' })
 export class CreateGroupService {
@@ -25,10 +27,11 @@ export class CreateGroupService {
 
 
   constructor (
-    private readonly groupsApiService: GroupApiService,
     private readonly router: Router,
     private readonly contactService: ContactsService,
-    private readonly fb: FormBuilder
+    private readonly chatsRoomService: ChatsRoomService,
+    private readonly fb: FormBuilder,
+    private readonly cloudinaryService: CloudinaryService
   ) {
     this.searchQuery$.pipe(debounceTime(300)).subscribe((query) => {
       if (!query) {
@@ -66,9 +69,8 @@ export class CreateGroupService {
     this.isDataInputLoading.set(false)
   }
 
-  createGroup (data: FormData) {
-    this.isDataLoading.set(true)
-    this.groupsApiService.createGroup(data).subscribe({
+  createGroup (createChatRoomDto: CreateChatRoomDto) {
+    this.chatsRoomService.createChatRoom(createChatRoomDto).subscribe({
       next: () => {
         this.router.navigate(['/chats'])
       },
@@ -137,19 +139,33 @@ export class CreateGroupService {
   }
 
   onSubmit () {
+    this.isDataLoading.set(true)
     const membersFormArray = this.createGroupForm.get(
       'selections'
     ) as FormArray
 
-    const members = membersFormArray.value.map((member: string) => member)
-
-    const formData = new FormData()
-    formData.append('members', JSON.stringify(members))
-    formData.append('name', this.groupName())
 
     if (this.selectedFile()) {
-      formData.append('image', this.selectedFile()!)
+      this.cloudinaryService.uploadImg(this.selectedFile()!).subscribe({
+        next: ({ url }) => {
+          const members = membersFormArray.value.map((member: string) => member)
+          console.log(url)
+
+          this.createGroup({
+            name: this.groupName(),
+            membersIds: members,
+            type: 'group',
+            urlImg: url
+          })
+        },
+        error: (err) => { console.log('error', err) }
+      })
     }
-    this.createGroup(formData)
+
+
+
+
+
+    // this.createGroup(formData)
   }
 }

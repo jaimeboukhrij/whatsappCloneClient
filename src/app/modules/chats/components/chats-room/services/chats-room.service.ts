@@ -6,6 +6,7 @@ import { SocketStatusService } from '../../../../../core/services/socket/socket-
 import { ChatI } from '../../../model'
 import { ChatService } from '../../../services/chats.service'
 import { UpdateChatRoomDto } from '../interfaces/update-chat-room-dto'
+import { CreateChatRoomDto } from '../interfaces'
 
 
 @Injectable({ providedIn: 'root' })
@@ -64,8 +65,8 @@ export class ChatsRoomService {
 
 
 
-  createChatRoom (contactId: string,  type: 'private' | 'group'): Observable<ChatI> {
-    return this.chatRoomApiService.createChatRoom(contactId, type)
+  createChatRoom (createChatRoomDto: CreateChatRoomDto): Observable<ChatI> {
+    return this.chatRoomApiService.createChatRoom(createChatRoomDto)
   }
 
   changeChatRoomData (id: string | null) {
