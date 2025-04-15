@@ -16,6 +16,8 @@ export class ChatsRoomMessagesComponent implements OnInit {
 
   @Input() messageData: ChatRoomMessageI | null = null
   @Input() typeChatRoom = ''
+  dynamicColor = signal('#06cf9c')
+  isChatRoomGroup = signal(false)
 
   showName = signal(false)
 
@@ -23,6 +25,17 @@ export class ChatsRoomMessagesComponent implements OnInit {
     const messageOwnerId = this.messageData?.owner.id
     const currentUserId = this.userService.loginUserData()?.id
     const type = this.chatsRoomService.currentChatRoomData()?.type
+
     this.showName.set( messageOwnerId !== currentUserId && type === 'group' && this.messageData?.type === 'received')
+    this.addColorToName(messageOwnerId!)
+    this.isChatRoomGroup.set(this.chatsRoomService.currentChatRoomData()?.type === 'group')
+
+
+  }
+
+  private addColorToName (messageOwnerId: string) {
+    const colors = this.chatsRoomService.nameColors()
+    const newColor =  colors?.get(messageOwnerId) ?? '#06cf9c'
+    this.dynamicColor.set(newColor)
   }
 }

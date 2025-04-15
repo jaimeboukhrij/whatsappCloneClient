@@ -10,7 +10,8 @@
         {<span>{{messagesData().lastMessageUser}}:
         </span>{{messagesData().lastMessage}}}
         @else if(messagesData().isUserMessage){
-        <span><shared-dbcheck /></span>
+        <span><shared-dbcheck
+            [iconColor]="this.messagesData().lastTwentyMessage?.at(-1)?.isRead ? '#4fc3f7' : '#8696A0'" /></span>
         {{messagesData().lastMessage}}
         }@else {
         {{messagesData().lastMessage}}

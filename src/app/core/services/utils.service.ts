@@ -18,4 +18,17 @@ export class UtilsService {
     const viewportBottom = window.innerHeight
     return elementBottom > viewportBottom
   }
+
+  public isElementOutOfViewport (event: MouseEvent, offset = 0): boolean {
+    const element = event?.target as HTMLElement
+    if (!element) return false
+
+    const rect = element.getBoundingClientRect()
+
+    return (
+      rect.left + offset > window.innerWidth ||
+      rect.left < 0
+    )
+  }
+
 }

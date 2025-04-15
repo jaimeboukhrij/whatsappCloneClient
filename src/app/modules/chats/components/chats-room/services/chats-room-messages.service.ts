@@ -34,8 +34,9 @@ export class ChatRoomMessagesService {
     if (!currentChatRoomData) return
     const messages = currentChatRoomData?.messages ?? []
     this.chatRoomMessages.set(messages)
-
     this.updateMessagesToRead( messages)
+
+
   }
 
 
@@ -44,7 +45,6 @@ export class ChatRoomMessagesService {
     const isMessageFromOtherUser = messages?.at(-1)?.owner.id !== this.userService.loginUserData()?.id
 
     if (!isMessageFromOtherUser) return
-
     this.socketStatusService.emit('message-is-read-client', messages?.at(-1)?.owner.id)
 
     const updatedMessages = messages.map(message =>  ({ id: message.id, isRead: true }))
@@ -72,7 +72,6 @@ export class ChatRoomMessagesService {
       const currentChatRoomId = this.currentChatRoomData()?.id
       const isCurrentChatRoom = currentChatRoomId === message.chatRoomId
       const isMessageFromOtherUser = message.owner.id !== this.userService.loginUserData()?.id
-      console.log('dentro1')
       if (isCurrentChatRoom) {
         this.chatRoomMessages.update(prev => this.transformMessageData([...prev, message]))
         this.chatsService.getChats().subscribe()
@@ -91,6 +90,9 @@ export class ChatRoomMessagesService {
       this.chatRoomMessages.update(prevMess => {
         return prevMess.map(message => ({ ...message, isRead: true }))
       })
+
+      this.chatsService.getChats().subscribe()
+
     })
   }
 

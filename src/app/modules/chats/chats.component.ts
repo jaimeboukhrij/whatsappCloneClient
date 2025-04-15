@@ -34,7 +34,8 @@ export class ChatsComponent implements OnInit {
     return this.chatService.showArchivedChat()
   }
 
-  onClickButton (id: string) {
+  onClickButton (id?: ChatPreviewFiltersEnum) {
+    if (!id) id = ChatPreviewFiltersEnum.ALL
     this.currenIndexBtnActive.set(id)
     this.chatFiltersService.filterChats(id)
   }

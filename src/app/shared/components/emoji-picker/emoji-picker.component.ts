@@ -8,7 +8,8 @@ import {
   signal,
   inject,
   EventEmitter,
-  Output
+  Output,
+  Input
 } from '@angular/core'
 import 'emoji-picker-element'
 import { UtilsService } from '../../../core/services/utils.service'
@@ -21,13 +22,19 @@ import { UtilsService } from '../../../core/services/utils.service'
 })
 export class EmojiPickerComponent implements AfterViewChecked {
   private readonly utilsService = inject(UtilsService)
+  public showEmojis = signal(false)
 
   @ViewChild('emojiPicker', { static: false }) emojiPickerElement!: ElementRef
-
-  public showEmojis = signal(false)
-  public emojiPickerCordenates = signal({ x: 0, y: 0 })
+  @Input() public emojiPickerData = signal(
+    {
+      width: 0,
+      height: 0,
+      x: 0,
+      y: 0 }
+  )
 
   @Output() public emitEmoji = new EventEmitter<string>()
+  @Output() public openEmojiPicker = new EventEmitter<Event>()
 
   constructor (private readonly cdRef: ChangeDetectorRef) {}
 
@@ -46,11 +53,18 @@ export class EmojiPickerComponent implements AfterViewChecked {
   }
 
   setShowEmoji (event?: Event) {
-    if (event && !this.showEmojis())
-      this.emojiPickerCordenates.set(this.getOptionsPosition(event))
+    if (event) {
+      event.stopPropagation()
+    }
 
-    if (!this.showEmojis()) this.showEmojis.update((prev) => !prev)
+    if (event && !this.showEmojis()) {
+      this.openEmojiPicker.emit(event)
+    }
+
+    this.showEmojis.update((prev) => !prev)
+
   }
+
 
   private getOptionsPosition (event: Event) {
     const coordinates = this.utilsService.getCoordinates(event as MouseEvent)
@@ -63,7 +77,11 @@ export class EmojiPickerComponent implements AfterViewChecked {
       this.emojiPickerElement &&
       !this.emojiPickerElement.nativeElement.contains(event.target as Node)
     ) {
-      this.showEmojis.update((prev) => !prev)
+      if (this.showEmojis()) {
+        this.showEmojis.set(false)
+      }
     }
   }
+
+
 }

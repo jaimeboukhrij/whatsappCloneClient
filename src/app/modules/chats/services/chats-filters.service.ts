@@ -10,6 +10,7 @@ export class ChatFiltersService {
   private readonly searchQuery$ = new Subject<string>()
   public isChatInputLoading = signal(false)
   private readonly currenInputQuery = signal('')
+  private readonly currentIdFilterChat = signal(ChatPreviewFiltersEnum.ALL)
   public buttonFilterText = [
     {
       text: 'Todos',
@@ -30,9 +31,9 @@ export class ChatFiltersService {
   ]
 
   constructor (private readonly chatService: ChatService) {
-    this.filterChats('')
+    this.filterChats(ChatPreviewFiltersEnum.ALL)
     this.searchQuery$.pipe(debounceTime(200)).subscribe(() => {
-      this.filterChats('')
+      this.filterChats(ChatPreviewFiltersEnum.ALL)
       this.isChatInputLoading.set(false)
     })
   }
@@ -43,8 +44,9 @@ export class ChatFiltersService {
     this.searchQuery$.next(q)
   }
 
-  public filterChats = (id: string) => {
-    switch (id) {
+  public filterChats = (id?: ChatPreviewFiltersEnum) => {
+    if (id) this.currentIdFilterChat.set(id)
+    switch (this.currentIdFilterChat()) {
       case ChatPreviewFiltersEnum.ALL:
         this.chatService.resetToOriginalChats()
         break

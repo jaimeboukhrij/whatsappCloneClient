@@ -1,13 +1,18 @@
 emoji-picker {
-  width: 400px;
-  height: 300px;
+  width: inherit;
+  height: inherit;
+  z-index: 99;
+  --background: #212E36;
+  --emoji-size: 2rem;
+  --border-radius: 10px
 }
 
 .emoji-picker-container {
   transform: scale(0);
-  transition: transform 0.3s ease-out;
+  transition: transform 0.2s ease-out;
   opacity: 0;
-  transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+  transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+  z-index: 99;
 }
 
 .emoji-picker-container.show {

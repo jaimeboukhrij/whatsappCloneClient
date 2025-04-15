@@ -28,6 +28,7 @@ export class ChatService {
     return this.userApiService.getUserChats().pipe(
       map((chats) => this.sortChats(chats)),
       tap((data) => {
+        console.log(data)
         const chatsVisibles = data.filter((chat) => !chat.isArchived)
         if (updateChats) this.chats.set(chatsVisibles)
         this.originalChats.set(data)

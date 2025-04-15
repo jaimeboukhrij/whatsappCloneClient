@@ -2,11 +2,13 @@ import { inject, Injectable, signal } from '@angular/core'
 import { ChatI, NotificationsSilencedEnum } from '../../../model'
 import { ChatService } from '../../../services/chats.service'
 import { ChatsRoomService } from '../../chats-room/services/chats-room.service'
+import { ChatFiltersService } from '../../../services/chats-filters.service'
 
 @Injectable({ providedIn: 'root' })
 export class ChatPreviewOptionsService {
   private readonly chatService = inject(ChatService)
   private readonly chatRoomService = inject(ChatsRoomService)
+  private readonly chatFiltersService = inject(ChatFiltersService)
 
   private readonly currentIdNotificationsSilencedButton = signal<undefined | string>(
     undefined
@@ -124,18 +126,24 @@ export class ChatPreviewOptionsService {
     const isChatArchived = prevChats.find(
       (chat) => chat.id === id
     )?.isArchived
-    const newChats = prevChats
-      .map((chat) => {
-        if (chat.id !== id) return chat
-        return { ...chat, isArchived: !chat.isArchived }
-      })
-      .filter((chat) =>
-        this.chatService.showArchivedChat() ? chat.isArchived : !chat.isArchived
-      )
 
-    this.chatRoomService.updateChatRoom(id, {
-      isArchived: !isChatArchived
-    }, newChats ).subscribe()
+
+    const areArchivedChats = prevChats.filter(chat => chat.isArchived).length > 1
+    const showArchivedChats = this.chatService.showArchivedChat()
+
+    console.log(showArchivedChats)
+
+    if (!areArchivedChats && showArchivedChats) {
+      this.chatRoomService.updateChatRoom(id, { isArchived: !isChatArchived }, !showArchivedChats).subscribe()
+      this.chatService.showArchivedChat.set(false)
+      return
+    }
+    this.chatRoomService.updateChatRoom(id, { isArchived: !isChatArchived }, showArchivedChats).subscribe()
+
+    // this.chatFiltersService.filterChats(ChatPreviewFiltersEnum.ALL)
+
+
+
   }
 
   private async onClickDeletedButton (id: string) {
@@ -167,14 +175,9 @@ export class ChatPreviewOptionsService {
   }
 
   onSubmitNotificationsSilencedButton (id: string) {
-    const newChats = this.chatService.chats().map((chat) => {
-      if (chat.id !== this.currentIdNotificationsSilencedButton()) return chat
-      return { ...chat, notificationsSilenced: this.selectedMuteDuration() }
-    })
-
     this.chatRoomService.updateChatRoom(id, {
       notificationsSilenced: this.selectedMuteDuration()
-    }, newChats).subscribe()
+    } ).subscribe()
   }
 
   private onClickIsPinned (id: string) {
@@ -182,35 +185,20 @@ export class ChatPreviewOptionsService {
     const isChatPinned = prevChats.find(
       (chat) => chat.id === id
     )?.isPinned
-    const newChats = this.chatService.chats().map((chat) => {
-      if (chat.id !== id) return chat
-      return {
-        ...chat,
-        isPinned: chat.isPinned ? null : new Date()
-      }
-    })
-    const sortedChats = this.chatService.sortChats(newChats)
+
     this.chatRoomService.updateChatRoom(
       id,
-      { isPinned: isChatPinned ? null : new Date() },
-      sortedChats
+      { isPinned: isChatPinned ? null : new Date() }
     ).subscribe()
   }
 
   async onClickIsRead (id: string) {
     const prevChats = this.chatService.chats()
     const isChatRead = prevChats.find((chat) => chat.id === id)?.isRead
-    const newChats = prevChats.map((chat) => {
-      if (chat.id !== id) return chat
-      return {
-        ...chat,
-        isRead: !chat.isRead
-      }
-    })
 
     this.chatRoomService.updateChatRoom(id, {
       isRead: !isChatRead
-    }, newChats).subscribe()
+    } ).subscribe()
   }
 
   private async onClickIsBlocked (id: string) {
@@ -218,17 +206,11 @@ export class ChatPreviewOptionsService {
     const isChatBlocked = prevChats.find(
       (chat) => chat.id === id
     )?.isBlocked
-    const newChats = prevChats.map((chat) => {
-      if (chat.id !== id) return chat
-      return {
-        ...chat,
-        isBlocked: !chat.isBlocked
-      }
-    })
+
 
     this.chatRoomService.updateChatRoom(id, {
       isBlocked: !isChatBlocked
-    }, newChats).subscribe()
+    } ).subscribe()
   }
 
   private onClickInFavorites (id: string) {
@@ -237,17 +219,10 @@ export class ChatPreviewOptionsService {
     const isChatInFavorites = prevChats.find(
       (chat) => chat.id === id
     )?.inFavorites
-    const newChats = prevChats.map((chat) => {
-      if (chat.id !== id) return chat
-      return {
-        ...chat,
-        inFavorites: !chat.inFavorites
-      }
-    })
 
     this.chatRoomService.updateChatRoom(id, {
       inFavorites: !isChatInFavorites
-    }, newChats).subscribe()
+    } ).subscribe()
   }
 
   private onClickLeaveGroup (chatId: string) {

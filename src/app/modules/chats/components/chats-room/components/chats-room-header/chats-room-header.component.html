@@ -3,7 +3,7 @@
   class="w-full h-[64px] py-[10px] bg-[#202c33] flex justify-between px-4">
   <section class="flex justify-center gap-4">
     <img style="clip-path: circle();" class="w-[49px] h-[49px] clip" [src]="chatRoomData()!.urlImg" alt="">
-    <div class="flex flex-col">
+    <div class="flex flex-col justify-center">
       <h2 class="text-[16px] text-[#e9edef] font-semibold text-left">{{chatRoomData()?.name}}</h2>
       @if (isWriting()) {
       <p class="text-[13px] text-[#8696A0]">escribiendo...</p>

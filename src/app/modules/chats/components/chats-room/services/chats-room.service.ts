@@ -3,10 +3,12 @@ import { Injectable, signal,  WritableSignal } from '@angular/core'
 import { BehaviorSubject, Observable, tap } from 'rxjs'
 import { ChatRoomApiService } from '../../../../../core/services/api'
 import { SocketStatusService } from '../../../../../core/services/socket/socket-status.service'
-import { ChatI } from '../../../model'
+import { ChatI, ChatPreviewFiltersEnum } from '../../../model'
 import { ChatService } from '../../../services/chats.service'
 import { UpdateChatRoomDto } from '../interfaces/update-chat-room-dto'
 import { CreateChatRoomDto } from '../interfaces'
+import { chatRoomGroupNameColors } from '../../../../../core/constants'
+import { ChatFiltersService } from '../../../services/chats-filters.service'
 
 
 @Injectable({ providedIn: 'root' })
@@ -19,11 +21,14 @@ export class ChatsRoomService {
   writingUsers$ = this.writingUsersSubject.asObservable()
   private  writingTimeout: ReturnType<typeof setTimeout> | null = null
   public isLoading = signal(false)
+  public nameColors = signal<Map<string, string> | null>(null)
 
   constructor (
     private readonly chatRoomApiService: ChatRoomApiService,
     private readonly socketStatusService: SocketStatusService,
-    private readonly chatService: ChatService
+    private readonly chatService: ChatService,
+    private readonly chatFiltersService: ChatFiltersService
+
   ) {
 
   }
@@ -48,14 +53,19 @@ export class ChatsRoomService {
   }
 
 
-  public updateChatRoom (id: string, data: Partial<UpdateChatRoomDto>, newChats?: ChatI[]): Observable<any> {
+  public updateChatRoom (id: string, data: Partial<UpdateChatRoomDto>, showArchivedChats: boolean = false): Observable<any> {
 
     const prevChats = this.chatService.chats()
-    // if (newChats?.length) this.chatService.chats.set(newChats)
-
     return this.chatRoomApiService.updateChatRoom(id, data).pipe(
       tap({
-        next: () => this.chatService.getChats().subscribe(),
+        next: () => {
+          this.chatService.getChats().subscribe({
+            next: () => {
+              if (showArchivedChats) this.chatFiltersService.filterChats(ChatPreviewFiltersEnum.ARCHIVED)
+              this.chatFiltersService.filterChats()
+            }
+          })
+        },
         error: () => { this.chatService.chats.set(prevChats) }
       })
     )
@@ -83,13 +93,24 @@ export class ChatsRoomService {
     const id = this.currentChatRoomId()
     const chats = this.chatService.chats()
     const foundChat = chats.find(chat => chat.id === id)
-    if (foundChat) this.currentChatRoomData.set(foundChat)
+
+    if (foundChat) {
+      this.addColorToNamesInGroups(foundChat)
+      this.currentChatRoomData.set(foundChat)
+    }
     setTimeout(() => {
       this.isLoading.set(false)
     }, 1)
   }
 
-
+  private addColorToNamesInGroups (foundChat: ChatI) {
+    const colors = chatRoomGroupNameColors
+    const map = new Map()
+    foundChat?.users.forEach((user, index) => {
+      map.set(user.id, colors[index])
+    })
+    this.nameColors.set(map)
+  }
 
   handleUserIswriting () {
     this.socketStatusService.emit('writing-from-client', true)

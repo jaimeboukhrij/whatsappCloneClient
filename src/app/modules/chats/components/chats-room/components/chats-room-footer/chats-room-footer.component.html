@@ -7,7 +7,8 @@
       <shared-expressions-icon />
     </button> -->
     <button class="flex-1">
-      <shared-emoji-picker />
+      <shared-emoji-picker (openEmojiPicker)="openEmojiPicker($event)" [emojiPickerData]="pickerEmojyData"
+        (emitEmoji)="onEmojiChange($event)" />
     </button>
     <textarea (keydown.enter)="onSubmit($event)" placeholder="Escribe un mensaje" [value]="textAreaValue()"
       (input)="onInputChange($event)" class="auto-expand">
