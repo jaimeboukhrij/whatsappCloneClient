@@ -55,11 +55,13 @@ export class ChatRoomMessagesService {
   }
 
   createMessage (text: string) {
+    if (!text) return
     const message: ChatRoomCreateMessageI = {
       text,
       ownerId: this.userService.loginUserData()?.id ?? '',
       chatRoomId: this.chatsRoomService.currentChatRoomId()
     }
+
     this.socketStatusService.emit('message-from-client', message)
   }
 
@@ -70,14 +72,15 @@ export class ChatRoomMessagesService {
       const currentChatRoomId = this.currentChatRoomData()?.id
       const isCurrentChatRoom = currentChatRoomId === message.chatRoomId
       const isMessageFromOtherUser = message.owner.id !== this.userService.loginUserData()?.id
-
+      console.log('dentro1')
       if (isCurrentChatRoom) {
         this.chatRoomMessages.update(prev => this.transformMessageData([...prev, message]))
-
+        this.chatsService.getChats().subscribe()
         if (isMessageFromOtherUser) {
           this.updateMessagesToRead([message])
         }
       } else {
+
         this.chatsService.getChats().subscribe()
       }
     })

@@ -149,7 +149,6 @@ export class CreateGroupService {
       this.cloudinaryService.uploadImg(this.selectedFile()!).subscribe({
         next: ({ url }) => {
           const members = membersFormArray.value.map((member: string) => member)
-          console.log(url)
 
           this.createGroup({
             name: this.groupName(),

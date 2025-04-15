@@ -2,6 +2,7 @@ import { Component, inject,  OnInit, signal } from '@angular/core'
 import { ChatPreviewFiltersEnum } from './model'
 import { ChatFiltersService } from './services/chats-filters.service'
 import { ChatService } from './services/chats.service'
+import { ChatsRoomService } from './components/chats-room/services/chats-room.service'
 
 @Component({
   standalone: false,
@@ -10,6 +11,7 @@ import { ChatService } from './services/chats.service'
 export class ChatsComponent implements OnInit {
   private readonly chatFiltersService = inject(ChatFiltersService)
   private readonly chatService = inject(ChatService)
+  private readonly chatsRoomService = inject(ChatsRoomService)
   public showSilencedNotificationsModal = this.chatService.showSilencedNotificationsModal
   public showLeaveGroupModal = this.chatService.showLeaveGroupModal
 
@@ -25,6 +27,7 @@ export class ChatsComponent implements OnInit {
 
   ngOnInit (): void {
     this.chatService.getChats().subscribe()
+    // this.chatsRoomService.changeChatRoomData(null)
   }
 
   get showArchivedChat () {

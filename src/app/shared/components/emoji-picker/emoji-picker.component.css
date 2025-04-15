@@ -1,16 +1,16 @@
-/* Agrega estas clases en tu archivo CSS */
+emoji-picker {
+  width: 400px;
+  height: 300px;
+}
+
 .emoji-picker-container {
   transform: scale(0);
-  /* Inicia pequeño */
   transition: transform 0.3s ease-out;
-  /* Transición suave */
   opacity: 0;
   transition: opacity 0.3s ease-out, transform 0.3s ease-out;
 }
 
 .emoji-picker-container.show {
   transform: scale(1);
-  /* Escala al tamaño normal */
   opacity: 1;
-  /* Desaparece el 0 de opacidad */
 }

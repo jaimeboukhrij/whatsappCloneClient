@@ -51,7 +51,7 @@ export class ChatsRoomService {
   public updateChatRoom (id: string, data: Partial<UpdateChatRoomDto>, newChats?: ChatI[]): Observable<any> {
 
     const prevChats = this.chatService.chats()
-    if (newChats?.length) this.chatService.chats.set(newChats)
+    // if (newChats?.length) this.chatService.chats.set(newChats)
 
     return this.chatRoomApiService.updateChatRoom(id, data).pipe(
       tap({

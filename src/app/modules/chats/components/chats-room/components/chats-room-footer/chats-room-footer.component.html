@@ -3,8 +3,11 @@
     <shared-plus-icon />
   </button>
   <section class="flex-1 bg-[#2a3942] min-h-[44px] my-[5px] mx-[8px] px-4 rounded-md flex items-center gap-4 h-auto">
-    <button>
+    <!-- <button>
       <shared-expressions-icon />
+    </button> -->
+    <button class="flex-1">
+      <shared-emoji-picker />
     </button>
     <textarea (keydown.enter)="onSubmit($event)" placeholder="Escribe un mensaje" [value]="textAreaValue()"
       (input)="onInputChange($event)" class="auto-expand">
