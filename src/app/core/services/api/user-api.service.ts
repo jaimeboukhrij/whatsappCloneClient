@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core'
 import {  ApiService } from './api.service'
 import {  IUser } from '../../../shared/interfaces/user.interface'
 import {  ChatI } from '../../../modules/chats/model'
+import { UpdateUserDtoI } from '../../../modules/user/interfaces/update-user.dto'
 
 @Injectable({ providedIn: 'root' })
 export class UserApiService {
@@ -22,6 +23,10 @@ export class UserApiService {
     return this.apiService.fetchApi<IUser[]>(
       `/users/search-by-username?prefix=${query}`
     )
+  }
+
+  updateApiUser (userId: string, updateUser: Partial<UpdateUserDtoI>) {
+    return this.apiService.fetchApi<IUser>(`/users/${userId}`, updateUser, 'PATCH')
   }
 
   getUserChats () {

@@ -10,7 +10,7 @@ export class ChatFiltersService {
   private readonly searchQuery$ = new Subject<string>()
   public isChatInputLoading = signal(false)
   private readonly currenInputQuery = signal('')
-  private readonly currentIdFilterChat = signal(ChatPreviewFiltersEnum.ALL)
+  readonly currentIdFilterChat = signal(ChatPreviewFiltersEnum.ALL)
   public buttonFilterText = [
     {
       text: 'Todos',

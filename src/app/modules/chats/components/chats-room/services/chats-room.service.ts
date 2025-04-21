@@ -1,6 +1,6 @@
 import { Injectable, signal,  WritableSignal } from '@angular/core'
 
-import { BehaviorSubject, Observable, tap } from 'rxjs'
+import { BehaviorSubject, catchError, Observable, of, switchMap, tap } from 'rxjs'
 import { ChatRoomApiService } from '../../../../../core/services/api'
 import { SocketStatusService } from '../../../../../core/services/socket/socket-status.service'
 import { ChatI, ChatPreviewFiltersEnum } from '../../../model'
@@ -53,22 +53,20 @@ export class ChatsRoomService {
   }
 
 
-  public updateChatRoom (id: string, data: Partial<UpdateChatRoomDto>, showArchivedChats: boolean = false): Observable<any> {
+  public updateChatRoom (id: string, data: Partial<UpdateChatRoomDto>, filter: ChatPreviewFiltersEnum = ChatPreviewFiltersEnum.ALL): Observable<any> {
 
     const prevChats = this.chatService.chats()
     return this.chatRoomApiService.updateChatRoom(id, data).pipe(
-      tap({
-        next: () => {
-          this.chatService.getChats().subscribe({
-            next: () => {
-              if (showArchivedChats) this.chatFiltersService.filterChats(ChatPreviewFiltersEnum.ARCHIVED)
-              this.chatFiltersService.filterChats()
-            }
-          })
-        },
-        error: () => { this.chatService.chats.set(prevChats) }
+      switchMap(() => this.chatService.getChats()),
+      tap(() => {
+        this.chatFiltersService.filterChats(filter)
+      }),
+      catchError(() =>  {
+        this.chatService.chats.set(prevChats)
+        return of([])
       })
     )
+
   }
 
 

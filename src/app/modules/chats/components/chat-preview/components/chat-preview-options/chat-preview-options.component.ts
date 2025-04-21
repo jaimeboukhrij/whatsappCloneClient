@@ -25,9 +25,9 @@ export class ChatPreviewOptionsComponent implements OnChanges {
 
   }
 
-  onClickOptions (id: string, event: MouseEvent) {
+  async onClickOptions (id: string, event: MouseEvent) {
     const chatId = this.chatPreviewData?.id
-    this.chatPreviewOptionsService.onClickOptions(id, event, chatId ?? '')
+    await this.chatPreviewOptionsService.onClickOptions(id, event, chatId ?? '')
   }
 
 

@@ -28,7 +28,8 @@ export class AuthService {
       .pipe(tap((user) => { this.storageService.setItem('jwtToken', user.token) }))
       .subscribe({
         next: (data) => {
-          this.userService.fetchCurrentUserData(data.id)
+          console.log('joderr')
+          this.userService.fetchCurrentUserData(data.id).subscribe()
           this.router.navigate(['chats'])
         },
         error (err) {
@@ -44,7 +45,7 @@ export class AuthService {
 
     try {
       const decodedToken: { id: string } = jwtDecode(jwtToken)
-      this.userService.fetchCurrentUserData(decodedToken.id)
+      this.userService.fetchCurrentUserData(decodedToken.id).subscribe()
       this.socketStatusService.connect(jwtToken)
 
       return true

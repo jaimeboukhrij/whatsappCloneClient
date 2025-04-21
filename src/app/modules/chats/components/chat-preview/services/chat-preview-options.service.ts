@@ -1,14 +1,19 @@
 import { inject, Injectable, signal } from '@angular/core'
-import { ChatI, NotificationsSilencedEnum } from '../../../model'
+import { ChatI, ChatPreviewFiltersEnum, NotificationsSilencedEnum } from '../../../model'
 import { ChatService } from '../../../services/chats.service'
 import { ChatsRoomService } from '../../chats-room/services/chats-room.service'
 import { ChatFiltersService } from '../../../services/chats-filters.service'
+import { ChatRoomMessagesService } from '../../chats-room/services/chats-room-messages.service'
+import { UserService } from '../../../../user/services/user.service'
+import { switchMap, tap } from 'rxjs'
 
 @Injectable({ providedIn: 'root' })
 export class ChatPreviewOptionsService {
   private readonly chatService = inject(ChatService)
   private readonly chatRoomService = inject(ChatsRoomService)
   private readonly chatFiltersService = inject(ChatFiltersService)
+  private readonly chatRoomMessagesService = inject(ChatRoomMessagesService)
+  private readonly userService = inject(UserService)
 
   private readonly currentIdNotificationsSilencedButton = signal<undefined | string>(
     undefined
@@ -67,19 +72,23 @@ export class ChatPreviewOptionsService {
       }
     ]
 
+    if (data.isUserLastMessage ) {
+      this.chatPreviewOptions = this.chatPreviewOptions.filter(options => options.id !== 'isRead')
+    }
     if (data.type === 'private') {
       this.chatPreviewOptions = this.chatPreviewOptions.filter(options => options.id !== 'leaveGroup' )
       return
-
     }
+
     this.chatPreviewOptions = this.chatPreviewOptions.filter(options => options.id !== 'deleteChat' && options.id !== 'isBlocked')
   }
 
-  public onClickOptions (id: string, event: MouseEvent, chatId: string) {
+  public async onClickOptions (id: string, event: MouseEvent, chatId: string) {
+
     event.stopPropagation()
     switch (id) {
       case 'isArchived':
-        this.onClickArchivedButton(chatId)
+        await this.onClickArchivedButton(chatId)
         break
       case 'deleteChat':
         this.onClickDeletedButton(chatId)
@@ -94,7 +103,7 @@ export class ChatPreviewOptionsService {
         this.onClickIsRead(chatId)
         break
       case 'inFavorites':
-        this.onClickInFavorites(chatId)
+        await this.onClickInFavorites(chatId)
         break
       case 'isBlocked':
         this.onClickIsBlocked(chatId)
@@ -121,30 +130,7 @@ export class ChatPreviewOptionsService {
     NotificationsSilencedEnum.HOUR
   )
 
-  private onClickArchivedButton (id: string) {
-    const prevChats = this.chatService.chats()
-    const isChatArchived = prevChats.find(
-      (chat) => chat.id === id
-    )?.isArchived
 
-
-    const areArchivedChats = prevChats.filter(chat => chat.isArchived).length > 1
-    const showArchivedChats = this.chatService.showArchivedChat()
-
-    console.log(showArchivedChats)
-
-    if (!areArchivedChats && showArchivedChats) {
-      this.chatRoomService.updateChatRoom(id, { isArchived: !isChatArchived }, !showArchivedChats).subscribe()
-      this.chatService.showArchivedChat.set(false)
-      return
-    }
-    this.chatRoomService.updateChatRoom(id, { isArchived: !isChatArchived }, showArchivedChats).subscribe()
-
-    // this.chatFiltersService.filterChats(ChatPreviewFiltersEnum.ALL)
-
-
-
-  }
 
   private async onClickDeletedButton (id: string) {
     const newChats = this.chatService
@@ -157,49 +143,24 @@ export class ChatPreviewOptionsService {
 
 
 
-  private onClickNotificationsSilencedButton (id: string) {
-    this.currentIdNotificationsSilencedButton.set(id)
-
-    if (
-      (this.chatService.chats().find((elem) => elem.id === id)
-        ?.notificationsSilenced) != null
-    ) {
+  private onClickNotificationsSilencedButton (chatRoomId: string) {
+    this.currentIdNotificationsSilencedButton.set(chatRoomId)
+    const hasChatRoomNotificationsSilenced = this.chatService.chats().find((elem) => elem.id === chatRoomId)?.notificationsSilenced
+    if (hasChatRoomNotificationsSilenced) {
       this.selectedMuteDuration.set(null)
-      this.onSubmitNotificationsSilencedButton(id)
+      this.onSubmitNotificationsSilencedButton(chatRoomId)
       return
     }
+
     this.chatService.showSilencedNotificationsModal.update((prev) => ({
-      chatId: id ? id : prev.chatId,
+      chatId: chatRoomId ? chatRoomId : prev.chatId,
       show: !prev.show
     }))
   }
 
-  onSubmitNotificationsSilencedButton (id: string) {
-    this.chatRoomService.updateChatRoom(id, {
-      notificationsSilenced: this.selectedMuteDuration()
-    } ).subscribe()
-  }
 
-  private onClickIsPinned (id: string) {
-    const prevChats = this.chatService.chats()
-    const isChatPinned = prevChats.find(
-      (chat) => chat.id === id
-    )?.isPinned
 
-    this.chatRoomService.updateChatRoom(
-      id,
-      { isPinned: isChatPinned ? null : new Date() }
-    ).subscribe()
-  }
 
-  async onClickIsRead (id: string) {
-    const prevChats = this.chatService.chats()
-    const isChatRead = prevChats.find((chat) => chat.id === id)?.isRead
-
-    this.chatRoomService.updateChatRoom(id, {
-      isRead: !isChatRead
-    } ).subscribe()
-  }
 
   private async onClickIsBlocked (id: string) {
     const prevChats = this.chatService.chats()
@@ -213,17 +174,177 @@ export class ChatPreviewOptionsService {
     } ).subscribe()
   }
 
-  private onClickInFavorites (id: string) {
-    const prevChats = this.chatService.chats()
 
-    const isChatInFavorites = prevChats.find(
-      (chat) => chat.id === id
-    )?.inFavorites
 
-    this.chatRoomService.updateChatRoom(id, {
-      inFavorites: !isChatInFavorites
-    } ).subscribe()
+
+  async onClickIsRead (id: string) {
+    const currentChat = this.chatService.chats().find(chat => chat.id === id)
+    const messages = currentChat?.messages ?? []
+
+    if (messages.some(message => !message.isRead)) {
+      this.chatRoomMessagesService.updateMessagesToRead(messages)
+      return
+    }
+
+    const currentUser = await this.userService.getUpdatedLoginUserData()
+    const currentUserId =  currentUser?.id
+    const messagesReverse = [...messages].reverse()
+    const firstUnreadIndex = messagesReverse.findIndex(m => m.owner.id === currentUserId)
+    const continuouslyReadMessages = messagesReverse.slice(0, firstUnreadIndex === -1 ? messages.length : firstUnreadIndex)
+    const continuouslyReadMessagesUpdated = continuouslyReadMessages.map(messages => ({ ...messages, isRead: false }))
+
+    this.chatRoomMessagesService.updateManyMessages(continuouslyReadMessagesUpdated).subscribe()
+
+
+
+
+
   }
+
+
+  async onSubmitNotificationsSilencedButton (chatRoomId: string) {
+    this.chatService.originalChats.update(prevChats => {
+      return prevChats.map(chat =>
+        chat.id === chatRoomId
+          ? { ...chat, notificationsSilenced: this.selectedMuteDuration() ? this.selectedMuteDuration() : null }
+          : chat
+      )
+    })
+    this.chatFiltersService.filterChats(ChatPreviewFiltersEnum.ALL)
+
+    const currentUser = await this.userService.getUpdatedLoginUserData()
+    if (!currentUser?.id || !currentUser.chatsRoomArchived) return
+
+    const notificationsSilencedChats =  currentUser.chatsRoomNotificationsSilenced
+    const isSilenced = notificationsSilencedChats?.some(fav => fav.chatRoomId === chatRoomId)
+
+
+    const notificationsSilencedChatsUpdated =  isSilenced
+      ? notificationsSilencedChats.filter(fav => fav.chatRoomId !== chatRoomId)
+      : [...notificationsSilencedChats, { chatRoomId, value: this.selectedMuteDuration()! }]
+
+
+    this.userService.updateUser(currentUser.id, { chatsRoomNotificationsSilenced: notificationsSilencedChatsUpdated })
+      .pipe(
+        switchMap(() => this.chatService.getChats()),
+        tap(() => { this.chatFiltersService.filterChats(ChatPreviewFiltersEnum.ALL) })
+      )
+      .subscribe()
+  }
+
+
+  private async onClickIsPinned (chatRoomId: string) {
+    this.chatService.originalChats.update(prevChats => {
+      return prevChats.map(chat =>
+        chat.id === chatRoomId
+          ? { ...chat, isPinned: chat.isPinned ? null : new Date() }
+          : chat
+      )
+    })
+    this.chatFiltersService.filterChats(ChatPreviewFiltersEnum.ALL)
+
+    const currentUser = await this.userService.getUpdatedLoginUserData()
+    if (!currentUser?.id || !currentUser.chatsRoomArchived) return
+
+    const pinnedChats =  currentUser.chatsRoomPinned
+    const isPinned = pinnedChats?.some(fav => fav.chatRoomId === chatRoomId)
+
+
+    const updatedPinned =  isPinned
+      ? pinnedChats.filter(fav => fav.chatRoomId !== chatRoomId)
+      : [...pinnedChats, { chatRoomId, value: new Date() }]
+
+
+    this.userService.updateUser(currentUser.id, { chatsRoomPinned: updatedPinned })
+      .pipe(
+        switchMap(() => this.chatService.getChats()),
+        tap(() => { this.chatFiltersService.filterChats(ChatPreviewFiltersEnum.ALL) })
+      )
+      .subscribe()
+
+  }
+
+
+  private async onClickArchivedButton (chatRoomId: string) {
+    const showArchivedChats = this.chatService.showArchivedChat()
+    let filterToApply = !showArchivedChats ? ChatPreviewFiltersEnum.ALL : ChatPreviewFiltersEnum.ARCHIVED
+
+    this.optimisticallyToggleProperty(chatRoomId, 'isArchived')
+    const areArchivedChats = this.chatService.originalChats().some(chat => chat.isArchived)
+
+    if (showArchivedChats && !areArchivedChats) {
+      this.chatService.showArchivedChat.set(false)
+      filterToApply = ChatPreviewFiltersEnum.ALL
+    }
+
+    this.chatFiltersService.filterChats(filterToApply)
+
+
+    const currentUser = await this.userService.getUpdatedLoginUserData()
+    if (!currentUser?.id || !currentUser.chatsRoomArchived) return
+
+    const updatedArchived = this.getUpdatedList(currentUser.chatsRoomArchived, chatRoomId)
+
+    this.userService.updateUser(currentUser.id, { chatsRoomArchived: updatedArchived })
+      .pipe(
+        switchMap(() => this.chatService.getChats()),
+        tap(() => { this.chatFiltersService.filterChats(filterToApply) })
+      )
+      .subscribe()
+  }
+
+  private async onClickInFavorites (chatRoomId: string) {
+    const showFavoritesChats = this.chatFiltersService.currentIdFilterChat() === ChatPreviewFiltersEnum.FAVORITE
+    const filterToApply = !showFavoritesChats ? ChatPreviewFiltersEnum.ALL : ChatPreviewFiltersEnum.FAVORITE
+
+    this.optimisticallyToggleProperty(chatRoomId, 'inFavorites')
+    this.chatFiltersService.filterChats(filterToApply)
+
+    const currentUser = await this.userService.getUpdatedLoginUserData()
+    if (!currentUser?.id || !currentUser.chatsRoomFavorites) return
+
+    const updatedFavorites = this.getUpdatedList(currentUser.chatsRoomFavorites, chatRoomId)
+
+    this.userService.updateUser(currentUser.id, { chatsRoomFavorites: updatedFavorites })
+      .pipe(
+        switchMap(() => this.chatService.getChats()),
+        tap(() => { this.chatFiltersService.filterChats(filterToApply) })
+      )
+      .subscribe()
+
+  }
+
+  private optimisticallyToggleProperty<T extends keyof ChatI>(
+    chatRoomId: string,
+    property: T
+  ) {
+    this.chatService.originalChats.update(prevChats =>
+      prevChats.map(chat => {
+        if (chat.id !== chatRoomId) return chat
+
+        const currentValue = chat[property]
+        if (typeof currentValue === 'boolean') {
+          return { ...chat, [property]: !currentValue }
+        }
+
+        return chat
+      })
+    )
+  }
+
+
+
+  private getUpdatedList<T extends { chatRoomId: string, value: boolean }>(
+    list: T[],
+    chatRoomId: string
+  ): T[] {
+    const exists = list.some(item => item.chatRoomId === chatRoomId)
+
+    return exists
+      ? list.filter(item => item.chatRoomId !== chatRoomId)
+      : [...list, { chatRoomId, value: true } as T]
+  }
+
 
   private onClickLeaveGroup (chatId: string) {
     this.chatService.showLeaveGroupModal.update((prev) => ({

@@ -9,6 +9,7 @@ import {
 } from '../../../model/chat-room-messages.interface'
 import { MessageApiService } from '../../../../../core/services/api/message-api.service'
 import { ChatI } from '../../../model'
+import { catchError, of, switchMap } from 'rxjs'
 
 @Injectable({ providedIn: 'root' })
 export class ChatRoomMessagesService {
@@ -41,17 +42,24 @@ export class ChatRoomMessagesService {
 
 
 
-  private async updateMessagesToRead ( messages:  ChatRoomMessageI[]) {
+  async updateMessagesToRead ( messages:  ChatRoomMessageI[]) {
     const isMessageFromOtherUser = messages?.at(-1)?.owner.id !== this.userService.loginUserData()?.id
 
     if (!isMessageFromOtherUser) return
     this.socketStatusService.emit('message-is-read-client', messages?.at(-1)?.owner.id)
 
-    const updatedMessages = messages.map(message =>  ({ id: message.id, isRead: true }))
-    this.messageApiServcice.updateMany(updatedMessages).subscribe({
-      next: ()=>{ this.chatsService.getChats().subscribe() },
-      error: (err) => { console.log(err) }
-    })
+    const updatedMessages = messages.map(message =>  ({ ...message, isRead: true }))
+    this.updateManyMessages(updatedMessages).subscribe()
+  }
+
+  updateManyMessages ( messages:  ChatRoomMessageI[]) {
+    return this.messageApiServcice.updateMany(messages).pipe(
+      switchMap(() => this.chatsService.getChats()),
+      catchError(error => {
+        console.log(error)
+        return of([])
+      })
+    )
   }
 
   createMessage (text: string) {

@@ -7,7 +7,7 @@ export interface ChatI {
   lastChatMessage: string
   lastChatMessageHour: Date
   messagesWithoutRead: number
-  isUserMessage: boolean
+  isUserLastMessage: boolean
   messages: ChatRoomMessageI[]
   urlImg: string
   isArchived: boolean
