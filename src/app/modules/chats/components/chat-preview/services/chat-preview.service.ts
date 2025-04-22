@@ -25,7 +25,8 @@ export class ChatPreviewService {
     isUserMessage: false,
     lastTwentyMessage: null,
     messagesWithOutRead: null,
-    isRead: true
+    isRead: true,
+    isDelivered: true
   })
 
 
@@ -72,7 +73,8 @@ export class ChatPreviewService {
       isUserMessage: this.userService.loginUserData()?.id === lastMessage?.owner.id,
       lastMessageUser,
       messagesWithOutRead: lastTwentyMessage.filter(message => !message.isRead).length,
-      isRead: this._chatPreviewData?.isRead ?? false
+      isRead: this._chatPreviewData?.isRead ?? false,
+      isDelivered: lastMessage?.isDelivered ?? true
 
     })
 

@@ -162,20 +162,6 @@ export class ChatPreviewOptionsService {
 
 
 
-  private async onClickIsBlocked (id: string) {
-    const prevChats = this.chatService.chats()
-    const isChatBlocked = prevChats.find(
-      (chat) => chat.id === id
-    )?.isBlocked
-
-
-    this.chatRoomService.updateChatRoom(id, {
-      isBlocked: !isChatBlocked
-    } ).subscribe()
-  }
-
-
-
 
   async onClickIsRead (id: string) {
     const currentChat = this.chatService.chats().find(chat => chat.id === id)
@@ -311,7 +297,23 @@ export class ChatPreviewOptionsService {
         tap(() => { this.chatFiltersService.filterChats(filterToApply) })
       )
       .subscribe()
+  }
 
+  private async onClickIsBlocked (chatRoomId: string) {
+    const filterToApply = ChatPreviewFiltersEnum.ALL
+
+
+    const currentUser = await this.userService.getUpdatedLoginUserData()
+    if (!currentUser?.id || !currentUser.chatsRoomFavorites) return
+
+    const updatedBlocked = this.getUpdatedList(currentUser.chatsRoomBlocked, chatRoomId)
+
+    this.userService.updateUser(currentUser.id, { chatsRoomBlocked: updatedBlocked })
+      .pipe(
+        switchMap(() => this.chatService.getChats()),
+        tap(() => { this.chatFiltersService.filterChats(filterToApply) })
+      )
+      .subscribe()
   }
 
   private optimisticallyToggleProperty<T extends keyof ChatI>(

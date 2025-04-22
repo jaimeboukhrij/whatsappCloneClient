@@ -8,6 +8,7 @@ export interface ChatRoomMessageI {
   chatRoomId: string
   type: 'received' | 'sent'
   isRead: boolean
+  isDelivered: boolean
 }
 
 export interface ChatRoomCreateMessageI {

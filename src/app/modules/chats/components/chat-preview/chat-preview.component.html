@@ -10,9 +10,15 @@
         {<span>{{messagesData().lastMessageUser}}:
         </span>{{messagesData().lastMessage}}}
         @else if(messagesData().isUserMessage){
-        <span><shared-dbcheck
-            [iconColor]="this.messagesData().lastTwentyMessage?.at(-1)?.isRead ? '#4fc3f7' : '#8696A0'" /></span>
-        {{messagesData().lastMessage}}
+          @if(!messagesData().isDelivered){
+          <span class="flex justify-center items-center"><shared-check-icon /></span>
+          {{messagesData().lastMessage}}
+          }@else {
+            <span><shared-dbcheck
+                [iconColor]="this.messagesData().lastTwentyMessage?.at(-1)?.isRead ? '#4fc3f7' : '#8696A0'" /></span>
+            {{messagesData().lastMessage}}
+            }
+
         }@else {
         {{messagesData().lastMessage}}
         }
@@ -22,7 +28,11 @@
       <h2 class="text-[16px] text-[#e9edef] font-semibold text-left">{{_chatPreviewData?.name}}</h2>
       <p class="text-[#e9edef] text-[14px] inline-flex gap-1 font-semibold">
         @if(messagesData().isUserMessage){
-        <span><shared-dbcheck /></span>
+          @if(!messagesData().isDelivered){
+          <span class="flex justify-center items-center"><shared-check-icon /></span>
+          }@else {
+            <span><shared-dbcheck /></span>
+          }
         }
         {{messagesData().lastMessage}}
       </p>

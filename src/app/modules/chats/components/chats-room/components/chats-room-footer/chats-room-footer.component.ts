@@ -43,7 +43,7 @@ export class ChatsRoomFooterComponent  {
   }
 
   onEmojiChange (emoji: string) {
-    this.textAreaValue.update(prev => prev + emoji)
+    this.textAreaValue.update(prev => prev + emoji + ' ')
   }
 
   onSubmit (event: Event) {

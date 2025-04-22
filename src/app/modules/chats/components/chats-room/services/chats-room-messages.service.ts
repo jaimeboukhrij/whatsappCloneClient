@@ -35,7 +35,7 @@ export class ChatRoomMessagesService {
     if (!currentChatRoomData) return
     const messages = currentChatRoomData?.messages ?? []
     this.chatRoomMessages.set(messages)
-    this.updateMessagesToRead( messages)
+    // this.updateMessagesToRead( messages)
 
 
   }
@@ -43,12 +43,13 @@ export class ChatRoomMessagesService {
 
 
   async updateMessagesToRead ( messages:  ChatRoomMessageI[]) {
+    console.log('updateMessagesToRead')
     const isMessageFromOtherUser = messages?.at(-1)?.owner.id !== this.userService.loginUserData()?.id
-
-    if (!isMessageFromOtherUser) return
+    console.log('antes')
+    if (!isMessageFromOtherUser ) return
     this.socketStatusService.emit('message-is-read-client', messages?.at(-1)?.owner.id)
 
-    const updatedMessages = messages.map(message =>  ({ ...message, isRead: true }))
+    const updatedMessages = messages.map(message =>  ({ ...message, isRead: message.isDelivered }))
     this.updateManyMessages(updatedMessages).subscribe()
   }
 
@@ -76,14 +77,13 @@ export class ChatRoomMessagesService {
   newMessageSocket () {
     this.socketStatusService.on('message-from-server', (message: ChatRoomMessageI) => {
       if (!message) return
-
       const currentChatRoomId = this.currentChatRoomData()?.id
       const isCurrentChatRoom = currentChatRoomId === message.chatRoomId
       const isMessageFromOtherUser = message.owner.id !== this.userService.loginUserData()?.id
       if (isCurrentChatRoom) {
         this.chatRoomMessages.update(prev => this.transformMessageData([...prev, message]))
         this.chatsService.getChats().subscribe()
-        if (isMessageFromOtherUser) {
+        if (isMessageFromOtherUser && message.isDelivered) {
           this.updateMessagesToRead([message])
         }
       } else {
@@ -95,6 +95,7 @@ export class ChatRoomMessagesService {
 
   messageIsReadSocket () {
     this.socketStatusService.on('message-is-read-server', ()=>{
+      console.log('readdd')
       this.chatRoomMessages.update(prevMess => {
         return prevMess.map(message => ({ ...message, isRead: true }))
       })

@@ -54,4 +54,5 @@ export interface MessagesDataI {
   lastTwentyMessage: ChatRoomMessageI[] | null
   messagesWithOutRead: number | null
   isRead: boolean
+  isDelivered: boolean
 }
