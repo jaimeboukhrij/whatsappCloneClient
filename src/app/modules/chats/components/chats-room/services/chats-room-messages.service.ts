@@ -43,9 +43,7 @@ export class ChatRoomMessagesService {
 
 
   async updateMessagesToRead ( messages:  ChatRoomMessageI[]) {
-    console.log('updateMessagesToRead')
     const isMessageFromOtherUser = messages?.at(-1)?.owner.id !== this.userService.loginUserData()?.id
-    console.log('antes')
     if (!isMessageFromOtherUser ) return
     this.socketStatusService.emit('message-is-read-client', messages?.at(-1)?.owner.id)
 
@@ -87,7 +85,6 @@ export class ChatRoomMessagesService {
           this.updateMessagesToRead([message])
         }
       } else {
-
         this.chatsService.getChats().subscribe()
       }
     })
@@ -95,7 +92,6 @@ export class ChatRoomMessagesService {
 
   messageIsReadSocket () {
     this.socketStatusService.on('message-is-read-server', ()=>{
-      console.log('readdd')
       this.chatRoomMessages.update(prevMess => {
         return prevMess.map(message => ({ ...message, isRead: true }))
       })

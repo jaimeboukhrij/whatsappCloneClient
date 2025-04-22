@@ -24,6 +24,8 @@ export class ChatService {
   public originalChats: WritableSignal<ChatI[]> = signal([])
   public chats: WritableSignal<ChatI[]> = signal([])
 
+  public totalMessagesNotRead = signal(0)
+
   public getChats (updateChats = true): Observable<ChatI[]> {
     return this.userApiService.getUserChats().pipe(
       map((chats) => this.sortChats(chats)),
@@ -32,6 +34,7 @@ export class ChatService {
         const chatsVisibles = data.filter((chat) => !chat.isArchived)
         if (updateChats) this.chats.set(chatsVisibles)
         this.originalChats.set(data)
+        this.getMessagesChatsWithOutRead(chatsVisibles)
       }),
       catchError((error) => {
         console.log(error)
@@ -73,6 +76,17 @@ export class ChatService {
 
       return lastMessageTimeB - lastMessageTimeA
     })
+  }
+
+  private getMessagesChatsWithOutRead (chats: ChatI[]) {
+    let messagesNotRead = 0
+    chats.forEach(chat =>{
+      messagesNotRead += chat.messages.filter(message => !message.isRead).length
+    })
+    this.totalMessagesNotRead.set(messagesNotRead)
+    console.log(this.totalMessagesNotRead())
+
+
   }
 
 

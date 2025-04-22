@@ -21,9 +21,12 @@ export class ChatsRoomHeaderComponent implements OnInit {
       }
     })
 
-    this.chatsRoomService.writingUsers$.subscribe(writingUsers =>{
+    this.chatsRoomService.writingUsers$.subscribe(writingData =>{
       if (this.chatRoomData()!.contactUserId) {
-        this.isWriting.set(writingUsers.includes(this.chatRoomData()!.contactUserId ?? ''))
+        const contactUserId = this.chatRoomData()!.contactUserId ?? ''
+        const currentChatRoomId = this.chatRoomData()?.id
+        const isWriting = writingData.some(({ chatRoomId, userID })=> chatRoomId === currentChatRoomId && userID === contactUserId )
+        this.isWriting.set(isWriting)
       }
     })
   }

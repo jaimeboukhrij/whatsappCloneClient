@@ -34,7 +34,12 @@
             <span><shared-dbcheck /></span>
           }
         }
-        {{messagesData().lastMessage}}
+        @if (_chatPreviewData?.type === 'group' && messagesData().lastMessage)
+        {<span class="text-[#d1d7db]">{{messagesData().lastMessageUser}}:
+        </span>{{messagesData().lastMessage}}}
+        @else {
+          {{messagesData().lastMessage}}
+        }
       </p>
 
       }

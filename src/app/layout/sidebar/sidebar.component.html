@@ -1,8 +1,13 @@
 <header
   class="flex flex-col py-3 gap-4 items-center justify-between bg-navbarBackground  h-[100%] border-r-[1px] border-[#2E3B44]">
   <section class="flex flex-col gap-2">
-    <button class="bg-transparent p-2 rounded-3xl" routerLink="/chats" routerLinkActive="active">
+    <button class="relative bg-transparent p-2 rounded-3xl" routerLink="/chats" routerLinkActive="active">
       <icon-chat [iconColor]="iconColor" />
+      @if(totalMessagesNotRead() > 0){
+      <span
+        class="absolute top-[0px] left-[23px] bg-[#00a884] text-black text-xs grid place-items-center rounded-full w-[20px] h-[20px]">{{totalMessagesNotRead()}}</span>
+      }
+
     </button>
     <button class="bg-transparent p-2 rounded-3xl" routerLink="/states" routerLinkActive="active">
       <icon-state [iconColor]="iconColor" />

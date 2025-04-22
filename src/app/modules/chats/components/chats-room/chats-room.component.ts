@@ -33,5 +33,6 @@ export class ChatsRoomComponent implements OnInit {
     this.chatsRoomService.usersWritingSocket()
     this.chatRoomMessagesService.newMessageSocket()
     this.chatRoomMessagesService.messageIsReadSocket()
+    this.chatsRoomService.newGroupSocket()
   }
 }

@@ -17,7 +17,7 @@ export class ChatsRoomService {
   currentChatRoomData: WritableSignal<ChatI | null> = signal(null)
   onlineUsersSubject = new BehaviorSubject<string[]>([])
   onlineUsers$ = this.onlineUsersSubject.asObservable()
-  writingUsersSubject = new BehaviorSubject<string[]>([])
+  writingUsersSubject = new BehaviorSubject< Array<{ userID: string, chatRoomId: string }>>([])
   writingUsers$ = this.writingUsersSubject.asObservable()
   private  writingTimeout: ReturnType<typeof setTimeout> | null = null
   public isLoading = signal(false)
@@ -111,20 +111,27 @@ export class ChatsRoomService {
   }
 
   handleUserIswriting () {
-    this.socketStatusService.emit('writing-from-client', true)
+    this.socketStatusService.emit('writing-from-client', { isWriting: true, chatRoomId: this.currentChatRoomId() })
 
     if (this.writingTimeout) {
       clearTimeout(this.writingTimeout)
     }
 
     this.writingTimeout = setTimeout(() => {
-      this.socketStatusService.emit('writing-from-client', false)
+      this.socketStatusService.emit('writing-from-client',  { isWriting: false, chatRoomId: this.currentChatRoomId() })
       this.writingTimeout = null
     }, 1000)
   }
 
   getChatRoomByContactUserId (contactId: string) {
     return this.chatRoomApiService.getChatRoomByContactUserId(contactId)
+  }
+
+  newGroupSocket () {
+    this.socketStatusService.on('new-group-from-server', () => {
+      this.chatService.getChats().subscribe()
+
+    })
   }
 
 
@@ -136,8 +143,9 @@ export class ChatsRoomService {
   }
 
   usersWritingSocket () {
-    this.socketStatusService.on('writing-from-server', (uids: string[]) => {
-      this.writingUsersSubject.next(uids)
+    this.socketStatusService.on('writing-from-server', (data: Array<{ userID: string, chatRoomId: string }>) => {
+
+      this.writingUsersSubject.next(data)
     })
   }
 }
