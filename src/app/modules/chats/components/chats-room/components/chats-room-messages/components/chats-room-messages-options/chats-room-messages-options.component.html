@@ -1,1 +1,14 @@
-<p>chats-room-messages-options works!</p>
+<button class=" w-[42px] h-[27px] absolute right-[5px] top-[5px] flex items-start justify-end cursor-pointer  z-[3]"
+  (click)="onClickOptionsButton()"
+  [style.background]="'radial-gradient(at top right, rgba(' + rgbColor() + ', 1) 60%, rgba(' + rgbColor() + ', 0) 80%)' ">
+  <shared-chevron-icon [iconColor]="'#7A8083'" [measure]="{width:'22', height:'22'}" class="w-[18px] block" />
+</button>
+<section class="absolute w-[156px] h-[298px] z-[2] container" [ngClass]="{
+  'show': showChatRoomMessageOptions(),
+  'origin-top-left':startAnimation() === 'top_left',
+  'origin-top-right': startAnimation() === 'top_right',
+  'origin-bottom-left': startAnimation() === 'bottom_left',
+  'origin-bottom-right': startAnimation() === 'bottom_right'
+}" [ngStyle]="{ top: optionsSectionCordenates().y + 'px', right: optionsSectionCordenates().x  + 'px' }">
+  <chat-preview-options [options]="messagesOptions" />
+</section>

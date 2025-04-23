@@ -1,21 +1,20 @@
-import {  ChatsRoomService } from './chats-room.service'
-import { Injectable, signal,  WritableSignal } from '@angular/core'
-import {  SocketStatusService } from '../../../../../core/services/socket/socket-status.service'
-import {  ChatService } from '../../../services/chats.service'
-import {  UserService } from '../../../../user/services/user.service'
-import {
-  ChatRoomMessageI,
-  ChatRoomCreateMessageI
-} from '../../../model/chat-room-messages.interface'
-import { MessageApiService } from '../../../../../core/services/api/message-api.service'
-import { ChatI } from '../../../model'
-import { catchError, of, switchMap } from 'rxjs'
+import { Injectable, WritableSignal, signal } from '@angular/core'
+import { BehaviorSubject, catchError, of, switchMap } from 'rxjs'
+import { MessageApiService } from '../../../../../../../core/services/api/message-api.service'
+import { SocketStatusService } from '../../../../../../../core/services/socket/socket-status.service'
+import { UserService } from '../../../../../../user/services/user.service'
+import { ChatI } from '../../../../../model'
+import { ChatRoomMessageI, ChatRoomCreateMessageI } from '../../../../../model/chat-room-messages.interface'
+import { ChatService } from '../../../../../services/chats.service'
+import { ChatsRoomService } from '../../../services/chats-room.service'
 
 @Injectable({ providedIn: 'root' })
 export class ChatRoomMessagesService {
   chatRoomMessages: WritableSignal<ChatRoomMessageI[]> = signal([])
   lastTwentyMessages: WritableSignal<ChatRoomMessageI[]> = signal([])
   currentChatRoomData: WritableSignal< ChatI | null> = signal(null)
+  private readonly scrollBottomChatRoomSubject = new BehaviorSubject<boolean>(false)
+  scrollBottomChatRoom$ = this.scrollBottomChatRoomSubject.asObservable()
 
 
   constructor (
@@ -86,6 +85,12 @@ export class ChatRoomMessagesService {
         }
       } else {
         this.chatsService.getChats().subscribe()
+      }
+
+      if (!isMessageFromOtherUser) {
+        setTimeout(() => {
+          this.scrollBottomChatRoomSubject.next(true)
+        }, 0)
       }
     })
   }

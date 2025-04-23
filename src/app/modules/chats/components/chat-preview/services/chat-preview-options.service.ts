@@ -3,9 +3,9 @@ import { ChatI, ChatPreviewFiltersEnum, NotificationsSilencedEnum } from '../../
 import { ChatService } from '../../../services/chats.service'
 import { ChatsRoomService } from '../../chats-room/services/chats-room.service'
 import { ChatFiltersService } from '../../../services/chats-filters.service'
-import { ChatRoomMessagesService } from '../../chats-room/services/chats-room-messages.service'
 import { UserService } from '../../../../user/services/user.service'
 import { switchMap, tap } from 'rxjs'
+import { ChatRoomMessagesService } from '../../chats-room/components/chats-room-messages/services/chats-room-messages.service'
 
 @Injectable({ providedIn: 'root' })
 export class ChatPreviewOptionsService {
@@ -72,9 +72,11 @@ export class ChatPreviewOptionsService {
       }
     ]
 
+
     if (data.isUserLastMessage ) {
       this.chatPreviewOptions = this.chatPreviewOptions.filter(options => options.id !== 'isRead')
     }
+    console.log('---', data.type)
     if (data.type === 'private') {
       this.chatPreviewOptions = this.chatPreviewOptions.filter(options => options.id !== 'leaveGroup' )
       return

@@ -10,6 +10,7 @@ import { Component, Input } from '@angular/core'
 export class ChevronIconComponent {
   @Input() iconColor = '#8696A0'
   @Input() arrowDirection: 'left' | 'right' | 'up' | 'down' = 'down'
+  @Input() measure = { width: '30', height: '30' }
 
   getRotation (): string {
     switch (this.arrowDirection) {

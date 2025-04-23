@@ -7,6 +7,7 @@ import { ChatRoomMessageI } from '../../../model/chat-room-messages.interface'
 import { ChatService } from '../../../services/chats.service'
 import { ChatsRoomService } from '../../chats-room/services/chats-room.service'
 import { catchError, map, of, switchMap, tap } from 'rxjs'
+import { OriginStartEnum } from '../../../../../shared/components/chat-preview-options/interfaces/options-section.interface'
 
 export class ChatPreviewService {
   private readonly chatPreviewOptionsService = inject(ChatPreviewOptionsService)
@@ -16,6 +17,8 @@ export class ChatPreviewService {
   private readonly chatService = inject(ChatService)
   public chatPreviewOptionsCordenates = signal({ x: 0, y: 0 })
   public isInCard = signal(false)
+  public startAnimation = signal<OriginStartEnum>(OriginStartEnum.top_left)
+
 
   public _chatPreviewData: ChatI | null = null
 
@@ -87,9 +90,16 @@ export class ChatPreviewService {
       event as MouseEvent,
       optionsHeigth
     )
-    if (isBelow) coordinates.y = coordinates.y - 331
+    this.setAnimationStart(isBelow)
+    if (isBelow) { coordinates.y = coordinates.y - 331 }
 
     return coordinates
+  }
+
+
+  private setAnimationStart (isBelow: boolean) {
+    const direction =  (isBelow ? OriginStartEnum.bottom_left : OriginStartEnum.top_left)
+    this.startAnimation.set(direction)
   }
 
   onClickChatPreview () {

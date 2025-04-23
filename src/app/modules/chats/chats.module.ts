@@ -16,7 +16,7 @@ import { ChatsRoomBodyComponent } from './components/chats-room/components/chats
 import { ChatsRoomFooterComponent } from './components/chats-room/components/chats-room-footer/chats-room-footer.component'
 import { ChatsRoomHeaderComponent } from './components/chats-room/components/chats-room-header/chats-room-header.component'
 import { ChatsRoomMessagesComponent } from './components/chats-room/components/chats-room-messages/chats-room-messages.component'
-import { ChatPreviewOptionsComponent } from './components/chat-preview/components/chat-preview-options/chat-preview-options.component'
+import { ChatPreviewOptionsComponent } from '../../shared/components/chat-preview-options/chat-preview-options.component'
 import { ChatNotificationsSilencedModalComponent } from './components/chat-preview/components/chat-notifications-silenced-modal/chat-notifications-silenced-modal.component'
 import { ChatPreviewLeaveGroupModalComponent } from './components/chat-preview/components/chat-preview-leave-group-modal/chat-preview-leave-group-modal.component'
 import { CreateGroupModalComponent } from './components/chats-room/components/chat-groups/components/create-group-modal/create-group-modal.component'

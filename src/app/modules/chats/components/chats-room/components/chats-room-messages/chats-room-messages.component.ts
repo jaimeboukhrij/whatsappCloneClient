@@ -2,6 +2,7 @@ import { Component, inject, Input,  OnInit, signal } from '@angular/core'
 import { UserService } from '../../../../../user/services/user.service'
 import { ChatRoomMessageI } from '../../../../model/chat-room-messages.interface'
 import { ChatsRoomService } from '../../services/chats-room.service'
+import { ChatsRoomMessageOptionsService } from './services'
 
 @Component({
   selector: 'chats-room-messages',
@@ -13,12 +14,15 @@ import { ChatsRoomService } from '../../services/chats-room.service'
 export class ChatsRoomMessagesComponent implements OnInit {
   private readonly userService = inject(UserService)
   private readonly chatsRoomService = inject(ChatsRoomService)
+  private readonly chatsRoomMessageOptionsService = inject(ChatsRoomMessageOptionsService)
 
   @Input() messageData: ChatRoomMessageI | null = null
   @Input() typeChatRoom = ''
+
+  public showChatRoomMessageButtonOptions = signal(false)
+
   dynamicColor = signal('#06cf9c')
   isChatRoomGroup = signal(false)
-
   showName = signal(false)
 
   ngOnInit (): void {
@@ -29,8 +33,16 @@ export class ChatsRoomMessagesComponent implements OnInit {
     this.showName.set( messageOwnerId !== currentUserId && type === 'group' && this.messageData?.type === 'received')
     this.addColorToName(messageOwnerId!)
     this.isChatRoomGroup.set(this.chatsRoomService.currentChatRoomData()?.type === 'group')
+  }
 
+  onMouseEnter () {
+    if (this.chatsRoomMessageOptionsService.showChatRoomMessageOptions()) return
+    this.showChatRoomMessageButtonOptions.set(true)
+  }
 
+  onMouseLeave () {
+    if (this.chatsRoomMessageOptionsService.showChatRoomMessageOptions()) return
+    this.showChatRoomMessageButtonOptions.set(false)
   }
 
   private addColorToName (messageOwnerId: string) {

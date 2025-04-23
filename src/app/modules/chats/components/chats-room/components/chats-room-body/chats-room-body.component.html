@@ -1,5 +1,5 @@
 <section class="background-container flex flex-col justify-end py-6 gap-[3px] ">
   @for (message of messages(); track $index) {
-  <chats-room-messages [messageData]="message" class="z-[2]" />
+  <chats-room-messages [messageData]="message" />
   }
 </section>

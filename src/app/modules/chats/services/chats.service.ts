@@ -81,12 +81,9 @@ export class ChatService {
   private getMessagesChatsWithOutRead (chats: ChatI[]) {
     let messagesNotRead = 0
     chats.forEach(chat =>{
-      messagesNotRead += chat.messages.filter(message => !message.isRead).length
+      messagesNotRead += chat.messages.filter(message => !message.isRead && message.type === 'received').length
     })
     this.totalMessagesNotRead.set(messagesNotRead)
-    console.log(this.totalMessagesNotRead())
-
-
   }
 
 

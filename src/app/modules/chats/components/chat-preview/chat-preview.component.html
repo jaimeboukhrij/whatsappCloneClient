@@ -10,14 +10,14 @@
         {<span>{{messagesData().lastMessageUser}}:
         </span>{{messagesData().lastMessage}}}
         @else if(messagesData().isUserMessage){
-          @if(!messagesData().isDelivered){
-          <span class="flex justify-center items-center"><shared-check-icon /></span>
-          {{messagesData().lastMessage}}
-          }@else {
-            <span><shared-dbcheck
-                [iconColor]="this.messagesData().lastTwentyMessage?.at(-1)?.isRead ? '#4fc3f7' : '#8696A0'" /></span>
-            {{messagesData().lastMessage}}
-            }
+        @if(!messagesData().isDelivered){
+        <span class="flex justify-center items-center"><shared-check-icon /></span>
+        {{messagesData().lastMessage}}
+        }@else {
+        <span><shared-dbcheck
+            [iconColor]="this.messagesData().lastTwentyMessage?.at(-1)?.isRead ? '#4fc3f7' : '#8696A0'" /></span>
+        {{messagesData().lastMessage}}
+        }
 
         }@else {
         {{messagesData().lastMessage}}
@@ -28,17 +28,17 @@
       <h2 class="text-[16px] text-[#e9edef] font-semibold text-left">{{_chatPreviewData?.name}}</h2>
       <p class="text-[#e9edef] text-[14px] inline-flex gap-1 font-semibold">
         @if(messagesData().isUserMessage){
-          @if(!messagesData().isDelivered){
-          <span class="flex justify-center items-center"><shared-check-icon /></span>
-          }@else {
-            <span><shared-dbcheck /></span>
-          }
+        @if(!messagesData().isDelivered){
+        <span class="flex justify-center items-center"><shared-check-icon /></span>
+        }@else {
+        <span><shared-dbcheck /></span>
+        }
         }
         @if (_chatPreviewData?.type === 'group' && messagesData().lastMessage)
         {<span class="text-[#d1d7db]">{{messagesData().lastMessageUser}}:
         </span>{{messagesData().lastMessage}}}
         @else {
-          {{messagesData().lastMessage}}
+        {{messagesData().lastMessage}}
         }
       </p>
 
@@ -60,8 +60,11 @@
         <span
           class="bg-[#00a884] text-black text-xs grid place-items-center rounded-full w-[20px] h-[20px]">{{messagesData()!.messagesWithOutRead}}</span>
         }
-        @if (isInCard()) { <button
-          (click)="onShowOption($event,_chatPreviewData?.id!); $event.stopPropagation()"><shared-chevron-icon /></button>}
+        @if (isInCard()) {
+        <button (click)="onShowOption($event,_chatPreviewData?.id!); $event.stopPropagation()">
+          <shared-chevron-icon />
+        </button>
+        }
 
       </div>
 
@@ -71,9 +74,13 @@
 
 </button>
 
-@if (_chatPreviewData?.showOptions) {
-<section class="absolute w-[235px] h-[298px] chat-options z-10"
+<section class="absolute w-auto h-[298px] z-10 container" [ngClass]="{
+  'show': _chatPreviewData?.showOptions!,
+  'origin-top-left':startAnimation() === 'top_left',
+  'origin-top-right': startAnimation() === 'top_right',
+  'origin-bottom-left': startAnimation() === 'bottom_left',
+  'origin-bottom-right': startAnimation() === 'bottom_right'
+}"
   [ngStyle]="{ top: chatPreviewOptionsCordenates().y +30 + 'px', left: chatPreviewOptionsCordenates().x + 8 + 'px' }">
-  <chat-preview-options [chatPreviewData]="_chatPreviewData!" />
+  <chat-preview-options [options]="chatPreviewOptions" (onClickEmit)="onClickOption($event)" />
 </section>
-}

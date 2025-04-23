@@ -12,7 +12,6 @@ import { LeftArrowIconComponent } from './left-arrow-icon/left-arrow-icon.compon
 import { ArchivedIconComponent } from './archived-icon/archived-icon.component'
 import { DbcheckIconComponent } from './dbcheck-icon/dbcheck-icon.component'
 import { PinnedIconComponent } from './pinned-icon/pinned-icon.component'
-import { DownArrowIconComponent } from './down-arrow-icon/down-arrow-icon.component'
 import { ChevronIconComponent } from './chevron-icon/chevron-icon.component'
 import { XIconComponent } from './x-icon/x-icon.component'
 import { SilencedIconComponent } from './silenced-icon/silenced-icon.component'
@@ -40,7 +39,6 @@ import { CheckIconComponent } from './check-icon/check-icon.component'
     ArchivedIconComponent,
     DbcheckIconComponent,
     PinnedIconComponent,
-    DownArrowIconComponent,
     ChevronIconComponent,
     XIconComponent,
     SilencedIconComponent,

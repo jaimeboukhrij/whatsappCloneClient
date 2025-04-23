@@ -1,7 +1,8 @@
 <section class="message-container"
   [ngClass]="{ received: messageData?.type === 'received', sent: messageData?.type === 'sent' }">
 
-  <div class="message" [ngClass]="{ received: messageData?.type === 'received', sent: messageData?.type === 'sent' }">
+  <div class="message" [ngClass]="{ received: messageData?.type === 'received', sent: messageData?.type === 'sent' }"
+    (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()">
     @if (showName()) {
     <p [ngStyle]="{'color': dynamicColor()}" class="mb-1 text-[14px]">{{messageData?.owner?.firstName}}</p>
 
@@ -32,5 +33,9 @@
       }
 
     </span>
+    @if(showChatRoomMessageButtonOptions()){
+    <chats-room-messages-options [messageData]="messageData" />
+    }
+
   </div>
 </section>
