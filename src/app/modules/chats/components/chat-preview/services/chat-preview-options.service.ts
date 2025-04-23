@@ -20,14 +20,14 @@ export class ChatPreviewOptionsService {
   )
 
   private readonly chatPreviewData = signal<ChatI | null>(null)
-  public chatPreviewOptions: Array<{ id: string, name: string }> = []
+  public chatPreviewOptions =  signal<Array<{ id: string, name: string }>>([])
 
 
 
 
   updateChatPreviewData (data: ChatI) {
     this.chatPreviewData.set(data)
-    this.chatPreviewOptions = [
+    this.chatPreviewOptions.set([
       {
         id: 'isArchived',
         name: this.chatPreviewData()?.isArchived
@@ -70,19 +70,18 @@ export class ChatPreviewOptionsService {
         id: 'leaveGroup',
         name: 'Salir del grupo'
       }
-    ]
+    ])
 
 
     if (data.isUserLastMessage ) {
-      this.chatPreviewOptions = this.chatPreviewOptions.filter(options => options.id !== 'isRead')
+      this.chatPreviewOptions.update(prev => prev.filter(options => options.id !== 'isRead'))
     }
-    console.log('---', data.type)
     if (data.type === 'private') {
-      this.chatPreviewOptions = this.chatPreviewOptions.filter(options => options.id !== 'leaveGroup' )
+      this.chatPreviewOptions.update(prev => prev.filter(options => options.id !== 'leaveGroup' ))
       return
     }
 
-    this.chatPreviewOptions = this.chatPreviewOptions.filter(options => options.id !== 'deleteChat' && options.id !== 'isBlocked')
+    this.chatPreviewOptions.update(prev => prev.filter(options => options.id !== 'deleteChat' && options.id !== 'isBlocked'))
   }
 
   public async onClickOptions (id: string, event: MouseEvent, chatId: string) {
@@ -119,14 +118,7 @@ export class ChatPreviewOptionsService {
 
   }
 
-  public setShowChatOptions = (id?: string) => {
-    this.chatService.chats.update((values) =>
-      values.map((elem) => ({
-        ...elem,
-        showOptions: elem.id === id
-      }))
-    )
-  }
+
 
   readonly selectedMuteDuration = signal<NotificationsSilencedEnum | null>(
     NotificationsSilencedEnum.HOUR

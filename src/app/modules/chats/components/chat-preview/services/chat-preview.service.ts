@@ -3,7 +3,6 @@ import { UtilsService } from '../../../../../core/services/utils.service'
 import { UserService } from '../../../../user/services/user.service'
 import { MessagesDataI, ChatI } from '../../../model'
 import { ChatPreviewOptionsService } from './chat-preview-options.service'
-import { ChatRoomMessageI } from '../../../model/chat-room-messages.interface'
 import { ChatService } from '../../../services/chats.service'
 import { ChatsRoomService } from '../../chats-room/services/chats-room.service'
 import { catchError, map, of, switchMap, tap } from 'rxjs'
@@ -16,12 +15,7 @@ export class ChatPreviewService {
   private readonly userService = inject(UserService)
   private readonly chatService = inject(ChatService)
   public chatPreviewOptionsCordenates = signal({ x: 0, y: 0 })
-  public isInCard = signal(false)
   public startAnimation = signal<OriginStartEnum>(OriginStartEnum.top_left)
-
-
-  public _chatPreviewData: ChatI | null = null
-
   public messagesData = signal<MessagesDataI>({
     lastMessage: null,
     lastMessageUser: null,
@@ -33,35 +27,9 @@ export class ChatPreviewService {
   })
 
 
-  getChatPreviewData () {
-    return this._chatPreviewData
-  }
+  updateMessagesData (chatPreviewData: ChatI) {
+    const messages = chatPreviewData.messages
 
-  updateData (newChatPreviewData: ChatI | null) {
-    if (!newChatPreviewData) return
-    this._chatPreviewData = newChatPreviewData
-    const messages = newChatPreviewData.messages
-    this.updateMessagesData(messages)
-  }
-
-
-  mouseEnter () {
-    this.isInCard.set(true)
-  }
-
-  mouseLeave () {
-    this.isInCard.set(false)
-  }
-
-  onShowOption (event?: Event, id?: string) {
-    event?.stopImmediatePropagation()
-    if (event) this.chatPreviewOptionsCordenates.set(this.getOptionsPosition(event))
-    if (this._chatPreviewData?.showOptions) {
-      this.chatPreviewOptionsService.setShowChatOptions(undefined)
-    } else this.chatPreviewOptionsService.setShowChatOptions(id)
-  }
-
-  updateMessagesData (messages: ChatRoomMessageI[]) {
     const lastMessage = messages.at(-1)
     const lastTwentyMessage = messages.slice(-20)
     const logedUserAndMessageOwnerAreThesame = this.userService.loginUserData()?.id === lastMessage?.owner.id
@@ -76,14 +44,14 @@ export class ChatPreviewService {
       isUserMessage: this.userService.loginUserData()?.id === lastMessage?.owner.id,
       lastMessageUser,
       messagesWithOutRead: lastTwentyMessage.filter(message => !message.isRead).length,
-      isRead: this._chatPreviewData?.isRead ?? false,
+      isRead: chatPreviewData?.isRead ?? false,
       isDelivered: lastMessage?.isDelivered ?? true
 
     })
 
   }
 
-  private getOptionsPosition (event: Event) {
+  getOptionsPosition (event: Event) {
     const coordinates = this.utilsService.getCoordinates(event as MouseEvent)
     const optionsHeigth = 298
     const isBelow = this.utilsService.checkIfElementIsBelow(
@@ -100,26 +68,6 @@ export class ChatPreviewService {
   private setAnimationStart (isBelow: boolean) {
     const direction =  (isBelow ? OriginStartEnum.bottom_left : OriginStartEnum.top_left)
     this.startAnimation.set(direction)
-  }
-
-  onClickChatPreview () {
-    this.chatsRoomService.changeChatRoomData(this._chatPreviewData?.id ?? '')
-    if (!this._chatPreviewData?.id || this._chatPreviewData?.isRead) return
-    this.chatPreviewOptionsService.onClickIsRead(this._chatPreviewData.id)
-  }
-
-
-
-  onClickOutside (event: Event) {
-    if (!this._chatPreviewData?.showOptions) return
-    const target = event.target as HTMLElement
-
-    if (
-      !target.closest('.chat-options') &&
-      this._chatPreviewData?.showOptions
-    ) {
-      this.onShowOption()
-    }
   }
 
   onCancelLeaveGroupModal (chatId: string) {
@@ -147,6 +95,14 @@ export class ChatPreviewService {
       .subscribe()
 
 
+  }
+
+  changeChatRoomData (chatRoomId: string) {
+    this.chatsRoomService.changeChatRoomData(chatRoomId)
+  }
+
+  resetShowOptions () {
+    this.chatService.chats.update(prev => prev.map(chat => ({ ...chat, showOptions: false })))
   }
 
 

@@ -28,7 +28,6 @@ export class AuthService {
       .pipe(tap((user) => { this.storageService.setItem('jwtToken', user.token) }))
       .subscribe({
         next: (data) => {
-          console.log('joderr')
           this.userService.fetchCurrentUserData(data.id).subscribe()
           this.router.navigate(['chats'])
         },

@@ -65,7 +65,6 @@ export class ChatsRoomMessagesOptionsComponent implements OnInit {
   onClickOptionsButton () {
     this.showChatRoomMessageOptions.update(prev => !prev)
     event?.stopImmediatePropagation()
-    console.log('holaaaa', event)
 
     if (event) this.optionsSectionCordenates.set(this.getOptionsPosition(event))
   }

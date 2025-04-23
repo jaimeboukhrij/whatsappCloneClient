@@ -2,9 +2,7 @@ import {
   Component,
   HostListener,
   Input,
-  OnChanges,
-  signal,
-  SimpleChanges
+  signal
 } from '@angular/core'
 import { type ChatI } from '../../model'
 import { ChatPreviewService } from './services/chat-preview.service'
@@ -19,15 +17,19 @@ import { ChatPreviewOptionsService } from './services/chat-preview-options.servi
   styleUrl: './chat-preview.component.css'
 })
 
-export class ChatPreviewComponent implements OnChanges {
+export class ChatPreviewComponent {
 
   public chatPreviewOptionsCordenates
   public isInCard = signal(false)
   public messagesData
-  public chatPreviewOptions: Array<{ id: string, name: string }> = []
+  public chatPreviewOptions
   public startAnimation
+  public _chatPreviewData =  signal<ChatI | null>(null)
 
-  @Input() public _chatPreviewData: ChatI | null = null
+  @Input() set chatPreviewData (data: ChatI) {
+    this._chatPreviewData.set(data)
+    this.chatPreviewService.updateMessagesData(data)
+  }
 
   constructor (private readonly chatPreviewService: ChatPreviewService,
     private readonly chatPreviewOptionsService: ChatPreviewOptionsService
@@ -36,21 +38,14 @@ export class ChatPreviewComponent implements OnChanges {
     this.messagesData = this.chatPreviewService.messagesData
     this.chatPreviewOptionsCordenates = this.chatPreviewService.chatPreviewOptionsCordenates
     this.startAnimation = this.chatPreviewService.startAnimation
+    this.chatPreviewOptions = this.chatPreviewOptionsService.chatPreviewOptions
   }
 
-  ngOnChanges (changes: SimpleChanges): void {
-    if (changes['_chatPreviewData']) {
-      this.chatPreviewService.updateData(this._chatPreviewData)
-      this._chatPreviewData = this.chatPreviewService._chatPreviewData
-      this.chatPreviewOptions = this.chatPreviewOptionsService.chatPreviewOptions
-      this.chatPreviewOptionsService.updateChatPreviewData(this._chatPreviewData!)
-      console.log('changes ^^^^')
-    }
-  }
+
 
   async onClickOption (data: { id: string, event: MouseEvent }) {
     const { id, event } = data
-    const chatId = this._chatPreviewData?.id
+    const chatId = this._chatPreviewData()?.id
     await this.chatPreviewOptionsService.onClickOptions(id, event, chatId ?? '')
   }
 
@@ -65,16 +60,47 @@ export class ChatPreviewComponent implements OnChanges {
   }
 
   onShowOption (event?: Event, id?: string) {
-    this.chatPreviewService.onShowOption(event, id)
+
+    event?.stopImmediatePropagation()
+    if (event) this.chatPreviewOptionsCordenates.set(this.chatPreviewService.getOptionsPosition(event))
+
+    if (this._chatPreviewData()?.showOptions) {
+      this.setShowChatOptions('')
+    } else {
+      this.chatPreviewService.resetShowOptions()
+      this.chatPreviewOptionsService.updateChatPreviewData(this._chatPreviewData()!)
+      this.setShowChatOptions(id ?? '')
+    }
   }
 
   onClickChatPreview () {
-    this.chatPreviewService.onClickChatPreview()
+    this.chatPreviewService.changeChatRoomData(this._chatPreviewData()?.id ?? '')
+    if (!this._chatPreviewData()?.id || this._chatPreviewData()?.isRead) return
+    this.chatPreviewOptionsService.onClickIsRead(this._chatPreviewData()!.id)
   }
+
 
   @HostListener('document:click', ['$event'])
   onClickOutside (event: Event) {
-    if (!this._chatPreviewData?.showOptions) return
-    this.chatPreviewService.onClickOutside(event)
+    if (!this._chatPreviewData()?.showOptions) return
+    const target = event.target as HTMLElement
+
+    if (
+      !target.closest('.chat-options') &&
+      this._chatPreviewData()?.showOptions
+    ) {
+      this.onShowOption()
+    }
+  }
+
+  public setShowChatOptions = (id: string) => {
+    setTimeout(() => {
+      this._chatPreviewData.update(prevChat => {
+        if (!prevChat) return prevChat
+        return { ...prevChat, showOptions: prevChat.id === id }
+      })
+    }, 0)
   }
 }
+
+
