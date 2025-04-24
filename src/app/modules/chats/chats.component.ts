@@ -1,4 +1,4 @@
-import { Component, inject,  OnInit, signal } from '@angular/core'
+import { Component, inject, signal } from '@angular/core'
 import { ChatPreviewFiltersEnum } from './model'
 import { ChatFiltersService } from './services/chats-filters.service'
 import { ChatService } from './services/chats.service'
@@ -8,7 +8,7 @@ import { ChatsRoomService } from './components/chats-room/services/chats-room.se
   standalone: false,
   templateUrl: './chats.component.html'
 })
-export class ChatsComponent implements OnInit {
+export class ChatsComponent {
   private readonly chatFiltersService = inject(ChatFiltersService)
   private readonly chatService = inject(ChatService)
   private readonly chatsRoomService = inject(ChatsRoomService)
@@ -25,10 +25,7 @@ export class ChatsComponent implements OnInit {
 
   public currenIndexBtnActive = signal('all')
 
-  ngOnInit (): void {
-    this.chatService.getChats().subscribe()
-    // this.chatsRoomService.changeChatRoomData(null)
-  }
+
 
   get showArchivedChat () {
     return this.chatService.showArchivedChat()

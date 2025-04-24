@@ -10,5 +10,5 @@
   'origin-bottom-left': startAnimation() === 'bottom_left',
   'origin-bottom-right': startAnimation() === 'bottom_right'
 }" [ngStyle]="{ top: optionsSectionCordenates().y + 'px', right: optionsSectionCordenates().x  + 'px' }">
-  <chat-preview-options [options]="messagesOptions" />
+  <chat-preview-options [options]="messagesOptions" (onClickEmit)="onClickOption($event)" />
 </section>

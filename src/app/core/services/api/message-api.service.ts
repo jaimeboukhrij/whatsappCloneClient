@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core'
 import { ApiService } from './api.service'
 import { ChatRoomCreateMessageI, ChatRoomMessageI } from '../../../modules/chats/model/chat-room-messages.interface'
+import { Observable } from 'rxjs'
 
 
 @Injectable({ providedIn: 'root' })
@@ -29,4 +30,15 @@ export class MessageApiService {
       'PUT'
     )
   }
+
+  deleteMany (messagesIds: string[]): Observable<unknown> {
+    console.log('servicio', messagesIds)
+    return this.apiService.fetchApi<unknown>(
+      '/messages/delete-many',
+      messagesIds,
+      'PUT'
+    )
+  }
+
+
 }

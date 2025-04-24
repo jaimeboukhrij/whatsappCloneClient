@@ -23,6 +23,7 @@ import { MicroIconComponent } from './micro-icon/micro-icon.component'
 import { ExpressionsIconComponent } from './expressions-icon/expressions-icon.component'
 import { MessageIconComponent } from './message-icon/message-icon.component'
 import { CheckIconComponent } from './check-icon/check-icon.component'
+import { TrushIconComponent } from './trush-icon/trush-icon.component'
 
 @NgModule({
   declarations: [
@@ -49,7 +50,8 @@ import { CheckIconComponent } from './check-icon/check-icon.component'
     MicroIconComponent,
     ExpressionsIconComponent,
     MessageIconComponent,
-    CheckIconComponent
+    CheckIconComponent,
+    TrushIconComponent
   ],
 
   exports: [
@@ -76,7 +78,8 @@ import { CheckIconComponent } from './check-icon/check-icon.component'
     MicroIconComponent,
     ExpressionsIconComponent,
     MessageIconComponent,
-    CheckIconComponent
+    CheckIconComponent,
+    TrushIconComponent
   ]
 })
 export class IconsModule {}

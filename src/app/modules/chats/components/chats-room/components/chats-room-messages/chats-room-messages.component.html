@@ -1,7 +1,10 @@
-<section class="message-container"
+<section class="message-container delete-message"
   [ngClass]="{ received: messageData?.type === 'received', sent: messageData?.type === 'sent' }">
-
-  <div class="message" [ngClass]="{ received: messageData?.type === 'received', sent: messageData?.type === 'sent' }"
+  <div class="check-box-container" [ngClass]="{deleteMessage:currentMessagesOptionsId() === 'remove'}">
+    <input type="checkbox" (change)="onCheckboxChange($event)" [checked]="isChecked()" class=" custom-checkbox ">
+  </div>
+  <div class=" message"
+    [ngClass]="{ received: messageData?.type === 'received', sent: messageData?.type === 'sent',deleteMessage:currentMessagesOptionsId() === 'remove' }"
     (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()">
     @if (showName()) {
     <p [ngStyle]="{'color': dynamicColor()}" class="mb-1 text-[14px]">{{messageData?.owner?.firstName}}</p>
@@ -39,3 +42,6 @@
 
   </div>
 </section>
+@if(showDeleteMessageModal()){
+<app-chat-room-delete-message-modal />
+}

@@ -1,4 +1,4 @@
-import { Injectable, WritableSignal, signal } from '@angular/core'
+import { Injectable, WritableSignal, effect, signal } from '@angular/core'
 import { BehaviorSubject, catchError, of, switchMap } from 'rxjs'
 import { MessageApiService } from '../../../../../../../core/services/api/message-api.service'
 import { SocketStatusService } from '../../../../../../../core/services/socket/socket-status.service'
@@ -7,6 +7,7 @@ import { ChatI } from '../../../../../model'
 import { ChatRoomMessageI, ChatRoomCreateMessageI } from '../../../../../model/chat-room-messages.interface'
 import { ChatService } from '../../../../../services/chats.service'
 import { ChatsRoomService } from '../../../services/chats-room.service'
+import { ChatsRoomMessageOptionsService } from './chats-room-messages-options.service'
 
 @Injectable({ providedIn: 'root' })
 export class ChatRoomMessagesService {
@@ -15,6 +16,7 @@ export class ChatRoomMessagesService {
   currentChatRoomData: WritableSignal< ChatI | null> = signal(null)
   private readonly scrollBottomChatRoomSubject = new BehaviorSubject<boolean>(false)
   scrollBottomChatRoom$ = this.scrollBottomChatRoomSubject.asObservable()
+  showDeleteMessageModal = signal(false)
 
 
   constructor (
@@ -22,21 +24,24 @@ export class ChatRoomMessagesService {
     private readonly chatsService: ChatService,
     private readonly socketStatusService: SocketStatusService,
     private readonly chatsRoomService: ChatsRoomService,
-    private readonly messageApiServcice: MessageApiService
+    private readonly messageApiServcice: MessageApiService,
+    private readonly chatsRoomMessageOptionsService: ChatsRoomMessageOptionsService
   ) {
-
+    this.currentChatRoomData = this.chatsRoomService.currentChatRoomData
+    effect(()=>{
+      const currentChatRoom = this.currentChatRoomData()
+      this.getChatRoomMessages(currentChatRoom)
+    })
   }
 
 
-  getChatRoomMessages () {
-    this.currentChatRoomData.set(this.chatsRoomService.currentChatRoomData())
-    const currentChatRoomData =  this.currentChatRoomData()
-    if (!currentChatRoomData) return
-    const messages = currentChatRoomData?.messages ?? []
+
+  getChatRoomMessages (currentChatRoom: ChatI | null) {
+
+    if (!currentChatRoom) return
+    const messages = currentChatRoom?.messages ?? []
     this.chatRoomMessages.set(messages)
-    // this.updateMessagesToRead( messages)
-
-
+    console.log('denterooo', messages)
   }
 
 
@@ -59,6 +64,71 @@ export class ChatRoomMessagesService {
       })
     )
   }
+
+  onDeleteMessageForMe () {
+    const currentUser = this.userService.loginUserData()
+    const currentMessages = this.chatRoomMessages()
+    if (!currentUser) return
+
+    const messagesToHide = this.chatsRoomMessageOptionsService.messagesIdsSelectedToDelete()
+      .map(messageId =>{
+        const currentMessage = currentMessages.find(mess => mess.id === messageId)!
+        const currentMessageHideUsers = currentMessage?.hideFor ?? []
+        currentMessageHideUsers.push(currentUser.id)
+        return ({ ...currentMessage, hideFor: currentMessageHideUsers })
+      })
+
+    const messagesToHideIds = messagesToHide.map(messages => messages.id)
+
+    const optimisticMessagesToShow = currentMessages.filter(message => !messagesToHideIds.includes(message.id) )
+
+    this.chatRoomMessages.set(this.transformMessageData(optimisticMessagesToShow))
+
+
+    this.updateManyMessages(messagesToHide)
+      .subscribe({
+        next: ()=>{
+          this.chatsRoomMessageOptionsService.currentMessagesOptionsId.set(null)
+          this.showDeleteMessageModal.set(false)
+          this.chatsRoomMessageOptionsService.messagesIdsSelectedToDelete.set([])
+        },
+        error: () =>{
+          this.chatRoomMessages.set(this.transformMessageData(currentMessages))
+        }
+      })
+
+  }
+
+  OnDeleteMessages () {
+    const currentMessages = this.chatRoomMessages()
+
+    const messagesIdsToDelete = this.chatsRoomMessageOptionsService.messagesIdsSelectedToDelete()
+    const currentUserId = this.userService.loginUserData()?.id
+    if (!currentUserId) return
+
+    const messagesToDelete = this.chatRoomMessages().filter(message => messagesIdsToDelete.includes(message.id))
+    const areCurrentUserMessages = messagesToDelete.every(message => message.owner.id === currentUserId)
+    if (!areCurrentUserMessages) return
+
+    const optimisticMessagesToShow = currentMessages.filter(message => !messagesIdsToDelete.includes(message.id) )
+    this.chatRoomMessages.set(this.transformMessageData(optimisticMessagesToShow))
+
+    this.messageApiServcice.deleteMany(messagesIdsToDelete).subscribe({
+      next: ()=>{
+        this.socketStatusService.emit('on-delete-message-client', this.chatsRoomService.currentChatRoomId())
+
+        this.chatsRoomMessageOptionsService.currentMessagesOptionsId.set(null)
+        this.showDeleteMessageModal.set(false)
+        this.chatsRoomMessageOptionsService.messagesIdsSelectedToDelete.set([])
+      },
+      error: ()=>{
+        this.chatRoomMessages.set(this.transformMessageData(currentMessages))
+      }
+    })
+
+
+  }
+
 
   createMessage (text: string) {
     if (!text) return
@@ -105,6 +175,14 @@ export class ChatRoomMessagesService {
 
     })
   }
+
+  deleteMessageSocker () {
+    this.socketStatusService.on('on-delete-message-server', ()=>{
+      console.log('en el socket')
+      this.chatsService.getChats().subscribe()
+    })
+  }
+
 
 
 

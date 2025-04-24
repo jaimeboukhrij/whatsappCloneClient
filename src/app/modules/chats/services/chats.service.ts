@@ -1,7 +1,8 @@
 import { inject, Injectable, signal,  WritableSignal } from '@angular/core'
 import { ChatI } from '../model'
-import { catchError, map, Observable, of, tap } from 'rxjs'
+import { catchError, map, Observable, of } from 'rxjs'
 import {  UserApiService } from '../../../core/services/api'
+import { UserService } from '../../user/services/user.service'
 
 @Injectable({
   providedIn: 'root'
@@ -9,6 +10,7 @@ import {  UserApiService } from '../../../core/services/api'
 export class ChatService {
 
   private readonly userApiService = inject(UserApiService)
+  private readonly userService = inject(UserService)
 
   public showArchivedChat = signal(false)
   public showSilencedNotificationsModal = signal({
@@ -28,19 +30,25 @@ export class ChatService {
 
   public getChats (updateChats = true): Observable<ChatI[]> {
     return this.userApiService.getUserChats().pipe(
-      map((chats) => this.sortChats(chats)),
-      tap((data) => {
-        console.log('*****', data)
-        const chatsVisibles = data.filter((chat) => !chat.isArchived)
+      map((chats) => {
+        const sorted = this.sortChats(chats)
+        const chatsVisibles = sorted
+          .filter(chat => !chat.isArchived)
         if (updateChats) this.chats.set(chatsVisibles)
-        this.originalChats.set(data)
+        this.originalChats.set(sorted)
         this.getMessagesChatsWithOutRead(chatsVisibles)
+
+        console.log('***', this.chats())
+
+        return chatsVisibles
       }),
       catchError((error) => {
         console.log(error)
         return of([])
       })
     )
+
+
   }
 
 

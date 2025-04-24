@@ -20,7 +20,6 @@ export class ChatsRoomMessagesOptionsComponent implements OnInit {
   public startAnimation = signal<OriginStartEnum>(OriginStartEnum.bottom_left)
   public messagesOptions = this.chatsRoomMessageOptionsService.messagesOptions
   public showChatRoomMessageOptions = this.chatsRoomMessageOptionsService.showChatRoomMessageOptions
-
   @Input()messageData: ChatRoomMessageI | null = null
 
   ngOnInit () {
@@ -59,14 +58,15 @@ export class ChatsRoomMessagesOptionsComponent implements OnInit {
     this.startAnimation.set(direction)
   }
 
-
-
-
   onClickOptionsButton () {
     this.showChatRoomMessageOptions.update(prev => !prev)
     event?.stopImmediatePropagation()
-
     if (event) this.optionsSectionCordenates.set(this.getOptionsPosition(event))
+  }
+
+  onClickOption (data: { id: string, event: MouseEvent }) {
+    this.showChatRoomMessageOptions.update(prev => !prev)
+    this.chatsRoomMessageOptionsService.oncClickOption(data.id, this.messageData!)
   }
 
 }

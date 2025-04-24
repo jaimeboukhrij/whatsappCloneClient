@@ -1,11 +1,22 @@
 <footer class="min-h-[62px] h-auto pb-[5px] bg-[#1F2C33] px-[12px] flex  items-center">
+  @if(currentMessagesOptionsId() === 'remove'){
+  <section class="w-full px-6 flex justify-between items-center gap-2">
+    <div class=" flex justify-normal items-center gap-2">
+      <button (click)="onXClick()">
+        <shared-x-icon />
+      </button>
+      <p class="text-[#d1d7db] text-[14.5px]">{{messagesIdsSelectedToDelete().length}} seleccionados</p>
+    </div>
+    <button (click)="onTrushClick()">
+      <shared-trush-icon />
+    </button>
+  </section>
+  }@else {
   <button class="w-[40px]  flex justify-center items-center">
     <shared-plus-icon />
   </button>
   <section class="flex-1 bg-[#2a3942] min-h-[44px] my-[5px] mx-[8px] px-4 rounded-md flex items-center gap-4 h-auto">
-    <!-- <button>
-      <shared-expressions-icon />
-    </button> -->
+
     <button class="flex-1">
       <shared-emoji-picker (openEmojiPicker)="openEmojiPicker($event)" [emojiPickerData]="pickerEmojyData"
         (emitEmoji)="onEmojiChange($event)" />
@@ -19,4 +30,6 @@
   <button class="w-[40px]  flex justify-center items-center">
     <shared-micro-icon />
   </button>
+}
+
 </footer>

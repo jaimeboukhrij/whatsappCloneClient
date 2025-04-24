@@ -38,6 +38,7 @@ export class ChatsRoomComponent implements OnInit {
     this.chatsRoomService.usersWritingSocket()
     this.chatRoomMessagesService.newMessageSocket()
     this.chatRoomMessagesService.messageIsReadSocket()
+    this.chatRoomMessagesService.deleteMessageSocker()
     this.chatsRoomService.newGroupSocket()
 
     this.chatRoomMessagesService.scrollBottomChatRoom$.subscribe((shouldScroll: boolean)=>{

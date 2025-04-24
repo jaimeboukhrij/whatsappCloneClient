@@ -13,7 +13,7 @@ export class ChatsRoomBodyComponent implements OnInit {
   private readonly chatRoomMessagesService = inject(ChatRoomMessagesService)
   public messages: WritableSignal<ChatRoomMessageI[]> = this.chatRoomMessagesService.chatRoomMessages
   ngOnInit (): void {
-    this.chatRoomMessagesService.getChatRoomMessages()
+    // this.chatRoomMessagesService.getChatRoomMessages()
   }
 
 

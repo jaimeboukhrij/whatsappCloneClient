@@ -2,7 +2,7 @@ import { Component, inject, Input,  OnInit, signal } from '@angular/core'
 import { UserService } from '../../../../../user/services/user.service'
 import { ChatRoomMessageI } from '../../../../model/chat-room-messages.interface'
 import { ChatsRoomService } from '../../services/chats-room.service'
-import { ChatsRoomMessageOptionsService } from './services'
+import { ChatRoomMessagesService, ChatsRoomMessageOptionsService } from './services'
 
 @Component({
   selector: 'chats-room-messages',
@@ -15,11 +15,18 @@ export class ChatsRoomMessagesComponent implements OnInit {
   private readonly userService = inject(UserService)
   private readonly chatsRoomService = inject(ChatsRoomService)
   private readonly chatsRoomMessageOptionsService = inject(ChatsRoomMessageOptionsService)
+  private readonly chatRoomMessagesService = inject(ChatRoomMessagesService)
 
   @Input() messageData: ChatRoomMessageI | null = null
   @Input() typeChatRoom = ''
 
   public showChatRoomMessageButtonOptions = signal(false)
+  public currentMessagesOptionsId = this.chatsRoomMessageOptionsService.currentMessagesOptionsId
+  public messagesIdsSelectedToDelete =  this.chatsRoomMessageOptionsService.messagesIdsSelectedToDelete
+  public showDeleteMessageModal = this.chatRoomMessagesService.showDeleteMessageModal
+
+
+
 
   dynamicColor = signal('#06cf9c')
   isChatRoomGroup = signal(false)
@@ -50,4 +57,23 @@ export class ChatsRoomMessagesComponent implements OnInit {
     const newColor =  colors?.get(messageOwnerId) ?? '#06cf9c'
     this.dynamicColor.set(newColor)
   }
+
+  isChecked () {
+    const messageId = this.messageData?.id
+    if (!messageId) return
+    return this.messagesIdsSelectedToDelete().includes(messageId)
+  }
+
+  onCheckboxChange (event: any) {
+    const isChecked = event.target.checked
+    const messageId = this.messageData?.id
+    if (!messageId) return
+    if (isChecked) {
+      this.messagesIdsSelectedToDelete.update(prev => ([...prev, messageId]))
+      return
+    }
+    this.messagesIdsSelectedToDelete.update(prev => prev.filter(id => id !== messageId))
+  }
+
+
 }
