@@ -1,9 +1,19 @@
 <header class="flex justify-between items-center font-semibold h-[64px]">
   <h1 class="text-[1.375rem]">Chats</h1>
-  <section class="flex items-center gap-7">
+  <section class="flex items-center gap-4">
     <button (click)="onContactsIconClick()">
       <shared-new-chat-icon [iconColor]="iconColor" class="hover:cursor-pointer" />
     </button>
-    <shared-options-icon [iconColor]="iconColor" class="hover:cursor-pointer" />
+    <button [ngStyle]="{background:showOptions()?'rgba(255,255,255,.1)':'transparent'}" (click)="onOptionsIconClick($event)"
+      class="relative w-[40px] h-[40px] flex justify-center items-center rounded-full ">
+      <shared-options-icon [iconColor]="iconColor" class="hover:cursor-pointer" />
+      <section class="absolute w-[241px] h-[205px] z-10 container origin-top-right" [ngClass]="{'show': showOptions()}"
+        [ngStyle]="{ top: chatHeaderOptionsCordenates().y + 'px', right: chatHeaderOptionsCordenates().x  + 'px' }">
+        <chat-preview-options [options]="chatHeaderOptions()" (onClickEmit)="onOptionClick($event)" />
+      </section>
+      </button>
   </section>
 </header>
+@if(showCreateGroupView()){
+<groups-create-group-modal />
+}

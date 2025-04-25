@@ -21,7 +21,8 @@ import { ChatNotificationsSilencedModalComponent } from './components/chat-previ
 import { ChatPreviewLeaveGroupModalComponent } from './components/chat-preview/components/chat-preview-leave-group-modal/chat-preview-leave-group-modal.component'
 import { CreateGroupModalComponent } from './components/chats-room/components/chat-groups/components/create-group-modal/create-group-modal.component'
 import { ChatsRoomMessagesOptionsComponent } from './components/chats-room/components/chats-room-messages/components/chats-room-messages-options/chats-room-messages-options.component';
-import { ChatRoomDeleteMessageModalComponent } from './components/chats-room/components/chats-room-messages/components/chat-room-delete-message-modal/chat-room-delete-message-modal.component'
+import { ChatRoomDeleteMessageModalComponent } from './components/chats-room/components/chats-room-messages/components/chat-room-delete-message-modal/chat-room-delete-message-modal.component';
+import { ChatsStarredMessagesComponent } from './components/chats-starred-messages/chats-starred-messages.component'
 
 
 @NgModule({
@@ -41,7 +42,8 @@ import { ChatRoomDeleteMessageModalComponent } from './components/chats-room/com
     ChatPreviewLeaveGroupModalComponent,
     CreateGroupModalComponent,
     ChatsRoomMessagesOptionsComponent,
-    ChatRoomDeleteMessageModalComponent
+    ChatRoomDeleteMessageModalComponent,
+    ChatsStarredMessagesComponent
   ],
   imports: [
     CommonModule,
