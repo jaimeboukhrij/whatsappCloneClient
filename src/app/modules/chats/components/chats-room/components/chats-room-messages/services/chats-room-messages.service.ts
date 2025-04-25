@@ -35,13 +35,42 @@ export class ChatRoomMessagesService {
   }
 
 
+  canDeleteMessages () {
+    const messagesToDelete = this.chatsRoomMessageOptionsService
+      .messagesIdsSelectedToDelete()
+      .map(messageIdToDelete => this.chatRoomMessages()
+        .find(message => message.id === messageIdToDelete)
+      )
+
+    const messagesToDeleteOwnerId = messagesToDelete.map(message => message?.owner.id)
+
+    const currentUserId = this.userService.loginUserData()?.id
+
+
+    if (!currentUserId || !messagesToDelete.length) return false
+
+    const areOwnerMesssagesToDelete =  messagesToDeleteOwnerId.every(messageOwnerIdToDelete => messageOwnerIdToDelete === currentUserId )
+    const messagesHasMoreTan10Minutes = messagesToDelete.some(message => { message && this.isMoreThan10MinutesOld(message.date) })
+
+    return areOwnerMesssagesToDelete && !messagesHasMoreTan10Minutes
+
+  }
+
+  private isMoreThan10MinutesOld (dateString: string): boolean {
+    const date = new Date(dateString)
+    const now = new Date()
+
+    const diffInMs = now.getTime() - date.getTime()
+    const diffInMinutes = diffInMs / 1000 / 60
+
+    return diffInMinutes > 10
+  }
+
 
   getChatRoomMessages (currentChatRoom: ChatI | null) {
-
     if (!currentChatRoom) return
     const messages = currentChatRoom?.messages ?? []
     this.chatRoomMessages.set(messages)
-    console.log('denterooo', messages)
   }
 
 
@@ -178,7 +207,6 @@ export class ChatRoomMessagesService {
 
   deleteMessageSocker () {
     this.socketStatusService.on('on-delete-message-server', ()=>{
-      console.log('en el socket')
       this.chatsService.getChats().subscribe()
     })
   }

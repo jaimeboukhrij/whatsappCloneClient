@@ -25,6 +25,8 @@ export class ChatPreviewComponent {
   public chatPreviewOptions
   public startAnimation
   public _chatPreviewData =  signal<ChatI | null>(null)
+  public showOptions = signal(false)
+  public chatClickedToShowOptionsId = signal<string | null>(null)
 
   @Input() set chatPreviewData (data: ChatI) {
     this._chatPreviewData.set(data)
@@ -39,12 +41,15 @@ export class ChatPreviewComponent {
     this.chatPreviewOptionsCordenates = this.chatPreviewService.chatPreviewOptionsCordenates
     this.startAnimation = this.chatPreviewService.startAnimation
     this.chatPreviewOptions = this.chatPreviewOptionsService.chatPreviewOptions
+    this.chatClickedToShowOptionsId = this.chatPreviewOptionsService.chatClickedToShowOptionsId
   }
 
 
 
   async onClickOption (data: { id: string, event: MouseEvent }) {
     const { id, event } = data
+    this.chatPreviewOptionsService.chatClickedToShowOptionsId.set(null)
+
     const chatId = this._chatPreviewData()?.id
     await this.chatPreviewOptionsService.onClickOptions(id, event, chatId ?? '')
   }
@@ -59,18 +64,20 @@ export class ChatPreviewComponent {
     this.isInCard.set(false)
   }
 
-  onShowOption (event?: Event, id?: string) {
+  onShowOption (event: Event, selectedChatId: string) {
+    event.stopImmediatePropagation()
 
-    event?.stopImmediatePropagation()
-    if (event) this.chatPreviewOptionsCordenates.set(this.chatPreviewService.getOptionsPosition(event))
+    this.chatPreviewOptionsCordenates.set(this.chatPreviewService.getOptionsPosition(event))
+    const currentChatId = this._chatPreviewData()!.id
+    const currentSelectedChatid =  this.chatPreviewOptionsService.chatClickedToShowOptionsId()
 
-    if (this._chatPreviewData()?.showOptions) {
-      this.setShowChatOptions('')
-    } else {
-      this.chatPreviewService.resetShowOptions()
-      this.chatPreviewOptionsService.updateChatPreviewData(this._chatPreviewData()!)
-      this.setShowChatOptions(id ?? '')
+    if (currentChatId === currentSelectedChatid) {
+      this.chatPreviewOptionsService.chatClickedToShowOptionsId.set(null)
+      return
     }
+    this.chatPreviewOptionsService.updateChatPreviewData(this._chatPreviewData()!)
+
+    this.chatPreviewOptionsService.chatClickedToShowOptionsId.set(selectedChatId)
   }
 
   onClickChatPreview () {
@@ -82,25 +89,15 @@ export class ChatPreviewComponent {
 
   @HostListener('document:click', ['$event'])
   onClickOutside (event: Event) {
-    if (!this._chatPreviewData()?.showOptions) return
+    if (!this.chatPreviewOptionsService.chatClickedToShowOptionsId()) return
     const target = event.target as HTMLElement
 
-    if (
-      !target.closest('.chat-options') &&
-      this._chatPreviewData()?.showOptions
-    ) {
-      this.onShowOption()
+    if (!target.closest('.chat-options') ) {
+      this.chatPreviewOptionsService.chatClickedToShowOptionsId.set(null)
+
     }
   }
 
-  public setShowChatOptions = (id: string) => {
-    setTimeout(() => {
-      this._chatPreviewData.update(prevChat => {
-        if (!prevChat) return prevChat
-        return { ...prevChat, showOptions: prevChat.id === id }
-      })
-    }, 0)
-  }
 }
 
 

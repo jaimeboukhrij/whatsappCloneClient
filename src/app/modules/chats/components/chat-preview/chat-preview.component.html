@@ -61,7 +61,7 @@
           class="bg-[#00a884] text-black text-xs grid place-items-center rounded-full w-[20px] h-[20px]">{{messagesData()!.messagesWithOutRead}}</span>
         }
         @if (isInCard()) {
-        <button (click)="onShowOption($event,_chatPreviewData()?.id!); $event.stopPropagation()">
+        <button (click)="onShowOption($event,_chatPreviewData()?.id!)">
           <shared-chevron-icon />
         </button>
         }
@@ -75,7 +75,7 @@
 </button>
 
 <section class="absolute w-auto h-[298px] z-10 container prueba2" [ngClass]="{
-  'show': _chatPreviewData()?.showOptions,
+  'show': chatClickedToShowOptionsId() === _chatPreviewData()!.id,
   'origin-top-left':startAnimation() === 'top_left',
   'origin-top-right': startAnimation() === 'top_right',
   'origin-bottom-left': startAnimation() === 'bottom_left',

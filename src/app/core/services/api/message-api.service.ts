@@ -32,7 +32,6 @@ export class MessageApiService {
   }
 
   deleteMany (messagesIds: string[]): Observable<unknown> {
-    console.log('servicio', messagesIds)
     return this.apiService.fetchApi<unknown>(
       '/messages/delete-many',
       messagesIds,

@@ -43,12 +43,12 @@ export class ChatsRoomMessagesComponent implements OnInit {
   }
 
   onMouseEnter () {
-    if (this.chatsRoomMessageOptionsService.showChatRoomMessageOptions()) return
+    if (this.chatsRoomMessageOptionsService.messageClickedIdToShowOptiones()) return
     this.showChatRoomMessageButtonOptions.set(true)
   }
 
   onMouseLeave () {
-    if (this.chatsRoomMessageOptionsService.showChatRoomMessageOptions()) return
+    if (this.chatsRoomMessageOptionsService.messageClickedIdToShowOptiones()) return
     this.showChatRoomMessageButtonOptions.set(false)
   }
 
@@ -74,6 +74,7 @@ export class ChatsRoomMessagesComponent implements OnInit {
     }
     this.messagesIdsSelectedToDelete.update(prev => prev.filter(id => id !== messageId))
   }
+
 
 
 }

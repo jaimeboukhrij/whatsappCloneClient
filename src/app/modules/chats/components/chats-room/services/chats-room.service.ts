@@ -1,4 +1,4 @@
-import { Injectable, signal,  WritableSignal } from '@angular/core'
+import { effect, Injectable, signal,  WritableSignal } from '@angular/core'
 
 import { BehaviorSubject, catchError, Observable, of, switchMap, tap } from 'rxjs'
 import { ChatRoomApiService } from '../../../../../core/services/api'
@@ -15,6 +15,7 @@ import { ChatFiltersService } from '../../../services/chats-filters.service'
 export class ChatsRoomService {
   currentChatRoomId = signal('')
   currentChatRoomData: WritableSignal<ChatI | null> = signal(null)
+  currentChats: WritableSignal<ChatI[]> = signal([])
   onlineUsersSubject = new BehaviorSubject<string[]>([])
   onlineUsers$ = this.onlineUsersSubject.asObservable()
   writingUsersSubject = new BehaviorSubject< Array<{ userID: string, chatRoomId: string }>>([])
@@ -28,13 +29,21 @@ export class ChatsRoomService {
     private readonly socketStatusService: SocketStatusService,
     private readonly chatService: ChatService,
     private readonly chatFiltersService: ChatFiltersService
-
   ) {
+    this.currentChats = this.chatService.chats
 
+    effect(() => {
+      const id = this.currentChatRoomId()
+      const chats = this.currentChats()
+
+      if (id && chats.length > 0) {
+        this.updateChatRoomData()
+      }
+    })
   }
 
   public async deleteChatRoom (id: string, newChats: ChatI[]) {
-    const prevChats = this.chatService.chats()
+    const prevChats =  this.currentChats()
     this.chatService.chats.set(newChats)
 
     this.chatRoomApiService.deleteChatRoom(id).subscribe({
@@ -52,10 +61,9 @@ export class ChatsRoomService {
     return this.chatRoomApiService.findOneChatRoom(chatId)
   }
 
-
   public updateChatRoom (id: string, data: Partial<UpdateChatRoomDto>, filter: ChatPreviewFiltersEnum = ChatPreviewFiltersEnum.ALL): Observable<any> {
 
-    const prevChats = this.chatService.chats()
+    const prevChats =  this.currentChats()
     return this.chatRoomApiService.updateChatRoom(id, data).pipe(
       switchMap(() => this.chatService.getChats()),
       tap(() => {
@@ -69,10 +77,6 @@ export class ChatsRoomService {
 
   }
 
-
-
-
-
   createChatRoom (createChatRoomDto: CreateChatRoomDto): Observable<ChatI> {
     return this.chatRoomApiService.createChatRoom(createChatRoomDto)
   }
@@ -83,13 +87,12 @@ export class ChatsRoomService {
       return
     }
     this.currentChatRoomId.set(id)
-    this.updateChatRoomData()
   }
 
   updateChatRoomData () {
     this.isLoading.set(true)
     const id = this.currentChatRoomId()
-    const chats = this.chatService.chats()
+    const chats =  this.currentChats()
     const foundChat = chats.find(chat => chat.id === id)
 
     if (foundChat) {
@@ -98,7 +101,7 @@ export class ChatsRoomService {
     }
     setTimeout(() => {
       this.isLoading.set(false)
-    }, 1)
+    }, 0)
   }
 
   private addColorToNamesInGroups (foundChat: ChatI) {
@@ -134,7 +137,6 @@ export class ChatsRoomService {
     })
   }
 
-
   usersOnlineSocket () {
     this.socketStatusService.on('users-online-updated', (uids: string[]) => {
       this.chatService.getChats().subscribe()
@@ -144,7 +146,6 @@ export class ChatsRoomService {
 
   usersWritingSocket () {
     this.socketStatusService.on('writing-from-server', (data: Array<{ userID: string, chatRoomId: string }>) => {
-
       this.writingUsersSubject.next(data)
     })
   }

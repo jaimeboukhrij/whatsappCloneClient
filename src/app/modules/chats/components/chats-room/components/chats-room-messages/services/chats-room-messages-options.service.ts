@@ -3,8 +3,8 @@ import { ChatRoomMessageI } from '../../../../../model/chat-room-messages.interf
 
 @Injectable({ providedIn: 'root' })
 export class ChatsRoomMessageOptionsService {
-  public currentMessagesOptionsId = signal<string | null>('null')
-  public showChatRoomMessageOptions = signal(false)
+  public currentMessagesOptionsId = signal<string | null>(null)
+  public messageClickedIdToShowOptiones = signal<string | null>(null)
   public messagesIdsSelectedToDelete = signal<string[]>([])
   public messagesOptions = [
     {
@@ -36,7 +36,6 @@ export class ChatsRoomMessageOptionsService {
       name: 'Eliminar'
     }
   ]
-
 
 
 

@@ -37,6 +37,7 @@ export class ChatsRoomFooterComponent  {
 
   onXClick () {
     this.messagesIdsSelectedToDelete.set([])
+    this.currentMessagesOptionsId.set(null)
   }
 
   onTrushClick () {

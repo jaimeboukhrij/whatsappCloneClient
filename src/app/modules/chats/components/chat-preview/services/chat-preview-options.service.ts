@@ -21,6 +21,8 @@ export class ChatPreviewOptionsService {
 
   private readonly chatPreviewData = signal<ChatI | null>(null)
   public chatPreviewOptions =  signal<Array<{ id: string, name: string }>>([])
+  public chatClickedToShowOptionsId = signal<string | null>(null)
+
 
 
 

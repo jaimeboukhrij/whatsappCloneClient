@@ -101,10 +101,6 @@ export class ChatPreviewService {
     this.chatsRoomService.changeChatRoomData(chatRoomId)
   }
 
-  resetShowOptions () {
-    this.chatService.chats.update(prev => prev.map(chat => ({ ...chat, showOptions: false })))
-  }
-
 
 
 }

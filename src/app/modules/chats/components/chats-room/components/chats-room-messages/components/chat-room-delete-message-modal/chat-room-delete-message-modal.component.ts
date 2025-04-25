@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core'
+import { Component, inject, OnInit } from '@angular/core'
 import { ChatRoomMessagesService } from '../../services'
 
 @Component({
@@ -7,9 +7,15 @@ import { ChatRoomMessagesService } from '../../services'
   templateUrl: './chat-room-delete-message-modal.component.html',
   styles: ''
 })
-export class ChatRoomDeleteMessageModalComponent {
+export class ChatRoomDeleteMessageModalComponent implements OnInit {
 
   private readonly chatRoomMessagesService = inject(ChatRoomMessagesService)
+  public canDeleteMessages: boolean = false
+
+  ngOnInit (): void {
+    this.canDeleteMessages = this.chatRoomMessagesService.canDeleteMessages()
+  }
+
 
   onCancel () {
     this.chatRoomMessagesService.showDeleteMessageModal.set(false)

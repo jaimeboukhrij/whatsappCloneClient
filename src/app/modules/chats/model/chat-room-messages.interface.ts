@@ -3,7 +3,7 @@ import {  IUser } from '../../../shared/interfaces/user.interface'
 export interface ChatRoomMessageI {
   id: string
   text: string
-  date: Date
+  date: string
   owner: IUser
   chatRoomId: string
   type: 'received' | 'sent'

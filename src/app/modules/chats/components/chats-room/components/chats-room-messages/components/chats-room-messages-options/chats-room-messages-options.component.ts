@@ -1,5 +1,5 @@
 import { OriginStartEnum } from '../../../../../../../../shared/components/chat-preview-options/interfaces/options-section.interface'
-import { Component, inject, Input, OnInit, signal } from '@angular/core'
+import { Component, HostListener, inject, Input, OnInit, signal } from '@angular/core'
 import { ChatRoomMessageI } from '../../../../../../model/chat-room-messages.interface'
 import { UtilsService } from '../../../../../../../../core/services/utils.service'
 import { ChatsRoomMessageOptionsService } from '../../services'
@@ -19,7 +19,8 @@ export class ChatsRoomMessagesOptionsComponent implements OnInit {
   public optionsSectionCordenates = signal({ x: 0, y: 0 })
   public startAnimation = signal<OriginStartEnum>(OriginStartEnum.bottom_left)
   public messagesOptions = this.chatsRoomMessageOptionsService.messagesOptions
-  public showChatRoomMessageOptions = this.chatsRoomMessageOptionsService.showChatRoomMessageOptions
+  public messageClickedIdToShowOptiones = this.chatsRoomMessageOptionsService.messageClickedIdToShowOptiones
+
   @Input()messageData: ChatRoomMessageI | null = null
 
   ngOnInit () {
@@ -58,15 +59,36 @@ export class ChatsRoomMessagesOptionsComponent implements OnInit {
     this.startAnimation.set(direction)
   }
 
-  onClickOptionsButton () {
-    this.showChatRoomMessageOptions.update(prev => !prev)
-    event?.stopImmediatePropagation()
-    if (event) this.optionsSectionCordenates.set(this.getOptionsPosition(event))
+  onClickOptionsButton (event: Event) {
+    event.stopPropagation()
+    const currentMessageId = this.messageData!.id
+    const currentSelectedMessageId =  this.messageClickedIdToShowOptiones()
+
+    console.log('dentroo', currentMessageId, currentSelectedMessageId)
+
+    if (currentMessageId === currentSelectedMessageId) {
+      this.messageClickedIdToShowOptiones.set(null)
+      return
+    }
+    this.optionsSectionCordenates.set(this.getOptionsPosition(event))
+    this.messageClickedIdToShowOptiones.set(currentMessageId)
+
   }
 
   onClickOption (data: { id: string, event: MouseEvent }) {
-    this.showChatRoomMessageOptions.update(prev => !prev)
+    this.messageClickedIdToShowOptiones.set(null)
     this.chatsRoomMessageOptionsService.oncClickOption(data.id, this.messageData!)
+  }
+
+  @HostListener('document:click', ['$event'])
+  onClickOutside (event: Event) {
+    if (!this.messageClickedIdToShowOptiones()) return
+    const target = event.target as HTMLElement
+
+    if (!target.closest('.chat-options') ) {
+      this.messageClickedIdToShowOptiones.set(null)
+
+    }
   }
 
 }

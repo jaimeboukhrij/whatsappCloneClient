@@ -1,15 +1,17 @@
 <section style="background-color: rgba(11, 20, 26, 0.85)"
   class="fixed w-full h-[100vh] bg-[rgba(11, 20, 26, .85)] left-0 top-0 z flex justify-center items-center z-50">
-  <article class="w-[500px] h-[323px] bg-[#3B4A55] px-[24px] py-[22px] flex flex-col gap-[15px]">
+  <article class="w-[500px] h-auto bg-[#3B4A55] px-[24px] py-[22px] flex flex-col gap-[15px]">
 
     <h2 class="text-[20px] text-[#d1d7db]">¿Desea eliminar este mensaje?</h2>
     <p class="text-[14px] text-[#aebac1]">Solo quienes administran el grupo recibirán una notificación de que
       abandonaste el chat grupal.</p>
     <section class="w-full flex flex-col items-end gap-4 pt-8">
-
+      @if(canDeleteMessages){
       <button type="submit" (click)="onDeleteMessage()"
-        class=" bg-[#00A884] py-[9px] px-[21px] rounded-full text-[#111b21] text-[14px] w-[168px] hover:bg-[#06cf9c]">Eliminar
-        para todos</button>
+        class=" bg-[#00A884] py-[9px] px-[21px] rounded-full text-[#111b21] text-[14px] w-[168px] hover:bg-[#06cf9c]">
+        Eliminarpara todos
+      </button>
+      }
       <button type="submit" (click)="onDeleteMessageForMe()"
         class=" bg-[#00A884] py-[9px] px-[21px] rounded-full text-[#111b21] text-[14px] w-[145px] hover:bg-[#06cf9c]">Eliminar
         para mi</button>
