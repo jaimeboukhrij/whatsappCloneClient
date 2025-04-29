@@ -1,4 +1,4 @@
-import {  IUser } from '../../../shared/interfaces/user.interface'
+import {  IUser } from '../../../../../shared/interfaces/user.interface'
 
 export interface ChatRoomMessageI {
   id: string

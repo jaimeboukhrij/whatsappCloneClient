@@ -1,6 +1,6 @@
 import { Component, inject, Input,  OnInit, signal } from '@angular/core'
 import { UserService } from '../../../../../user/services/user.service'
-import { ChatRoomMessageI } from '../../../../model/chat-room-messages.interface'
+import { ChatRoomMessageI } from '../../interfaces/chat-room-messages.interface'
 import { ChatsRoomService } from '../../services/chats-room.service'
 import { ChatRoomMessagesService } from './services'
 

@@ -1,12 +1,14 @@
 import { inject, signal } from '@angular/core'
 import { UtilsService } from '../../../../../core/services/utils.service'
 import { UserService } from '../../../../user/services/user.service'
-import { MessagesDataI, ChatI } from '../../../model'
 import { ChatPreviewOptionsService } from './chat-preview-options.service'
 import { ChatService } from '../../../services/chats.service'
 import { ChatsRoomService } from '../../chats-room/services/chats-room.service'
 import { catchError, map, of, switchMap, tap } from 'rxjs'
 import { OriginStartEnum } from '../../../../../shared/components/chat-preview-options/interfaces/options-section.interface'
+import { ChatI } from '../../../interfaces'
+import { ChatPreviewMessagesDataI } from '../interfaces/chat-preview.interface'
+
 
 export class ChatPreviewService {
   private readonly chatPreviewOptionsService = inject(ChatPreviewOptionsService)
@@ -16,7 +18,7 @@ export class ChatPreviewService {
   private readonly chatService = inject(ChatService)
   public chatPreviewOptionsCordenates = signal({ x: 0, y: 0 })
   public startAnimation = signal<OriginStartEnum>(OriginStartEnum.top_left)
-  public messagesData = signal<MessagesDataI>({
+  public messagesData = signal<ChatPreviewMessagesDataI>({
     lastMessage: null,
     lastMessageUser: null,
     isUserMessage: false,
@@ -85,7 +87,7 @@ export class ChatPreviewService {
           const filterUsers = chatRoom.users.filter(user => user.id !== currentUserId).map(user => user.id)
           return filterUsers
         }),
-        switchMap(filteredUsers =>this.chatsRoomService.updateChatRoom(chatId, { users: filteredUsers })),
+        switchMap(filteredUsers =>this.chatsRoomService.updateChatRoom(chatId, { usersId: filteredUsers })),
         tap(() => { this.onCancelLeaveGroupModal(chatId) } ),
         catchError(error => {
           console.error('Error al dejar el grupo:', error)

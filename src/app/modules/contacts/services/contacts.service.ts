@@ -1,30 +1,27 @@
 import { inject, Injectable, signal } from '@angular/core'
 import { StorageService } from '../../../core/services/storage.service'
-import {  ContactInterface } from '../model'
 import { debounceTime, EMPTY, from, Subject, switchMap, tap } from 'rxjs'
 import { ContactApiService } from '../../../core/services/api'
-import {  IUser } from '../../../shared/interfaces/user.interface'
-import { ChatApiService } from '../../../core/services/api/chat-api.service'
 import { Router } from '@angular/router'
 import { ChatService } from '../../chats/services/chats.service'
 import { ChatsRoomService } from '../../chats/components/chats-room/services/chats-room.service'
 import { CreateChatRoomDto } from '../../chats/components/chats-room/interfaces'
+import { ContactI, ContactsViewI } from '../interfaces'
 
 @Injectable({ providedIn: 'root' })
 export class ContactsService {
   private readonly storageService = inject(StorageService)
   private readonly contactApiService = inject(ContactApiService)
-  private readonly chatApiService = inject(ChatApiService)
   private readonly router = inject(Router)
   private readonly chatsRoomService = inject(ChatsRoomService)
   private readonly chatService = inject(ChatService)
 
   private readonly searchQuery$ = new Subject<string>()
   private readonly firstLetterSet = new Set<string>()
-  private readonly originalContactData = signal<IUser[]>([])
-  public contactsData = signal<ContactInterface[]>([])
+  private readonly originalContactData = signal<ContactI[]>([])
+  public contactsViewData = signal<ContactsViewI[]>([])
   public isChatInputLoading = signal(false)
-  public userContacts = signal<IUser[]>([])
+  public userContacts = signal<ContactI[]>([])
 
   constructor () {
     this.filterByQuery()
@@ -32,10 +29,10 @@ export class ContactsService {
 
   public getContactsData (): void {
     const storedData =
-      this.storageService.getItem<ContactInterface[]>('contactsData')
+      this.storageService.getItem<ContactsViewI[]>('contactsData')
 
     if (storedData && Date.now() - storedData.timestamp < 60 * 60 * 1000) {
-      this.contactsData.set(storedData.data)
+      this.contactsViewData.set(storedData.data)
       this.originalContactData.set(
         this.getUserDataFromContact(storedData.data)
       )
@@ -44,7 +41,7 @@ export class ContactsService {
 
     this.contactApiService.getApiContacts().subscribe((contacts) => {
       const transformedContactsData = this.transformContactsData(contacts)
-      this.contactsData.set(transformedContactsData)
+      this.contactsViewData.set(transformedContactsData)
       this.storageService.setItem('contactsData', transformedContactsData)
 
       this.originalContactData.set(contacts)
@@ -52,7 +49,7 @@ export class ContactsService {
   }
 
   public async geUserContacts () {
-    return await new Promise<IUser[]>((resolve) => {
+    return await new Promise<ContactI[]>((resolve) => {
       this.contactApiService.getApiContacts().subscribe((contacts) => {
         this.userContacts.set(contacts)
         resolve(contacts)
@@ -104,7 +101,7 @@ export class ContactsService {
     this.searchQuery$.pipe(debounceTime(200)).subscribe((query) => {
       this.isChatInputLoading.set(false)
       if (!query) {
-        this.contactsData.set(
+        this.contactsViewData.set(
           this.transformContactsData(this.originalContactData())
         )
         return
@@ -119,23 +116,23 @@ export class ContactsService {
       ({ firstName }) => firstName.toUpperCase().includes(upperQuery)
     )
 
-    this.contactsData.set(this.transformContactsData(contactsFilterByQuery))
+    this.contactsViewData.set(this.transformContactsData(contactsFilterByQuery))
   }
 
-  private transformContactsData (contacts: IUser[]) {
+  private transformContactsData (contacts: ContactI[]) {
     this.getFirstLettersOfContactData(contacts)
     return this.getSortedContactDataByLetter(contacts)
   }
 
-  private getFirstLettersOfContactData (contacts: IUser[]) {
+  private getFirstLettersOfContactData (contacts: ContactI[]) {
     this.firstLetterSet.clear()
     contacts
       .sort((a, b) => a.firstName.localeCompare(b.firstName))
       .forEach((contact) => this.firstLetterSet.add(contact.firstName[0]))
   }
 
-  private getSortedContactDataByLetter (contacts: IUser[]) {
-    const sortedContactsDataByLetter: ContactInterface[] = []
+  private getSortedContactDataByLetter (contacts: ContactI[]) {
+    const sortedContactsDataByLetter: ContactsViewI[] = []
 
     this.firstLetterSet.forEach((letter) => {
       const filterContacts = contacts.filter(
@@ -148,8 +145,8 @@ export class ContactsService {
     return sortedContactsDataByLetter
   }
 
-  private getUserDataFromContact (contacts: ContactInterface[]): IUser[] {
-    const contactData: IUser[] = []
+  private getUserDataFromContact (contacts: ContactsViewI[]): ContactI[] {
+    const contactData: ContactI[] = []
     contacts.forEach((contact) => contactData.push(...contact.data))
     return contactData
   }

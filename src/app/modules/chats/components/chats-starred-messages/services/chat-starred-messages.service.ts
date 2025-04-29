@@ -1,5 +1,5 @@
 import { Injectable, signal } from '@angular/core'
-import { MessagesDataI } from '../../../model'
+import { ChatRoomMessageI } from '../../chats-room/interfaces'
 
 
 @Injectable({ providedIn: 'root' })
@@ -13,7 +13,7 @@ export class ChatStarredMessagesService {
   ])
 
 
-  updateStarredMessagesData (starredMessages: MessagesDataI[]) {
+  updateStarredMessagesData (starredMessages: ChatRoomMessageI[]) {
 
     // const starredMessagesData = starredMessages.map(starredMessage => {
     //   const {} = starredMessage

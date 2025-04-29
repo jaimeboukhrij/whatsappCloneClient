@@ -1,4 +1,4 @@
-import { NotificationsSilencedEnum } from '../../chats/model'
+import { ChatINotificationsSilencedEnum } from '../../chats/interfaces'
 
 export interface BooleanItem {
   chatRoomId: string
@@ -7,7 +7,7 @@ export interface BooleanItem {
 
 export interface EnumItem {
   chatRoomId: string
-  value: NotificationsSilencedEnum
+  value: ChatINotificationsSilencedEnum
 }
 
 export interface DateItem {

@@ -1,6 +1,6 @@
 import { OriginStartEnum } from '../../../../../../../../shared/components/chat-preview-options/interfaces/options-section.interface'
 import { Component, HostListener, inject, Input, OnInit, signal } from '@angular/core'
-import { ChatRoomMessageI } from '../../../../../../model/chat-room-messages.interface'
+import { ChatRoomMessageI } from '../../../../interfaces/chat-room-messages.interface'
 import { UtilsService } from '../../../../../../../../core/services/utils.service'
 import { ChatRoomMessagesService } from '../../services'
 

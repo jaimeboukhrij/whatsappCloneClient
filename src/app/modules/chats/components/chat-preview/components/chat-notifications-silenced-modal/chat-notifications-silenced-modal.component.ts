@@ -1,7 +1,8 @@
 import { Component, inject, Input } from '@angular/core'
 import { ChatService } from '../../../../services/chats.service'
-import { NotificationsSilencedEnum } from '../../../../model'
+
 import { ChatPreviewOptionsService } from '../../services/chat-preview-options.service'
+import { ChatINotificationsSilencedEnum } from '../../../../interfaces'
 
 @Component({
   selector: 'chat-notifications-silenced-modal',
@@ -13,7 +14,7 @@ import { ChatPreviewOptionsService } from '../../services/chat-preview-options.s
 export class ChatNotificationsSilencedModalComponent {
   private readonly chatService = inject(ChatService)
   private readonly chatPreviewOptionsService = inject(ChatPreviewOptionsService)
-  public selectedMuteDuration = NotificationsSilencedEnum.HOUR
+  public selectedMuteDuration = ChatINotificationsSilencedEnum.HOUR
   @Input() chatId!: string
 
   onSubmit (event: Event) {

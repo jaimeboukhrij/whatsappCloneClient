@@ -1,5 +1,5 @@
 import { Component, inject, Input } from '@angular/core'
-import { ChatI, NotificationsSilencedEnum } from '../../../../model'
+import { ChatI, ChatINotificationsSilencedEnum } from '../../../../interfaces'
 import { ChatService } from '../../../../services/chats.service'
 import { ChatPreviewService } from '../../services/chat-preview.service'
 
@@ -13,7 +13,7 @@ import { ChatPreviewService } from '../../services/chat-preview.service'
 export class ChatPreviewLeaveGroupModalComponent {
   private readonly chatService = inject(ChatService)
   private readonly chatPreviewService = inject(ChatPreviewService)
-  public selectedMuteDuration = NotificationsSilencedEnum.HOUR
+  public selectedMuteDuration = ChatINotificationsSilencedEnum.HOUR
   private _chatId: string = ''
   public currentChatPreviwData: ChatI | null = null
 

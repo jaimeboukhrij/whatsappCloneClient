@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core'
-import {  ChatI } from '../../../modules/chats/model'
+import {  ChatI } from '../../../modules/chats/interfaces'
 import {  ApiService } from './api.service'
 import { of } from 'rxjs'
-import { UpdateChatRoomDto } from '../../../modules/chats/components/chats-room/interfaces/update-chat-room-dto'
+import { UpdateChatRoomDto } from '../../../modules/chats/components/chats-room/interfaces/chat-room-update.dto'
 import { CreateChatRoomDto } from '../../../modules/chats/components/chats-room/interfaces'
 
 

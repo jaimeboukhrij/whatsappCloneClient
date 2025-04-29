@@ -1,8 +1,9 @@
 import { Component, HostListener, OnInit, signal } from '@angular/core'
 import { ChatStarredMessagesService } from './services/chat-starred-messages.service'
 import { ChatService } from '../../services/chats.service'
-import { MessagesDataI } from '../../model'
 import { UserService } from '../../../user/services/user.service'
+import { ChatPreviewMessagesDataI } from '../chat-preview/interfaces/chat-preview.interface'
+
 
 @Component({
   selector: 'chats-starred-messages',
@@ -15,7 +16,7 @@ export class ChatsStarredMessagesComponent implements OnInit {
   showOptions = signal(false)
   chatStarredHeaderOptions
   showStarredMessages
-  public userStarredMessagesData = signal<MessagesDataI | []>([])
+  public userStarredMessagesData = signal<ChatPreviewMessagesDataI | []>([])
 
 
 

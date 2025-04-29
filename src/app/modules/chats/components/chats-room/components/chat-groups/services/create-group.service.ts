@@ -1,12 +1,12 @@
-import { ChatsRoomService } from './../../../services/chats-room.service'
+import { ChatsRoomService } from '../../../services/chats-room.service'
 import { Injectable, signal,  WritableSignal } from '@angular/core'
 import {  Router } from '@angular/router'
 import { debounceTime, Subject } from 'rxjs'
 import {  ContactsService } from '../../../../../../contacts/services'
-import {  IUser } from '../../../../../../../shared/interfaces/user.interface'
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms'
 import { CreateChatRoomDto } from '../../../interfaces'
 import { CloudinaryService } from '../../../../../../../core/services/api/cloudinary-api.service'
+import { ContactI } from '../../../../../../contacts/interfaces'
 
 @Injectable({ providedIn: 'root' })
 export class CreateGroupService {
@@ -14,8 +14,8 @@ export class CreateGroupService {
   public isDataLoading = signal(false)
   public isDataInputLoading = signal(false)
   public query = signal('')
-  public userContacts: WritableSignal<IUser[]> = signal([])
-  public originalUserContacts: WritableSignal<IUser[]> = signal([])
+  public userContacts: WritableSignal<ContactI[]> = signal([])
+  public originalUserContacts: WritableSignal<ContactI[]> = signal([])
   public searchQuery$ = new Subject<string>()
   public selectedFile = signal< File | undefined>(undefined)
   public createGroupForm: FormGroup

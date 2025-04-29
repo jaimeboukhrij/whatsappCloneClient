@@ -1,5 +1,5 @@
 import { inject, Injectable, signal,  WritableSignal } from '@angular/core'
-import { ChatI } from '../model'
+import { ChatI } from '../interfaces'
 import { catchError, map, Observable, of } from 'rxjs'
 import {  UserApiService } from '../../../core/services/api'
 import { UserService } from '../../user/services/user.service'
@@ -38,8 +38,6 @@ export class ChatService {
         if (updateChats) this.chats.set(chatsVisibles)
         this.originalChats.set(sorted)
         this.getMessagesChatsWithOutRead(chatsVisibles)
-
-        console.log('***', chatsVisibles)
         return chatsVisibles
       }),
       catchError((error) => {

@@ -1,11 +1,12 @@
 import { inject, Injectable, signal } from '@angular/core'
-import { ChatI, ChatPreviewFiltersEnum, NotificationsSilencedEnum } from '../../../model'
 import { ChatService } from '../../../services/chats.service'
 import { ChatsRoomService } from '../../chats-room/services/chats-room.service'
 import { ChatFiltersService } from '../../../services/chats-filters.service'
 import { UserService } from '../../../../user/services/user.service'
 import { switchMap, tap } from 'rxjs'
 import { ChatRoomMessagesService } from '../../chats-room/components/chats-room-messages/services/chats-room-messages.service'
+import { ChatFiltersEnum, ChatI, ChatINotificationsSilencedEnum } from '../../../interfaces'
+
 
 @Injectable({ providedIn: 'root' })
 export class ChatPreviewOptionsService {
@@ -122,8 +123,8 @@ export class ChatPreviewOptionsService {
 
 
 
-  readonly selectedMuteDuration = signal<NotificationsSilencedEnum | null>(
-    NotificationsSilencedEnum.HOUR
+  readonly selectedMuteDuration = signal<ChatINotificationsSilencedEnum | null>(
+    ChatINotificationsSilencedEnum.HOUR
   )
 
 
@@ -192,7 +193,7 @@ export class ChatPreviewOptionsService {
           : chat
       )
     })
-    this.chatFiltersService.filterChats(ChatPreviewFiltersEnum.ALL)
+    this.chatFiltersService.filterChats(ChatFiltersEnum.ALL)
 
     const currentUser = await this.userService.getUpdatedLoginUserData()
     if (!currentUser?.id || !currentUser.chatsRoomArchived) return
@@ -209,7 +210,7 @@ export class ChatPreviewOptionsService {
     this.userService.updateUser(currentUser.id, { chatsRoomNotificationsSilenced: notificationsSilencedChatsUpdated })
       .pipe(
         switchMap(() => this.chatService.getChats()),
-        tap(() => { this.chatFiltersService.filterChats(ChatPreviewFiltersEnum.ALL) })
+        tap(() => { this.chatFiltersService.filterChats(ChatFiltersEnum.ALL) })
       )
       .subscribe()
   }
@@ -223,7 +224,7 @@ export class ChatPreviewOptionsService {
           : chat
       )
     })
-    this.chatFiltersService.filterChats(ChatPreviewFiltersEnum.ALL)
+    this.chatFiltersService.filterChats(ChatFiltersEnum.ALL)
 
     const currentUser = await this.userService.getUpdatedLoginUserData()
     if (!currentUser?.id || !currentUser.chatsRoomArchived) return
@@ -240,7 +241,7 @@ export class ChatPreviewOptionsService {
     this.userService.updateUser(currentUser.id, { chatsRoomPinned: updatedPinned })
       .pipe(
         switchMap(() => this.chatService.getChats()),
-        tap(() => { this.chatFiltersService.filterChats(ChatPreviewFiltersEnum.ALL) })
+        tap(() => { this.chatFiltersService.filterChats(ChatFiltersEnum.ALL) })
       )
       .subscribe()
 
@@ -249,14 +250,14 @@ export class ChatPreviewOptionsService {
 
   private async onClickArchivedButton (chatRoomId: string) {
     const showArchivedChats = this.chatService.showArchivedChat()
-    let filterToApply = !showArchivedChats ? ChatPreviewFiltersEnum.ALL : ChatPreviewFiltersEnum.ARCHIVED
+    let filterToApply = !showArchivedChats ? ChatFiltersEnum.ALL : ChatFiltersEnum.ARCHIVED
 
     this.optimisticallyToggleProperty(chatRoomId, 'isArchived')
     const areArchivedChats = this.chatService.originalChats().some(chat => chat.isArchived)
 
     if (showArchivedChats && !areArchivedChats) {
       this.chatService.showArchivedChat.set(false)
-      filterToApply = ChatPreviewFiltersEnum.ALL
+      filterToApply = ChatFiltersEnum.ALL
     }
 
     this.chatFiltersService.filterChats(filterToApply)
@@ -276,8 +277,8 @@ export class ChatPreviewOptionsService {
   }
 
   private async onClickInFavorites (chatRoomId: string) {
-    const showFavoritesChats = this.chatFiltersService.currentIdFilterChat() === ChatPreviewFiltersEnum.FAVORITE
-    const filterToApply = !showFavoritesChats ? ChatPreviewFiltersEnum.ALL : ChatPreviewFiltersEnum.FAVORITE
+    const showFavoritesChats = this.chatFiltersService.currentIdFilterChat() === ChatFiltersEnum.FAVORITE
+    const filterToApply = !showFavoritesChats ? ChatFiltersEnum.ALL : ChatFiltersEnum.FAVORITE
 
     this.optimisticallyToggleProperty(chatRoomId, 'inFavorites')
     this.chatFiltersService.filterChats(filterToApply)
@@ -296,7 +297,7 @@ export class ChatPreviewOptionsService {
   }
 
   private async onClickIsBlocked (chatRoomId: string) {
-    const filterToApply = ChatPreviewFiltersEnum.ALL
+    const filterToApply = ChatFiltersEnum.ALL
 
 
     const currentUser = await this.userService.getUpdatedLoginUserData()

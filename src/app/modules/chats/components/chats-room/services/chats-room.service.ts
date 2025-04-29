@@ -3,12 +3,13 @@ import { effect, Injectable, signal,  WritableSignal } from '@angular/core'
 import { BehaviorSubject, catchError, Observable, of, switchMap, tap } from 'rxjs'
 import { ChatRoomApiService } from '../../../../../core/services/api'
 import { SocketStatusService } from '../../../../../core/services/socket/socket-status.service'
-import { ChatI, ChatPreviewFiltersEnum } from '../../../model'
 import { ChatService } from '../../../services/chats.service'
-import { UpdateChatRoomDto } from '../interfaces/update-chat-room-dto'
+import { UpdateChatRoomDto } from '../interfaces/chat-room-update.dto'
 import { CreateChatRoomDto } from '../interfaces'
 import { chatRoomGroupNameColors } from '../../../../../core/constants'
 import { ChatFiltersService } from '../../../services/chats-filters.service'
+import { ChatFiltersEnum, ChatI } from '../../../interfaces'
+
 
 
 @Injectable({ providedIn: 'root' })
@@ -61,7 +62,7 @@ export class ChatsRoomService {
     return this.chatRoomApiService.findOneChatRoom(chatId)
   }
 
-  public updateChatRoom (id: string, data: Partial<UpdateChatRoomDto>, filter: ChatPreviewFiltersEnum = ChatPreviewFiltersEnum.ALL): Observable<any> {
+  public updateChatRoom (id: string, data: Partial<UpdateChatRoomDto>, filter: ChatFiltersEnum = ChatFiltersEnum.ALL): Observable<any> {
 
     const prevChats =  this.currentChats()
     return this.chatRoomApiService.updateChatRoom(id, data).pipe(

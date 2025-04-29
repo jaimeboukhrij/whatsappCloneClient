@@ -12,7 +12,7 @@ export class ContactsComponent implements OnInit {
   private readonly addNewcontactService = inject(AddNewcontactService)
   private readonly createGroupService = inject(CreateGroupService)
 
-  public contactsSortedByLetterData = this.contactsService.contactsData
+  public contactsViewData = this.contactsService.contactsViewData
   public isChatInputLoading = this.contactsService.isChatInputLoading
   public showNewContactModal: WritableSignal<boolean>
   public showCreateGroupView: WritableSignal<boolean>

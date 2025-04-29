@@ -4,7 +4,7 @@ import {
   Input,
   signal
 } from '@angular/core'
-import { type ChatI } from '../../model'
+import { type ChatI } from '../../interfaces'
 import { ChatPreviewService } from './services/chat-preview.service'
 import { ChatPreviewOptionsService } from './services/chat-preview-options.service'
 

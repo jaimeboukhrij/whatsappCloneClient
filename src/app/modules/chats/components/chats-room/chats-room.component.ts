@@ -1,4 +1,4 @@
-import { ChatI } from '../../model'
+import { ChatI } from '../../interfaces'
 import { Component, ElementRef, inject,  OnInit,  ViewChild,  WritableSignal } from '@angular/core'
 import { ChatsRoomService } from './services/chats-room.service'
 import { ChatRoomMessagesService } from './components/chats-room-messages/services/chats-room-messages.service'

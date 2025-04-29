@@ -1,7 +1,8 @@
 import { Injectable, signal } from '@angular/core'
-import { ChatPreviewFiltersEnum } from '../model'
 import { debounceTime, Subject } from 'rxjs'
 import {  ChatService } from './chats.service'
+import { ChatFiltersEnum } from '../interfaces'
+
 
 @Injectable({
   providedIn: 'root'
@@ -10,30 +11,30 @@ export class ChatFiltersService {
   private readonly searchQuery$ = new Subject<string>()
   public isChatInputLoading = signal(false)
   private readonly currenInputQuery = signal('')
-  readonly currentIdFilterChat = signal(ChatPreviewFiltersEnum.ALL)
+  readonly currentIdFilterChat = signal(ChatFiltersEnum.ALL)
   public buttonFilterText = [
     {
       text: 'Todos',
-      id: ChatPreviewFiltersEnum.ALL
+      id: ChatFiltersEnum.ALL
     },
     {
       text: 'No leídos',
-      id: ChatPreviewFiltersEnum.NO_READ
+      id: ChatFiltersEnum.NO_READ
     },
     {
       text: 'Favoritos',
-      id: ChatPreviewFiltersEnum.FAVORITE
+      id: ChatFiltersEnum.FAVORITE
     },
     {
       text: 'Grupos',
-      id: ChatPreviewFiltersEnum.GROUPS
+      id: ChatFiltersEnum.GROUPS
     }
   ]
 
   constructor (private readonly chatService: ChatService) {
-    this.filterChats(ChatPreviewFiltersEnum.ALL)
+    this.filterChats(ChatFiltersEnum.ALL)
     this.searchQuery$.pipe(debounceTime(200)).subscribe(() => {
-      this.filterChats(ChatPreviewFiltersEnum.ALL)
+      this.filterChats(ChatFiltersEnum.ALL)
       this.isChatInputLoading.set(false)
     })
   }
@@ -44,27 +45,27 @@ export class ChatFiltersService {
     this.searchQuery$.next(q)
   }
 
-  public filterChats = (id?: ChatPreviewFiltersEnum) => {
+  public filterChats = (id?: ChatFiltersEnum) => {
     if (id) this.currentIdFilterChat.set(id)
     switch (this.currentIdFilterChat()) {
-      case ChatPreviewFiltersEnum.ALL:
+      case ChatFiltersEnum.ALL:
         this.chatService.resetToOriginalChats()
         break
-      case ChatPreviewFiltersEnum.NO_READ:
+      case ChatFiltersEnum.NO_READ:
         this.chatService.chats.set(
           this.chatService
             .originalChats()
             .filter((chat) => !chat.isRead && !chat.isArchived)
         )
         break
-      case ChatPreviewFiltersEnum.FAVORITE:
+      case ChatFiltersEnum.FAVORITE:
         this.chatService.chats.set(
           this.chatService
             .originalChats()
             .filter((chat) => chat.inFavorites && !chat.isArchived)
         )
         break
-      case ChatPreviewFiltersEnum.GROUPS:
+      case ChatFiltersEnum.GROUPS:
         this.chatService.chats.set(
           this.chatService
             .originalChats()
@@ -72,7 +73,7 @@ export class ChatFiltersService {
         )
         break
 
-      case ChatPreviewFiltersEnum.ARCHIVED:
+      case ChatFiltersEnum.ARCHIVED:
         this.chatService.chats.set(
           this.chatService.originalChats().filter((chat) => chat.isArchived)
         )

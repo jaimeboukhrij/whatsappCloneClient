@@ -1,4 +1,4 @@
-import { UtilsService } from './../../../../../../core/services/utils.service'
+import { UtilsService } from '../../../../../../core/services/utils.service'
 import { Component, signal } from '@angular/core'
 import { ChatsRoomService } from '../../services/chats-room.service'
 import { ChatRoomMessagesService } from '../chats-room-messages/services/chats-room-messages.service'

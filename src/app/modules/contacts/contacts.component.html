@@ -44,9 +44,9 @@
       </section>
     </button>
     <contacts-preview [title]="'CONTACTOS EN WHATSAPP'" />
-    @for (contacts of contactsSortedByLetterData(); track $index) {
-    <contacts-preview [title]="contacts.letter" />
-    @for (contact of contacts.data; track $index) {
+    @for (contactViewData of contactsViewData(); track $index) {
+    <contacts-preview [title]="contactViewData.letter" />
+    @for (contact of contactViewData.data; track $index) {
     <contacts-preview [contactsData]="contact" />
     }
     }

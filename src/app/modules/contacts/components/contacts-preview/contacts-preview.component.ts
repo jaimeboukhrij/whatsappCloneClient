@@ -1,6 +1,6 @@
 import { Component, inject, Input } from '@angular/core'
-import {  IUser } from '../../../../shared/interfaces/user.interface'
 import { ContactsService } from '../../services'
+import { ContactI } from '../../interfaces'
 
 @Component({
   selector: 'contacts-preview',
@@ -10,7 +10,7 @@ import { ContactsService } from '../../services'
 export class ContactsPreviewComponent {
   private readonly contactsService = inject(ContactsService)
 
-  @Input() public contactsData: IUser = {} as IUser
+  @Input() public contactsData: ContactI = {} as ContactI
   @Input() public title: string | undefined = undefined
 
   onClickContact () {

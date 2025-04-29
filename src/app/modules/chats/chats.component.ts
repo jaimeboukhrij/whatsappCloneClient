@@ -1,8 +1,9 @@
 import { Component, inject, signal } from '@angular/core'
-import { ChatPreviewFiltersEnum } from './model'
 import { ChatFiltersService } from './services/chats-filters.service'
 import { ChatService } from './services/chats.service'
-import { ChatsRoomService } from './components/chats-room/services/chats-room.service'
+import { ChatFiltersEnum } from './interfaces'
+
+
 
 @Component({
   standalone: false,
@@ -11,7 +12,6 @@ import { ChatsRoomService } from './components/chats-room/services/chats-room.se
 export class ChatsComponent {
   private readonly chatFiltersService = inject(ChatFiltersService)
   private readonly chatService = inject(ChatService)
-  private readonly chatsRoomService = inject(ChatsRoomService)
   public showSilencedNotificationsModal = this.chatService.showSilencedNotificationsModal
   public showLeaveGroupModal = this.chatService.showLeaveGroupModal
   public showStarredMessages = this.chatService.showStarredMessages
@@ -32,8 +32,8 @@ export class ChatsComponent {
     return this.chatService.showArchivedChat()
   }
 
-  onClickButton (id?: ChatPreviewFiltersEnum) {
-    if (!id) id = ChatPreviewFiltersEnum.ALL
+  onClickButton (id?: ChatFiltersEnum ) {
+    if (!id) id = ChatFiltersEnum.ALL
     this.currenIndexBtnActive.set(id)
     this.chatFiltersService.filterChats(id)
   }
@@ -45,8 +45,8 @@ export class ChatsComponent {
   toggleShowArchivedChat () {
     this.chatFiltersService.filterChats(
       this.showArchivedChat
-        ? ChatPreviewFiltersEnum.ALL
-        : ChatPreviewFiltersEnum.ARCHIVED
+        ? ChatFiltersEnum.ALL
+        : ChatFiltersEnum.ARCHIVED
     )
     this.chatService.showArchivedChat.update((prev) => !prev)
   }

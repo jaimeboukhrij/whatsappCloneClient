@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core'
 import { ApiService } from './api.service'
-import { ChatRoomCreateMessageI, ChatRoomMessageI } from '../../../modules/chats/model/chat-room-messages.interface'
+import { ChatRoomCreateMessageI, ChatRoomMessageI } from '../../../modules/chats/components/chats-room/interfaces/chat-room-messages.interface'
 import { Observable } from 'rxjs'
 
 

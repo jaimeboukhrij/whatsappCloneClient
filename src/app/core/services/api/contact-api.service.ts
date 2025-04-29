@@ -1,7 +1,7 @@
 import {  HttpClient } from '@angular/common/http'
 import { Injectable } from '@angular/core'
 import {  ApiService } from './api.service'
-import {  IUser } from '../../../shared/interfaces/user.interface'
+import { ContactI } from '../../../modules/contacts/interfaces'
 
 @Injectable({ providedIn: 'root' })
 export class ContactApiService {
@@ -11,6 +11,6 @@ export class ContactApiService {
   ) {}
 
   getApiContacts () {
-    return this.apiService.fetchApi<IUser[]>('/contacts')
+    return this.apiService.fetchApi<ContactI[]>('/contacts')
   }
 }
