@@ -16,6 +16,7 @@ export class ChatHeaderComponent {
   chatHeaderOptions
   showCreateGroupView
 
+
   constructor (private readonly router: Router,
     private readonly chatHeaderService: ChatHeaderService
   ) {

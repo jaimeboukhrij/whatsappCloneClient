@@ -2,7 +2,7 @@ import { Component, inject, Input,  OnInit, signal } from '@angular/core'
 import { UserService } from '../../../../../user/services/user.service'
 import { ChatRoomMessageI } from '../../../../model/chat-room-messages.interface'
 import { ChatsRoomService } from '../../services/chats-room.service'
-import { ChatRoomMessagesService, ChatsRoomMessageOptionsService } from './services'
+import { ChatRoomMessagesService } from './services'
 
 @Component({
   selector: 'chats-room-messages',
@@ -14,15 +14,14 @@ import { ChatRoomMessagesService, ChatsRoomMessageOptionsService } from './servi
 export class ChatsRoomMessagesComponent implements OnInit {
   private readonly userService = inject(UserService)
   private readonly chatsRoomService = inject(ChatsRoomService)
-  private readonly chatsRoomMessageOptionsService = inject(ChatsRoomMessageOptionsService)
   private readonly chatRoomMessagesService = inject(ChatRoomMessagesService)
 
   @Input() messageData: ChatRoomMessageI | null = null
   @Input() typeChatRoom = ''
 
   public showChatRoomMessageButtonOptions = signal(false)
-  public currentMessagesOptionsId = this.chatsRoomMessageOptionsService.currentMessagesOptionsId
-  public messagesIdsSelectedToDelete =  this.chatsRoomMessageOptionsService.messagesIdsSelectedToDelete
+  public currentMessagesOptionsId = this.chatRoomMessagesService.currentMessagesOptionsId
+  public messagesIdsSelectedToDelete =  this.chatRoomMessagesService.messagesIdsSelectedToDelete
   public showDeleteMessageModal = this.chatRoomMessagesService.showDeleteMessageModal
 
 
@@ -43,12 +42,12 @@ export class ChatsRoomMessagesComponent implements OnInit {
   }
 
   onMouseEnter () {
-    if (this.chatsRoomMessageOptionsService.messageClickedIdToShowOptiones()) return
+    if (this.chatRoomMessagesService.messageClickedIdToShowOptiones()) return
     this.showChatRoomMessageButtonOptions.set(true)
   }
 
   onMouseLeave () {
-    if (this.chatsRoomMessageOptionsService.messageClickedIdToShowOptiones()) return
+    if (this.chatRoomMessagesService.messageClickedIdToShowOptiones()) return
     this.showChatRoomMessageButtonOptions.set(false)
   }
 

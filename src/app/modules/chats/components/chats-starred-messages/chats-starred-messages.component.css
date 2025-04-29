@@ -1,0 +1,28 @@
+.container {
+  transform: scale(0);
+  opacity: 0;
+
+
+  &.origin-top-left {
+    transform-origin: top left;
+  }
+
+  &.origin-top-right {
+    transform-origin: top right;
+  }
+
+  &.origin-bottom-left {
+    transform-origin: bottom left;
+  }
+
+  &.origin-bottom-right {
+    transform-origin: bottom right;
+  }
+}
+
+/* Transición solo al mostrarse */
+.container.show {
+  transform: scale(1);
+  opacity: 1;
+  transition: transform 0.2s ease-out, opacity 0.2s ease-out;
+}

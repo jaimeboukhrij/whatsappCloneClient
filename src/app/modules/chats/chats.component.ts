@@ -14,6 +14,7 @@ export class ChatsComponent {
   private readonly chatsRoomService = inject(ChatsRoomService)
   public showSilencedNotificationsModal = this.chatService.showSilencedNotificationsModal
   public showLeaveGroupModal = this.chatService.showLeaveGroupModal
+  public showStarredMessages = this.chatService.showStarredMessages
 
 
   public chatsPreviewData = this.chatService.chats

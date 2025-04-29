@@ -39,4 +39,8 @@ export class UserService {
     await lastValueFrom(this.fetchCurrentUserData(currentUserId))
     return this.currentUserData()
   }
+
+  getUserStarredMessages () {
+    return this.userApiService.getUserStarredMessages()
+  }
 }

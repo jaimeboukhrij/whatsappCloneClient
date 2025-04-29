@@ -1,1 +1,24 @@
-<p>chats-starred-messages works!</p>
+<section class="flex flex-col h-full">
+  <header class="h-[64px] w-full bg-[#111b21] flex items-center justify-between px-4">
+    <div class="flex items-center justify-start gap-6">
+      <button (click)="onClickback()">
+        <shared-left-arrow-icon [iconColor]="'#8696A0'" />
+      </button>
+      <h3 class="text-[16px] text-[#e9edef]">Mensajes destacados</h3>
+    </div>
+    <button [ngStyle]="{background:showOptions()?'rgba(255,255,255,.1)':'transparent'}"
+      (click)="onOptionsIconClick($event)"
+      class=" relative w-[40px] h-[40px] flex justify-center items-center rounded-full ">
+      <shared-options-icon [iconColor]="'white'" class=" hover:cursor-pointer" />
+      <section class="absolute w-[241px] h-[205px] z-10 container origin-top-right" [ngClass]="{'show': showOptions()}"
+        [ngStyle]="{ top: chatHeaderOptionsCordenates().y + 'px', right: chatHeaderOptionsCordenates().x  + 'px' }">
+        <chat-preview-options [options]="chatStarredHeaderOptions()" (onClickEmit)="onOptionClick($event)" />
+      </section>
+    </button>
+
+  </header>
+  <section class="w-full bg-[#0C1318] flex-1 scroll_section">
+    <chats-starred-message />
+    <chats-starred-message />
+  </section>
+</section>

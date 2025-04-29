@@ -1,4 +1,4 @@
-
+@if(!showStarredMessages()){
 <section class="h-full bg-backgroundDefault flex flex-col ">
   @if (!showArchivedChat) {
   <section class="px-4">
@@ -56,6 +56,10 @@
   }
   }
 </section>
+}@else {
+<chats-starred-messages />
+}
+
 @if (showSilencedNotificationsModal().show) {
 <chat-notifications-silenced-modal
   [chatId]="showSilencedNotificationsModal().chatId"></chat-notifications-silenced-modal>

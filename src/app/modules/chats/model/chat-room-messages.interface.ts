@@ -10,6 +10,7 @@ export interface ChatRoomMessageI {
   isRead: boolean
   isDelivered: boolean
   hideFor?: string[] | null
+  starredByUserId: string | null
 }
 
 export interface ChatRoomCreateMessageI {

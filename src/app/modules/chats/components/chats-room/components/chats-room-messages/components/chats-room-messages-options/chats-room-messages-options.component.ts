@@ -2,7 +2,7 @@ import { OriginStartEnum } from '../../../../../../../../shared/components/chat-
 import { Component, HostListener, inject, Input, OnInit, signal } from '@angular/core'
 import { ChatRoomMessageI } from '../../../../../../model/chat-room-messages.interface'
 import { UtilsService } from '../../../../../../../../core/services/utils.service'
-import { ChatsRoomMessageOptionsService } from '../../services'
+import { ChatRoomMessagesService } from '../../services'
 
 @Component({
   selector: 'chats-room-messages-options',
@@ -12,14 +12,14 @@ import { ChatsRoomMessageOptionsService } from '../../services'
 })
 export class ChatsRoomMessagesOptionsComponent implements OnInit {
   private readonly utilsService = inject(UtilsService)
-  private readonly chatsRoomMessageOptionsService = inject(ChatsRoomMessageOptionsService)
+  private readonly chatRoomMessagesService = inject(ChatRoomMessagesService)
 
 
   public rgbColor = signal('0, 92, 75')
   public optionsSectionCordenates = signal({ x: 0, y: 0 })
   public startAnimation = signal<OriginStartEnum>(OriginStartEnum.bottom_left)
-  public messagesOptions = this.chatsRoomMessageOptionsService.messagesOptions
-  public messageClickedIdToShowOptiones = this.chatsRoomMessageOptionsService.messageClickedIdToShowOptiones
+  public messagesOptions = this.chatRoomMessagesService.messagesOptions
+  public messageClickedIdToShowOptiones = this.chatRoomMessagesService.messageClickedIdToShowOptiones
 
   @Input()messageData: ChatRoomMessageI | null = null
 
@@ -64,8 +64,6 @@ export class ChatsRoomMessagesOptionsComponent implements OnInit {
     const currentMessageId = this.messageData!.id
     const currentSelectedMessageId =  this.messageClickedIdToShowOptiones()
 
-    console.log('dentroo', currentMessageId, currentSelectedMessageId)
-
     if (currentMessageId === currentSelectedMessageId) {
       this.messageClickedIdToShowOptiones.set(null)
       return
@@ -76,8 +74,10 @@ export class ChatsRoomMessagesOptionsComponent implements OnInit {
   }
 
   onClickOption (data: { id: string, event: MouseEvent }) {
+    console.log('eyyy', data)
+
     this.messageClickedIdToShowOptiones.set(null)
-    this.chatsRoomMessageOptionsService.oncClickOption(data.id, this.messageData!)
+    this.chatRoomMessagesService.onClickOption(data.id, this.messageData!)
   }
 
   @HostListener('document:click', ['$event'])

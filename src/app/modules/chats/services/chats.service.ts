@@ -13,6 +13,7 @@ export class ChatService {
   private readonly userService = inject(UserService)
 
   public showArchivedChat = signal(false)
+  public showStarredMessages = signal(false)
   public showSilencedNotificationsModal = signal({
     chatId: '',
     show: false

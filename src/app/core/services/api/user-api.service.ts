@@ -2,7 +2,7 @@
 import { Injectable } from '@angular/core'
 import {  ApiService } from './api.service'
 import {  IUser } from '../../../shared/interfaces/user.interface'
-import {  ChatI } from '../../../modules/chats/model'
+import {  ChatI, MessagesDataI } from '../../../modules/chats/model'
 import { UpdateUserDtoI } from '../../../modules/user/interfaces/update-user.dto'
 
 @Injectable({ providedIn: 'root' })
@@ -31,6 +31,10 @@ export class UserApiService {
 
   getUserChats () {
     return this.apiService.fetchApi<ChatI[]>('/users/chats-room')
+  }
+
+  getUserStarredMessages () {
+    return this.apiService.fetchApi<MessagesDataI[]>('/users/starred-messages')
   }
 
   getUsersRecommended () {
