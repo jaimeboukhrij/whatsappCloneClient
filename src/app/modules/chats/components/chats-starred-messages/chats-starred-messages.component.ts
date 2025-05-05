@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, HostListener, OnInit, QueryList, signal, ViewChildren } from '@angular/core'
+import {  Component, HostListener, OnInit, signal } from '@angular/core'
 import { ChatStarredMessagesService } from './services/chat-starred-messages.service'
 import { ChatService } from '../../services/chats.service'
 import { UserService } from '../../../user/services/user.service'
@@ -12,14 +12,13 @@ import { ChatsRoomService } from '../chats-room/services/chats-room.service'
   templateUrl: './chats-starred-messages.component.html',
   styleUrl: './chats-starred-messages.component.css'
 })
-export class ChatsStarredMessagesComponent implements OnInit, AfterViewInit {
+export class ChatsStarredMessagesComponent implements OnInit {
   chatHeaderOptionsCordenates = signal({ x: -7, y: 40 })
   showOptions = signal(false)
   chatStarredHeaderOptions
   showStarredMessages
   starredMessagesViewData = signal<ChatStarredMessagesViewI[]>([])
 
-  @ViewChildren('messageRef', { read: ElementRef }) messageElems!: QueryList<ElementRef>
 
 
   constructor (private readonly chatStarredMessagesService: ChatStarredMessagesService,
@@ -32,44 +31,6 @@ export class ChatsStarredMessagesComponent implements OnInit, AfterViewInit {
     this.showStarredMessages = this.chatService.showStarredMessages
 
   }
-
-
-  ngAfterViewInit (): void {
-    // this.messageElems.changes.subscribe((elems: QueryList<ElementRef>) => {
-    //   elems.forEach((elem: ElementRef<HTMLElement>) => {
-    //     const children: HTMLCollection = elem.nativeElement.children
-
-    //     Array.from(children).forEach((child: Element) => {
-    //       const attr: string | null = child.getAttribute('data-message-id')
-
-    //       if(attr === )
-    //       console.log('Atributo del hijo:', attr)
-    //     })
-    //   })
-    // })
-  }
-
-
-
-
-  scrollToMessage (messageId: string) {
-    setTimeout(() => {
-      this.messageElems.forEach((elem: ElementRef<HTMLElement>) => {
-        const children: HTMLCollection = elem.nativeElement.children
-
-        Array.from(children).forEach((child: Element) => {
-          const attr: string | null = child.getAttribute('data-message-id')
-
-          if (attr === messageId) {
-            console.log('dentroooo')
-            child.scrollIntoView({ behavior: 'smooth', block: 'center' })
-          }
-        })
-      })
-    }, 0)
-  }
-
-
 
   ngOnInit (): void {
     this.getUserStarredMessages()
@@ -101,8 +62,15 @@ export class ChatsStarredMessagesComponent implements OnInit, AfterViewInit {
   }
 
   onStarredMessageClick (chatRoomId: string, starredMessageId: string) {
+    const currentChatRoomId = this.chatsRoomService.currentChatRoomId()
+    if (currentChatRoomId === chatRoomId) {
+      this.chatsRoomService.scrollToMessage.set(starredMessageId)
+      return
+    }
     this.chatsRoomService.changeChatRoomData(chatRoomId)?.subscribe({
-      next: ()=>{ this.scrollToMessage(starredMessageId) }
+      next: ()=>{
+        this.chatsRoomService.scrollToMessage.set(starredMessageId)
+      }
     })
 
   }

@@ -1,6 +1,7 @@
 .container {
   transform: scale(0);
   opacity: 0;
+  z-index: 3;
 
 
   &.origin-top-left {
@@ -20,7 +21,6 @@
   }
 }
 
-/* Transición solo al mostrarse */
 .container.show {
   transform: scale(1);
   opacity: 1;

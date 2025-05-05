@@ -102,7 +102,7 @@ export class ChatPreviewService {
   }
 
   changeChatRoomData (chatRoomId: string) {
-    this.chatsRoomService.changeChatRoomData(chatRoomId)
+    this.chatsRoomService.changeChatRoomData(chatRoomId)?.subscribe()
   }
 
 

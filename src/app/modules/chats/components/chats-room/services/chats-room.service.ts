@@ -24,6 +24,7 @@ export class ChatsRoomService {
   private  writingTimeout: ReturnType<typeof setTimeout> | null = null
   public isLoading = signal(false)
   public nameColors = signal<Map<string, string> | null>(null)
+  scrollToMessage = signal<string | null>(null)
 
   constructor (
     private readonly chatRoomApiService: ChatRoomApiService,
@@ -32,13 +33,7 @@ export class ChatsRoomService {
     private readonly chatFiltersService: ChatFiltersService
   ) {
 
-    // effect(() => {
-    //   const id = this.currentChatRoomId()
 
-    //   if (id ) {
-    //     this.updateChatRoomData().subscribe()
-    //   }
-    // })
   }
 
   public async deleteChatRoom (id: string, newChats: ChatI[]) {
@@ -85,6 +80,7 @@ export class ChatsRoomService {
       this.currentChatRoomData.set(null)
       return
     }
+    if (id === this.currentChatRoomId()) return
     this.currentChatRoomId.set(id)
     return this.updateChatRoomData()
   }

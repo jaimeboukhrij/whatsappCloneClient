@@ -19,38 +19,6 @@ export class ChatRoomMessagesService {
   public currentMessagesOptionsId = signal<string | null>(null)
   public messageClickedIdToShowOptiones = signal<string | null>(null)
   public messagesIdsSelectedToDelete = signal<string[]>([])
-  public messagesOptions = [
-    {
-      id: 'respond',
-      name: 'Responder'
-    },
-    {
-      id: 'copy',
-      name: 'Copiar'
-    },
-    {
-      id: 'react',
-      name: 'Reaccionar'
-    },
-    {
-      id: 'forward',
-      name: 'Reenviar'
-    },
-    {
-      id: 'pinUp',
-      name: 'Fijar'
-    },
-    {
-      id: 'standOut',
-      name: 'Destacar'
-    },
-    {
-      id: 'remove',
-      name: 'Eliminar'
-    }
-  ]
-
-
 
   constructor (
     private readonly userService: UserService,
@@ -91,10 +59,33 @@ export class ChatRoomMessagesService {
   }
 
   private standOutMessage (messageData: ChatRoomMessageI) {
-    const currentUserId = this.userService.loginUserData()?.id
-    console.log('enviadfo a actualizar', currentUserId)
+    const currentUser = this.userService.loginUserData()
+    const currentUserId = currentUser?.id
     if (!currentUserId) return
-    this.updateManyMessages([{ id: messageData.id, starredByUserId: currentUserId }]).subscribe()
+
+    const isStarredMessage = messageData.starredBy!.some(user =>user.id === currentUserId)
+    this.chatRoomMessages.update(prev =>{
+      return prev.map(message => {
+        if (message.id === messageData.id) {
+          if (!isStarredMessage) {
+            return ({ ...message, starredBy: [...message.starredBy!, currentUser] })
+          } else {
+            const updatedStarredMessages = message.starredBy!.filter(user => user.id !== currentUserId)
+            message.starredBy = updatedStarredMessages.length ? updatedStarredMessages : null
+            return ({ ...message, starredBy: updatedStarredMessages })
+          }
+        }
+        return message
+      })
+    })
+    this.updateManyMessages([{ id: messageData.id, starredByUserId: currentUserId }]).subscribe(
+      {
+        next: ()=>{
+          // const currentChatRoom = this.currentChatRoomData()
+          // this.getChatRoomMessages(currentChatRoom)
+        }
+      }
+    )
   }
 
 

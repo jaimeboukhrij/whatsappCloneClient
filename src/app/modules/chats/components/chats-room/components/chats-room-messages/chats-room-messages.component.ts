@@ -1,4 +1,4 @@
-import { Component, inject, Input,  OnInit, signal } from '@angular/core'
+import { Component, inject, Input,  OnChanges, signal } from '@angular/core'
 import { UserService } from '../../../../../user/services/user.service'
 import { ChatRoomMessageI } from '../../interfaces/chat-room-messages.interface'
 import { ChatsRoomService } from '../../services/chats-room.service'
@@ -11,7 +11,7 @@ import { ChatRoomMessagesService } from './services'
   templateUrl: './chats-room-messages.component.html',
   styleUrl: './chats-room-messages.component.css'
 })
-export class ChatsRoomMessagesComponent implements OnInit {
+export class ChatsRoomMessagesComponent implements OnChanges {
   private readonly userService = inject(UserService)
   private readonly chatsRoomService = inject(ChatsRoomService)
   private readonly chatRoomMessagesService = inject(ChatRoomMessagesService)
@@ -30,7 +30,7 @@ export class ChatsRoomMessagesComponent implements OnInit {
 
 
 
-  ngOnInit (): void {
+  ngOnChanges (): void {
     if (this.messageData === null) return
     const messageOwnerId = this.messageData?.owner.id
     const currentUserId = this.userService.loginUserData()?.id

@@ -1,5 +1,6 @@
-<section class="background-container flex flex-col justify-end py-6 gap-[3px] ">
+<section #scrollContainer
+  class=" flex-col justify-end py-6 gap-[3px] scroll_section w-full flex-1 min-h-[100%] overflow-y-auto max-h-[100%]">
   @for (message of messages(); track $index) {
-  <chats-room-messages [messageData]="message" />
+    <chats-room-messages #messageRef [messageData]="message" />
   }
 </section>

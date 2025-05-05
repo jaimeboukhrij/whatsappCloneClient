@@ -10,7 +10,7 @@
       (click)="onOptionsIconClick($event)"
       class=" relative w-[40px] h-[40px] flex justify-center items-center rounded-full ">
       <shared-options-icon [iconColor]="'white'" class=" hover:cursor-pointer" />
-      <section class="absolute w-[241px] h-[205px] z-10 container origin-top-right" [ngClass]="{'show': showOptions()}"
+      <section class="absolute w-[241px] h-[205px] z-10 container origin-top-left" [ngClass]="{'show': showOptions()}"
         [ngStyle]="{ top: chatHeaderOptionsCordenates().y + 'px', right: chatHeaderOptionsCordenates().x  + 'px' }">
         <chat-preview-options [options]="chatStarredHeaderOptions()" (onClickEmit)="onOptionClick($event)" />
       </section>
@@ -37,7 +37,7 @@
         </div>
       </section>
 
-      <chats-room-messages #messageRef [messageData]="starredMessageViewData.message" />
+      <chats-room-messages [messageData]="starredMessageViewData.message" />
     </button>
 
     }

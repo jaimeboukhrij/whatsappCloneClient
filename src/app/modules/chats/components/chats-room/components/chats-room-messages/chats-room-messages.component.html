@@ -42,7 +42,8 @@
 
     </span>
     @if(showChatRoomMessageButtonOptions()){
-    <chats-room-messages-options [messageData]="messageData" />
+    <chats-room-messages-options [messageData]="messageData!"
+      [showChatRoomMessageButtonOptions]="showChatRoomMessageButtonOptions" />
     }
 
   </div>
