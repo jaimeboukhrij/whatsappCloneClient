@@ -1,5 +1,7 @@
 <section class="message-container delete-message"
-  [ngClass]="{ received: messageData?.type === 'received', sent: messageData?.type === 'sent' }">
+[attr.data-message-id]="messageData?.id"
+
+[ngClass]="{ received: messageData?.type === 'received', sent: messageData?.type === 'sent' }">
   <div class="check-box-container" [ngClass]="{deleteMessage:currentMessagesOptionsId() === 'remove'}">
     <input type="checkbox" (change)="onCheckboxChange($event)" [checked]="isChecked()" class=" custom-checkbox ">
   </div>
@@ -14,7 +16,10 @@
       {{messageData?.text}}
     </span>
     <span class="metadata">
-      <span class="time">9:25</span>
+    @if (isStarredMessage()) {
+    <span class="time"><shared-start-icon /></span>
+    }
+    <span class="time">{{messageData?.messageHour}}</span>
       @if (messageData?.type === 'sent' && messageData?.isDelivered) {
       <span class="tick"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="15" id="msg-dblcheck-ack" x="2063"
           y="2076">

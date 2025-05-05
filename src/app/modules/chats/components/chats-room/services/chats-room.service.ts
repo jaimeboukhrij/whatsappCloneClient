@@ -1,4 +1,4 @@
-import { effect, Injectable, signal,  WritableSignal } from '@angular/core'
+import { Injectable, signal,  WritableSignal } from '@angular/core'
 
 import { BehaviorSubject, catchError, Observable, of, switchMap, tap } from 'rxjs'
 import { ChatRoomApiService } from '../../../../../core/services/api'
@@ -31,16 +31,14 @@ export class ChatsRoomService {
     private readonly chatService: ChatService,
     private readonly chatFiltersService: ChatFiltersService
   ) {
-    this.currentChats = this.chatService.chats
 
-    effect(() => {
-      const id = this.currentChatRoomId()
-      const chats = this.currentChats()
+    // effect(() => {
+    //   const id = this.currentChatRoomId()
 
-      if (id && chats.length > 0) {
-        this.updateChatRoomData()
-      }
-    })
+    //   if (id ) {
+    //     this.updateChatRoomData().subscribe()
+    //   }
+    // })
   }
 
   public async deleteChatRoom (id: string, newChats: ChatI[]) {
@@ -88,21 +86,27 @@ export class ChatsRoomService {
       return
     }
     this.currentChatRoomId.set(id)
+    return this.updateChatRoomData()
   }
 
   updateChatRoomData () {
     this.isLoading.set(true)
     const id = this.currentChatRoomId()
-    const chats =  this.currentChats()
-    const foundChat = chats.find(chat => chat.id === id)
+    return this.findOneChatRoom(id).pipe(
+      tap(
+        { next: (currentChatRoom) => {
+          if (currentChatRoom) {
+            this.addColorToNamesInGroups(currentChatRoom)
+            this.currentChatRoomData.set(currentChatRoom)
+          }
+          setTimeout(() => {
+            this.isLoading.set(false)
+          }, 0)
+        } }
+      )
+    )
 
-    if (foundChat) {
-      this.addColorToNamesInGroups(foundChat)
-      this.currentChatRoomData.set(foundChat)
-    }
-    setTimeout(() => {
-      this.isLoading.set(false)
-    }, 0)
+
   }
 
   private addColorToNamesInGroups (foundChat: ChatI) {

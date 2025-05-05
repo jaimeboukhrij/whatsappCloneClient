@@ -174,7 +174,7 @@ export class ChatPreviewOptionsService {
     const messagesReverse = [...messages].reverse()
     const firstUnreadIndex = messagesReverse.findIndex(m => m.owner.id === currentUserId)
     const continuouslyReadMessages = messagesReverse.slice(0, firstUnreadIndex === -1 ? messages.length : firstUnreadIndex)
-    const continuouslyReadMessagesUpdated = continuouslyReadMessages.map(messages => ({ ...messages, isRead: false }))
+    const continuouslyReadMessagesUpdated = continuouslyReadMessages.map(messages => ({ id: messages.id, isRead: false }))
 
     this.chatRoomMessagesService.updateManyMessages(continuouslyReadMessagesUpdated).subscribe()
 

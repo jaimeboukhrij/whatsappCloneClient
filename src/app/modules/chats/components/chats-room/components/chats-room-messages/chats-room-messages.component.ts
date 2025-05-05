@@ -23,22 +23,26 @@ export class ChatsRoomMessagesComponent implements OnInit {
   public currentMessagesOptionsId = this.chatRoomMessagesService.currentMessagesOptionsId
   public messagesIdsSelectedToDelete =  this.chatRoomMessagesService.messagesIdsSelectedToDelete
   public showDeleteMessageModal = this.chatRoomMessagesService.showDeleteMessageModal
-
-
-
-
   dynamicColor = signal('#06cf9c')
   isChatRoomGroup = signal(false)
   showName = signal(false)
+  isStarredMessage = signal(false)
+
+
 
   ngOnInit (): void {
+    if (this.messageData === null) return
     const messageOwnerId = this.messageData?.owner.id
     const currentUserId = this.userService.loginUserData()?.id
     const type = this.chatsRoomService.currentChatRoomData()?.type
 
     this.showName.set( messageOwnerId !== currentUserId && type === 'group' && this.messageData?.type === 'received')
-    this.addColorToName(messageOwnerId!)
+    this.addColorToName(messageOwnerId)
+
     this.isChatRoomGroup.set(this.chatsRoomService.currentChatRoomData()?.type === 'group')
+    const starredByUserId = this.messageData?.starredBy
+    if ( starredByUserId === null) return
+    this.isStarredMessage.set(this.messageData.starredBy!.some(user =>user.id === currentUserId))
   }
 
   onMouseEnter () {

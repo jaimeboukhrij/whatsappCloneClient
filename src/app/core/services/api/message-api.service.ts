@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core'
 import { ApiService } from './api.service'
-import { ChatRoomCreateMessageI, ChatRoomMessageI } from '../../../modules/chats/components/chats-room/interfaces/chat-room-messages.interface'
+import { ChatRoomCreateMessageI, ChatRoomMessageI, ChatRoomUpdateMessageI } from '../../../modules/chats/components/chats-room/interfaces/chat-room-messages.interface'
 import { Observable } from 'rxjs'
 
 
@@ -23,7 +23,7 @@ export class MessageApiService {
   }
 
 
-  updateMany (message: ChatRoomMessageI[]) {
+  updateMany (message: ChatRoomUpdateMessageI[]) {
     return this.apiService.fetchApi<ChatRoomMessageI[]>(
       '/messages/update-many',
       message,

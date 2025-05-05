@@ -38,6 +38,7 @@ export class ChatService {
         if (updateChats) this.chats.set(chatsVisibles)
         this.originalChats.set(sorted)
         this.getMessagesChatsWithOutRead(chatsVisibles)
+        console.log('**', chatsVisibles)
         return chatsVisibles
       }),
       catchError((error) => {

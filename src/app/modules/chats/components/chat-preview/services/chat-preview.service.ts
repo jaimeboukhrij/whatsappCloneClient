@@ -25,7 +25,8 @@ export class ChatPreviewService {
     lastTwentyMessage: null,
     messagesWithOutRead: null,
     isRead: true,
-    isDelivered: true
+    isDelivered: true,
+    lastMessageHour: ''
   })
 
 
@@ -47,7 +48,8 @@ export class ChatPreviewService {
       lastMessageUser,
       messagesWithOutRead: lastTwentyMessage.filter(message => !message.isRead).length,
       isRead: chatPreviewData?.isRead ?? false,
-      isDelivered: lastMessage?.isDelivered ?? true
+      isDelivered: lastMessage?.isDelivered ?? true,
+      lastMessageHour: lastMessage?.messageHour ?? ''
 
     })
 

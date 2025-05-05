@@ -31,9 +31,6 @@ export class ChatRoomApiService {
   }
 
 
-
-
-
   updateChatRoom (ChatId: string, data: Partial<UpdateChatRoomDto>) {
     return this.apiService.fetchApi<ChatI>(
       `/chats-room/${ChatId}`,

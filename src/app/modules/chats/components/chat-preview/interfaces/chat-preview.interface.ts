@@ -2,6 +2,7 @@ import { ChatRoomMessageI } from '../../chats-room/interfaces/chat-room-messages
 
 export interface ChatPreviewMessagesDataI {
   lastMessage: string | null
+  lastMessageHour: string
   lastMessageUser: string | null
   isUserMessage: boolean
   lastTwentyMessage: ChatRoomMessageI[] | null

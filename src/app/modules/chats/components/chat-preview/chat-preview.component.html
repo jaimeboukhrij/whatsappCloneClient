@@ -46,8 +46,8 @@
     </div>
     <div class="flex flex-col justify-center items-end px-4">
       <p class="text-[12px] text-center text-[#8696A0]"
-        [ngStyle]="{ color: !this.messagesData().isRead ? '#00a884' : '#8696A0' }">
-        10:49
+        [ngStyle]="{ color: !messagesData().isRead ? '#00a884' : '#8696A0' }">
+        {{messagesData().lastMessageHour}}
       </p>
       <div class="inline-flex items-center h-[30px] justify-end gap-2">
         @if(_chatPreviewData()?.notificationsSilenced){

@@ -17,8 +17,29 @@
     </button>
 
   </header>
-  <section class="w-full bg-[#0C1318] flex-1 scroll_section">
-    <chats-starred-message />
-    <chats-starred-message />
+  <section class="w-full bg-[#0C1318] flex-1 scroll_section  flex flex-col ">
+    @for (starredMessageViewData of starredMessagesViewData(); track $index) {
+    <button (click)="onStarredMessageClick(starredMessageViewData.message.chatRoomId, starredMessageViewData.message.id)"
+      class="flex flex-col gap-4 hover:bg-black py-[9px] px-[10px] eachStarredmessage">
+      <section class="flex justify-between">
+        <div class="flex items-center gap-1">
+          <img [src]="starredMessageViewData.urlImg" class="w-[26px] h-[26px] rounded-full">
+          <div class="flex  items-start">
+            <span class="text-[#d1d7db] text-[14px]">{{starredMessageViewData.title}}</span>
+            <span class="prueba"></span>
+            <span class="text-[#d1d7db] text-[14px]">Tu</span>
+          </div>
+        </div>
+        <div class="flex gap-1 items-center">
+          <p class="text-[#667781] text-[12px]">{{starredMessageViewData.messageDate}}</p>
+          <shared-chevron-icon [arrowDirection]="'right'" [iconColor]="'#667781'"
+            [measure]="{ width: '21', height: '21' }" />
+        </div>
+      </section>
+
+      <chats-room-messages #messageRef [messageData]="starredMessageViewData.message" />
+    </button>
+
+    }
   </section>
 </section>

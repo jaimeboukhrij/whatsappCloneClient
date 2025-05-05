@@ -4,7 +4,7 @@ import { MessageApiService } from '../../../../../../../core/services/api/messag
 import { SocketStatusService } from '../../../../../../../core/services/socket/socket-status.service'
 import { UserService } from '../../../../../../user/services/user.service'
 import { ChatI } from '../../../../../interfaces'
-import { ChatRoomMessageI, ChatRoomCreateMessageI } from '../../../interfaces/chat-room-messages.interface'
+import { ChatRoomMessageI, ChatRoomCreateMessageI, ChatRoomUpdateMessageI } from '../../../interfaces/chat-room-messages.interface'
 import { ChatService } from '../../../../../services/chats.service'
 import { ChatsRoomService } from '../../../services/chats-room.service'
 
@@ -94,7 +94,7 @@ export class ChatRoomMessagesService {
     const currentUserId = this.userService.loginUserData()?.id
     console.log('enviadfo a actualizar', currentUserId)
     if (!currentUserId) return
-    this.updateManyMessages([{ ...messageData, starredByUserId: currentUserId }]).subscribe()
+    this.updateManyMessages([{ id: messageData.id, starredByUserId: currentUserId }]).subscribe()
   }
 
 
@@ -144,11 +144,11 @@ export class ChatRoomMessagesService {
     if (!isMessageFromOtherUser ) return
     this.socketStatusService.emit('message-is-read-client', messages?.at(-1)?.owner.id)
 
-    const updatedMessages = messages.map(message =>  ({ ...message, isRead: message.isDelivered }))
+    const updatedMessages = messages.map(message =>  ({ id: message.id, isRead: message.isDelivered }))
     this.updateManyMessages(updatedMessages).subscribe()
   }
 
-  updateManyMessages ( messages:  ChatRoomMessageI[]) {
+  updateManyMessages ( messages:  ChatRoomUpdateMessageI[]) {
     return this.messageApiServcice.updateMany(messages).pipe(
       switchMap(() => this.chatsService.getChats()),
       catchError(error => {
@@ -168,7 +168,7 @@ export class ChatRoomMessagesService {
         const currentMessage = currentMessages.find(mess => mess.id === messageId)!
         const currentMessageHideUsers = currentMessage?.hideFor ?? []
         currentMessageHideUsers.push(currentUser.id)
-        return ({ ...currentMessage, hideFor: currentMessageHideUsers })
+        return ({   id: messageId, hideFor: currentMessageHideUsers })
       })
 
     const messagesToHideIds = messagesToHide.map(messages => messages.id)
