@@ -1,5 +1,5 @@
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:3000/api',
-  SOCKET_URL: 'http://localhost:3000'
+  apiUrl: 'https://whatsappcloneserver.onrender.com/api',  //https://whatsappcloneserver.onrender.com/api
+  SOCKET_URL: 'https://whatsappcloneserver.onrender.com'
 }
