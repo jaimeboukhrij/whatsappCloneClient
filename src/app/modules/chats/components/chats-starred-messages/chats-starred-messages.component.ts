@@ -1,8 +1,6 @@
 import {  Component, HostListener, OnInit, signal } from '@angular/core'
 import { ChatStarredMessagesService } from './services/chat-starred-messages.service'
 import { ChatService } from '../../services/chats.service'
-import { UserService } from '../../../user/services/user.service'
-import { ChatStarredMessagesViewI } from './interfaces/chat-starred-messages.interface'
 import { ChatsRoomService } from '../chats-room/services/chats-room.service'
 
 
@@ -17,35 +15,28 @@ export class ChatsStarredMessagesComponent implements OnInit {
   showOptions = signal(false)
   chatStarredHeaderOptions
   showStarredMessages
-  starredMessagesViewData = signal<ChatStarredMessagesViewI[]>([])
+  starredMessagesViewData
+
 
 
 
   constructor (private readonly chatStarredMessagesService: ChatStarredMessagesService,
     private readonly chatService: ChatService,
-    private readonly userService: UserService,
     private readonly chatsRoomService: ChatsRoomService
 
   ) {
     this.chatStarredHeaderOptions = this.chatStarredMessagesService.chatStarredHeaderOptions
     this.showStarredMessages = this.chatService.showStarredMessages
+    this.starredMessagesViewData = this.chatStarredMessagesService.starredMessagesViewData
 
   }
 
   ngOnInit (): void {
-    this.getUserStarredMessages()
+    this.chatStarredMessagesService.getUserStarredMessages()
   }
 
 
-  private getUserStarredMessages () {
-    this.userService.getUserStarredMessages()
-      .subscribe({
-        next: (starredMessages) => {
-          const starredMessagesViewData = this.chatStarredMessagesService.getStarredMessagesViewData(starredMessages)
-          this.starredMessagesViewData.set(starredMessagesViewData)
-        }
-      })
-  }
+
 
 
   onClickback () {

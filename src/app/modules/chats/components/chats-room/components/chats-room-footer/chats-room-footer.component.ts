@@ -19,7 +19,7 @@ export class ChatsRoomFooterComponent  {
   })
 
   public currentMessagesOptionsId
-  public messagesIdsSelectedToDelete
+  public messagesDataSelected
 
 
 
@@ -29,17 +29,22 @@ export class ChatsRoomFooterComponent  {
     private readonly utilsService: UtilsService
   ) {
     this.currentMessagesOptionsId = this.chatRoomMessagesService.currentMessagesOptionsId
-    this.messagesIdsSelectedToDelete =  this.chatRoomMessagesService.messagesIdsSelectedToDelete
+    this.messagesDataSelected =  this.chatRoomMessagesService.messagesDataSelected
   }
 
 
   onXClick () {
-    this.messagesIdsSelectedToDelete.set([])
+    this.messagesDataSelected.set([])
     this.currentMessagesOptionsId.set(null)
+    this.chatRoomMessagesService.showCheckBox.set(false)
   }
 
   onTrushClick () {
     this.chatRoomMessagesService.showDeleteMessageModal.set(true)
+  }
+
+  onForwardClick () {
+    this.chatsRoomService.showForwardModal.set(true)
   }
 
 

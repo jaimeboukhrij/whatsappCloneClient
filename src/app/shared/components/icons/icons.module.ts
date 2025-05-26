@@ -25,6 +25,8 @@ import { MessageIconComponent } from './message-icon/message-icon.component'
 import { CheckIconComponent } from './check-icon/check-icon.component'
 import { TrushIconComponent } from './trush-icon/trush-icon.component'
 import { StartIconComponent } from './start-icon/start-icon.component'
+import { LockIconComponent } from './lock-icon/lock-icon.component'
+import { ForwardIconComponent } from './forward-icon/forward-icon.component'
 
 @NgModule({
   declarations: [
@@ -53,7 +55,9 @@ import { StartIconComponent } from './start-icon/start-icon.component'
     MessageIconComponent,
     CheckIconComponent,
     TrushIconComponent,
-    StartIconComponent
+    StartIconComponent,
+    LockIconComponent,
+    ForwardIconComponent
   ],
 
   exports: [
@@ -82,7 +86,11 @@ import { StartIconComponent } from './start-icon/start-icon.component'
     MessageIconComponent,
     CheckIconComponent,
     TrushIconComponent,
-    StartIconComponent
+    StartIconComponent,
+    LockIconComponent,
+    ForwardIconComponent
+
+
   ]
 })
 export class IconsModule {}

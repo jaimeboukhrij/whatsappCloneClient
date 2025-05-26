@@ -4,6 +4,7 @@ export interface ContactI {
   id: string
   lastName: string
   urlImg: string | null
+  status: string | null
 }
 
 export interface ContactsViewI {

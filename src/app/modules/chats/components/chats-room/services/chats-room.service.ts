@@ -25,6 +25,7 @@ export class ChatsRoomService {
   public isLoading = signal(false)
   public nameColors = signal<Map<string, string> | null>(null)
   scrollToMessage = signal<string | null>(null)
+  public showForwardModal = signal(false)
 
   constructor (
     private readonly chatRoomApiService: ChatRoomApiService,

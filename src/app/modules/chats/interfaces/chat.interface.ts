@@ -22,6 +22,7 @@ export interface ChatI {
   createdAt: Date
   contactUserId?: string
   lastSeen?: string
+  status: string | null
 }
 
 export enum ChatINotificationsSilencedEnum {

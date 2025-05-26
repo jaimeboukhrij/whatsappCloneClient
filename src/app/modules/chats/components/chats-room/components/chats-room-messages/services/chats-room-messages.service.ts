@@ -7,6 +7,15 @@ import { ChatI } from '../../../../../interfaces'
 import { ChatRoomMessageI, ChatRoomCreateMessageI, ChatRoomUpdateMessageI } from '../../../interfaces/chat-room-messages.interface'
 import { ChatService } from '../../../../../services/chats.service'
 import { ChatsRoomService } from '../../../services/chats-room.service'
+import { ChatStarredMessagesService } from '../../../../chats-starred-messages/services/chat-starred-messages.service'
+import { ForwardUsersDataPreviewI } from '../components/chat-room-forward-modal/interface/chat-room-forward.interface'
+
+interface messagesSelectedI {
+  id: string
+  text: string
+  ownerId: string
+  chatRoomId?: string
+}
 
 @Injectable({ providedIn: 'root' })
 export class ChatRoomMessagesService {
@@ -18,14 +27,16 @@ export class ChatRoomMessagesService {
   showDeleteMessageModal = signal(false)
   public currentMessagesOptionsId = signal<string | null>(null)
   public messageClickedIdToShowOptiones = signal<string | null>(null)
-  public messagesIdsSelectedToDelete = signal<string[]>([])
+  public messagesDataSelected = signal<messagesSelectedI[]>([])
+  public showCheckBox = signal(false)
 
   constructor (
     private readonly userService: UserService,
     private readonly chatsService: ChatService,
     private readonly socketStatusService: SocketStatusService,
     private readonly chatsRoomService: ChatsRoomService,
-    private readonly messageApiServcice: MessageApiService
+    private readonly messageApiServcice: MessageApiService,
+    private readonly chatStarredMessagesService: ChatStarredMessagesService
   ) {
     this.currentChatRoomData = this.chatsRoomService.currentChatRoomData
     effect(()=>{
@@ -34,12 +45,12 @@ export class ChatRoomMessagesService {
     })
   }
 
-
-
-
-
   onClickOption (optionId: string, messageData: ChatRoomMessageI) {
     this.currentMessagesOptionsId.set(optionId)
+    this.showCheckBox.set(
+      this.currentMessagesOptionsId() === 'remove' ||
+      this.currentMessagesOptionsId() === 'forward'
+    )
     switch (optionId) {
       case 'remove':
         this.removeMessage(messageData)
@@ -49,13 +60,19 @@ export class ChatRoomMessagesService {
         this.standOutMessage(messageData)
         break
 
+      case 'forward':
+        this.forwardMessage()
+        break
+
       default:
         break
     }
   }
 
   private removeMessage (messageData: ChatRoomMessageI) {
-    this.messagesIdsSelectedToDelete.update(prev => ([...prev, messageData.id]))
+
+    this.messagesDataSelected.update(prev => ([...prev,
+      { id: messageData.id, ownerId: messageData.owner.id, chatRoomId: messageData.chatRoomId, text: messageData.text }]))
   }
 
   private standOutMessage (messageData: ChatRoomMessageI) {
@@ -81,19 +98,26 @@ export class ChatRoomMessagesService {
     this.updateManyMessages([{ id: messageData.id, starredByUserId: currentUserId }]).subscribe(
       {
         next: ()=>{
-          // const currentChatRoom = this.currentChatRoomData()
-          // this.getChatRoomMessages(currentChatRoom)
+          this.chatStarredMessagesService.getUserStarredMessages()
         }
       }
     )
   }
 
+  private forwardMessage () {}
 
+  onSubmitForwardMessage (chatsSelected: ForwardUsersDataPreviewI[]) {
+    const updatedMessagesData =  this.messagesDataSelected().map(({ ownerId, text }) => ({  ownerId, text }))
+    chatsSelected.forEach(chat => {
+      if (chat.chatRoomId) {
+        this.createManyMessages(updatedMessagesData, chat.chatRoomId)
+      }
+    })
+  }
 
   canDeleteMessages () {
-    const messagesToDelete = this
-      .messagesIdsSelectedToDelete()
-      .map(messageIdToDelete => this.chatRoomMessages()
+    const messagesToDelete = this.messagesDataSelected()
+      .map(({ id: messageIdToDelete }) => this.chatRoomMessages()
         .find(message => message.id === messageIdToDelete)
       )
 
@@ -121,14 +145,11 @@ export class ChatRoomMessagesService {
     return diffInMinutes > 10
   }
 
-
   getChatRoomMessages (currentChatRoom: ChatI | null) {
     if (!currentChatRoom) return
     const messages = currentChatRoom?.messages ?? []
     this.chatRoomMessages.set(messages)
   }
-
-
 
   async updateMessagesToRead ( messages:  ChatRoomMessageI[]) {
     const isMessageFromOtherUser = messages?.at(-1)?.owner.id !== this.userService.loginUserData()?.id
@@ -154,8 +175,8 @@ export class ChatRoomMessagesService {
     const currentMessages = this.chatRoomMessages()
     if (!currentUser) return
 
-    const messagesToHide = this.messagesIdsSelectedToDelete()
-      .map(messageId =>{
+    const messagesToHide = this.messagesDataSelected()
+      .map(({ id: messageId }) =>{
         const currentMessage = currentMessages.find(mess => mess.id === messageId)!
         const currentMessageHideUsers = currentMessage?.hideFor ?? []
         currentMessageHideUsers.push(currentUser.id)
@@ -174,7 +195,7 @@ export class ChatRoomMessagesService {
         next: ()=>{
           this.currentMessagesOptionsId.set(null)
           this.showDeleteMessageModal.set(false)
-          this.messagesIdsSelectedToDelete.set([])
+          this.messagesDataSelected.set([])
         },
         error: () =>{
           this.chatRoomMessages.set(this.transformMessageData(currentMessages))
@@ -186,7 +207,7 @@ export class ChatRoomMessagesService {
   OnDeleteMessages () {
     const currentMessages = this.chatRoomMessages()
 
-    const messagesIdsToDelete = this.messagesIdsSelectedToDelete()
+    const messagesIdsToDelete = this.messagesDataSelected().map(data => data.id)
     const currentUserId = this.userService.loginUserData()?.id
     if (!currentUserId) return
 
@@ -203,16 +224,25 @@ export class ChatRoomMessagesService {
 
         this.currentMessagesOptionsId.set(null)
         this.showDeleteMessageModal.set(false)
-        this.messagesIdsSelectedToDelete.set([])
+        this.messagesDataSelected.set([])
       },
       error: ()=>{
         this.chatRoomMessages.set(this.transformMessageData(currentMessages))
       }
     })
-
-
   }
 
+  private createManyMessages (messages: Array<{ text: string, ownerId: string }>, chatRoomId: string) {
+    messages.forEach(({ text, ownerId }) => {
+      if (!text) return
+      const message: ChatRoomCreateMessageI = {
+        text,
+        ownerId,
+        chatRoomId
+      }
+      this.socketStatusService.emit('message-from-client', message)
+    })
+  }
 
   createMessage (text: string) {
     if (!text) return
@@ -265,10 +295,6 @@ export class ChatRoomMessagesService {
       this.chatsService.getChats().subscribe()
     })
   }
-
-
-
-
 
   private transformMessageData (messages: ChatRoomMessageI[]) {
     const userId = this.userService.loginUserData()?.id

@@ -5,13 +5,26 @@
       <button (click)="onXClick()">
         <shared-x-icon />
       </button>
-      <p class="text-[#d1d7db] text-[14.5px]">{{messagesIdsSelectedToDelete().length}} seleccionados</p>
-    </div>
-    <button (click)="onTrushClick()">
-      <shared-trush-icon />
-    </button>
-  </section>
-  }@else {
+      <p class="text-[#d1d7db] text-[14.5px]">{{messagesDataSelected().length}} seleccionados</p>
+      </div>
+      <button (click)="onTrushClick()">
+        <shared-trush-icon />
+      </button>
+      </section>
+      }@else if (currentMessagesOptionsId() === 'forward') {
+      <section class="w-full px-6 flex justify-between items-center gap-2">
+        <div class=" flex justify-normal items-center gap-2">
+          <button (click)="onXClick()">
+            <shared-x-icon />
+          </button>
+          <p class="text-[#d1d7db] text-[14.5px]">{{messagesDataSelected().length}} seleccionados</p>
+        </div>
+        <button (click)="onForwardClick()">
+          <shared-forward-icon />
+        </button>
+      </section>
+      }
+      @else {
   <button class="w-[40px]  flex justify-center items-center">
     <shared-plus-icon />
   </button>
@@ -22,7 +35,7 @@
         (emitEmoji)="onEmojiChange($event)" />
     </button>
     <textarea (keydown.enter)="onSubmit($event)" placeholder="Escribe un mensaje" [value]="textAreaValue()"
-      (input)="onInputChange($event)" class="auto-expand">
+      (input)="onInputChange($event); autoExpand($event)" class="auto-expand">
   </textarea>
 
 

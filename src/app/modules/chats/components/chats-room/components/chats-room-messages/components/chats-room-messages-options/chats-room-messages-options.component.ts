@@ -55,7 +55,7 @@ export class ChatsRoomMessagesOptionsComponent implements OnInit {
       },
       {
         id: 'standOut',
-        name: messageData.starredBy!.some(user =>user.id === currentUserId) ? 'No Destacar' : 'Destacar'
+        name: messageData.starredBy?.some(user =>user.id === currentUserId) ? 'No Destacar' : 'Destacar'
       },
       {
         id: 'remove',
@@ -123,6 +123,7 @@ export class ChatsRoomMessagesOptionsComponent implements OnInit {
   }
 
   onClickOption (data: { id: string, event: MouseEvent }) {
+    event?.stopPropagation()
     this.showChatRoomMessageButtonOptions.set(false)
     this.messageClickedIdToShowOptiones.set(null)
     this.chatRoomMessagesService.onClickOption(data.id, this._messageData!)

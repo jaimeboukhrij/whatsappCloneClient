@@ -1,0 +1,86 @@
+<section style="background-color: rgba(11, 20, 26, 0.85)"
+  class="fixed w-full h-[100vh] left-0 top-0 z flex justify-center items-center z-50">
+  <article class="w-[436px] h-[90vh] bg-[#111B21]  pb-[22px] flex flex-col gap-[15px] relative min-h-[723px]">
+    <section class="flex flex-col gap-1">
+      <div class="w-full h-[60px] bg-[#1F2C33] px-[20px] flex items-center gap-6">
+        <button (click)="onXClick()">
+          <shared-x-icon />
+        </button>
+        <h4 class="text-[#d9dee0] text-[19px]">Reenviar mensaje a</h4>
+      </div>
+      <div class=" flex flex-col gap-4 w-[95%] m-auto">
+        <chats-input [defaultPlaceHolder]="'Buscar'" (messageEvent)="onInputChange($event)"
+          [isChatInputLoading]="isDataInputLoading()" />
+      </div>
+    </section>
+
+    <section class="scroll_section h-auto">
+      @if (chatsDataPreview().length) {
+      <h2 class="text-[#008069] text-[16px] pl-[20px] py-2">CHATS RECIENTES</h2>
+      <form [formGroup]="chatsSelectedForm" class="">
+        @for (chat of chatsDataPreview(); track $index) {
+        <button (click)="onCheckboxChange(chat, 'chat')"
+          class="flex items-center justify-start gap-8 cursor-pointer eachContact  h-[72px] w-full pl-[20px] pr-[5px]  rounded-md transition-all">
+          <label class="custom-checkbox">
+            <input type="checkbox" [value]="chat.id" [checked]="isChecked(chat.id)" />
+            <span class="checkbox-box"></span>
+          </label>
+          <section class="flex items-center gap-4  h-full flex-1">
+            <img style="clip-path: circle();" class="w-[49px] h-[49px] clip" [src]="chat.urlImg" alt="">
+            <div class="info flex flex-col justify-center items-start flex-1 min-h-[49px]  h-full content-center">
+              <h2 class="text-left  ">
+                {{chat.name}}
+              </h2>
+              <p class="text-[#8696a0] text-[14px]">
+                {{chat.status}}
+              </p>
+            </div>
+          </section>
+
+        </button>
+
+        }
+      </form>
+      }
+      @if (contactsDataPreview().length) {
+      <h2 class="text-[#008069] text-[16px] pl-[20px] py-2">OTROS CONTACTOS</h2>
+      <form [formGroup]="chatsSelectedForm" class="">
+        @for (contact of contactsDataPreview(); track $index) {
+        <button (click)="onCheckboxChange(contact,'contact')"
+          class="flex items-center justify-start gap-8 cursor-pointer eachContact  h-[72px] w-full pl-[20px] pr-[5px]  rounded-md transition-all">
+          <label class="custom-checkbox">
+            <input type="checkbox" [value]="contact.id" [checked]="isChecked(contact.id)" />
+            <span class="checkbox-box"></span>
+          </label>
+          <section class="flex items-center gap-4  h-full flex-1">
+            <img style="clip-path: circle();" class="w-[49px] h-[49px] clip" [src]="contact.urlImg" alt="">
+            <div class="info flex flex-col justify-center items-start flex-1 min-h-[49px]  h-full content-center">
+              <h2 class="text-left  ">
+                {{contact.name}}
+              </h2>
+              <p class="text-[#8696a0] text-[14px]">
+                {{contact.status}}
+              </p>
+            </div>
+          </section>
+
+        </button>
+
+        }
+      </form>
+      }
+    </section>
+
+    <div class="footer h-[60px] bg-[#1F2C33] px-[20px] flex items-center justify-between gap-6 absolute bottom-0 w-full"
+      [ngClass]="{'show':showForwdardButton()}">
+      <h4 class="text-[#d1d7db] text-[16px]">{{getSelectedNamesChats()}}</h4>
+      <button (click)="onSubmit()"
+        class="w-[46px] h-[46px] bg-[#04A784] rounded-full flex justify-center items-center ">
+        <shared-left-arrow-icon [arrowDirection]="'right'" [iconColor]="'white'" />
+      </button>
+    </div>
+
+  </article>
+
+
+</section>

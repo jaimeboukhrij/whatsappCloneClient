@@ -1,4 +1,10 @@
-@if(!isLoading() && this.currentChatRoomData()){
+
+@if (isLoading()) {
+<section class="w-full h-full flex justify-center items-center">
+  <shared-loading-spinner [size]="'70px'" />
+</section>
+}@else {
+@if( this.currentChatRoomData()){
 <section class="flex flex-col h-full">
   <chats-room-header />
   <section class="flex-1 overflow-y-hidden background-container ">
@@ -6,6 +12,32 @@
   </section>
   <chats-room-footer />
 </section>
+
 }@else{
-<p></p>
+      <section class="w-full h-full bg-[#212E35] py-[28px] px-[30px] flex flex-col items-center">
+        <div class="flex flex-col items-center justify-center flex-1">
+          <img class="w-[320px] h-[212px]" src="https://static.whatsapp.net/rsrc.php/v4/yS/r/aGcVD59xVTb.png" alt="">
+          <h1 class="text-[36px] text-[#e9edefe0] mt-[38px] text-center">Descarga WhatsApp para Mac</h1>
+          <p class="text-[14px] text-[#aebac1] mt-[24px] text-center">Descarga la aplicación para Mac y haz llamadas con mayor
+            rapidez.</p>
+          <a href="https://apps.apple.com/app/whatsapp-messenger/id310633997" target="_blank" rel="noopener noreferrer"
+            class="bg-[#00A884] py-[9px] px-[21px] rounded-full text-[#111b21] text-[14px] mt-[32px] hover:bg-[#06cf9c] text-center">
+            Descargar de App Store
+          </a>
+
+        </div>
+
+        <div class="text-[14px] text-[#667781] text-center flex items-start gap-2 mt-8">
+          <div class="flex justify-center h-[20px] items-center"><shared-lock-icon [iconColor]="'#667781'" /></div>
+          <p class="text-start">
+            Tus mensajes personales están cifrados de extremo a extremo.
+          </p>
+        </div>
+      </section>
+      }
+}
+
+@if (showForwardModal()) {
+  <app-chat-room-forward-modal />
+
 }

@@ -1,4 +1,4 @@
-@if(!showStarredMessages()){
+@if(!showStarredMessages() && chatsPreviewData().length){
 
 <section class="h-full bg-backgroundDefault flex flex-col ">
   @if (!showArchivedChat) {
@@ -36,6 +36,7 @@
     </section>
     }
   </section>
+
 
   }@else {
   <header class="flex flex-col ">

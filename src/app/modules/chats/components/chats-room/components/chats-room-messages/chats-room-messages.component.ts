@@ -21,17 +21,19 @@ export class ChatsRoomMessagesComponent implements OnChanges {
 
   public showChatRoomMessageButtonOptions = signal(false)
   public currentMessagesOptionsId = this.chatRoomMessagesService.currentMessagesOptionsId
-  public messagesIdsSelectedToDelete =  this.chatRoomMessagesService.messagesIdsSelectedToDelete
+  public messagesDataSelected =  this.chatRoomMessagesService.messagesDataSelected
   public showDeleteMessageModal = this.chatRoomMessagesService.showDeleteMessageModal
   dynamicColor = signal('#06cf9c')
   isChatRoomGroup = signal(false)
   showName = signal(false)
   isStarredMessage = signal(false)
+  showCheckBox = this.chatRoomMessagesService.showCheckBox
 
 
 
   ngOnChanges (): void {
     if (this.messageData === null) return
+
     const messageOwnerId = this.messageData?.owner.id
     const currentUserId = this.userService.loginUserData()?.id
     const type = this.chatsRoomService.currentChatRoomData()?.type
@@ -40,8 +42,9 @@ export class ChatsRoomMessagesComponent implements OnChanges {
     this.addColorToName(messageOwnerId)
 
     this.isChatRoomGroup.set(this.chatsRoomService.currentChatRoomData()?.type === 'group')
+
     const starredByUserId = this.messageData?.starredBy
-    if ( starredByUserId === null) return
+    if (!starredByUserId || starredByUserId?.length) return
     this.isStarredMessage.set(this.messageData.starredBy!.some(user =>user.id === currentUserId))
   }
 
@@ -64,18 +67,18 @@ export class ChatsRoomMessagesComponent implements OnChanges {
   isChecked () {
     const messageId = this.messageData?.id
     if (!messageId) return
-    return this.messagesIdsSelectedToDelete().includes(messageId)
+    return this.messagesDataSelected().some(messageSelected => messageSelected.id === messageId)
   }
 
   onCheckboxChange (event: any) {
     const isChecked = event.target.checked
-    const messageId = this.messageData?.id
-    if (!messageId) return
+    const messageData = this.messageData
+    if (!messageData) return
     if (isChecked) {
-      this.messagesIdsSelectedToDelete.update(prev => ([...prev, messageId]))
+      this.messagesDataSelected.update(prev => ([...prev,    { ownerId: messageData.owner.id, text: messageData.text, id: messageData.id }]))
       return
     }
-    this.messagesIdsSelectedToDelete.update(prev => prev.filter(id => id !== messageId))
+    this.messagesDataSelected.update(prev => prev.filter(messagesSelected => messagesSelected.id !== messageData.id))
   }
 
 

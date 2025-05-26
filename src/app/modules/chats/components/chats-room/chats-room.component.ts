@@ -15,6 +15,7 @@ export class ChatsRoomComponent implements OnInit {
   private readonly chatRoomMessagesService = inject(ChatRoomMessagesService)
   public currentChatRoomData: WritableSignal<ChatI | null> = this.chatsRoomService.currentChatRoomData
   isLoading = this.chatsRoomService.isLoading
+  showForwardModal = this.chatsRoomService.showForwardModal
 
 
 
@@ -25,7 +26,5 @@ export class ChatsRoomComponent implements OnInit {
     this.chatRoomMessagesService.messageIsReadSocket()
     this.chatRoomMessagesService.deleteMessageSocker()
     this.chatsRoomService.newGroupSocket()
-
-
   }
 }
