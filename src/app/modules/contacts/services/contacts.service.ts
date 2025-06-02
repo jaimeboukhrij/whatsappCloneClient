@@ -1,6 +1,6 @@
 import { inject, Injectable, signal } from '@angular/core'
 import { StorageService } from '../../../core/services/storage.service'
-import { debounceTime, EMPTY, from, Subject, switchMap, tap } from 'rxjs'
+import { debounceTime, EMPTY, from, Subject, switchMap, tap, map } from 'rxjs'
 import { ContactApiService } from '../../../core/services/api'
 import { Router } from '@angular/router'
 import { ChatService } from '../../chats/services/chats.service'
@@ -70,27 +70,26 @@ export class ContactsService {
 
     this.chatsRoomService.getChatRoomByContactUserId(memberId).pipe(
       switchMap((chatRoom) => {
-        if (!chatRoom) {
-          return this.chatsRoomService.createChatRoom(data).pipe(
-            switchMap(async (chat) =>
-              await this.router.navigate(['/chats']).then(() => chat)
-            ),
-            switchMap((chat) =>
-              this.chatService.getChats().pipe(
-                tap(() => { this.chatsRoomService.changeChatRoomData(chat.id) })
-              )
-            )
-          )
-        } else {
+        console.log('chatromm', chatRoom)
+        if (chatRoom) {
           return from(this.router.navigate(['/chats'])).pipe(
-            switchMap((chat) =>
-              this.chatService.getChats().pipe(
-                tap(() => { this.chatsRoomService.changeChatRoomData(chatRoom.id) })
-              )
-            ),
+            tap(() => this.chatsRoomService.changeChatRoomData(chatRoom.id)),
+            switchMap(() => this.chatService.getChats()),
+            // Omitimos el resultado final si no necesitas nada más
             switchMap(() => EMPTY)
           )
         }
+
+        // Si no existe, lo creamos
+        return this.chatsRoomService.createChatRoom(data).pipe(
+          switchMap((chat) =>
+            from(this.router.navigate(['/chats'])).pipe(
+              map(() => chat) // Pasamos el chat al siguiente operador
+            )
+          ),
+          tap((chat) => this.chatsRoomService.changeChatRoomData(chat.id)),
+          switchMap(() => this.chatService.getChats())
+        )
       })
     ).subscribe()
   }

@@ -77,6 +77,7 @@ export class ChatsRoomService {
   }
 
   changeChatRoomData (id: string | null) {
+    console.log('changeChatRoomData', id)
     if (!id) {
       this.currentChatRoomData.set(null)
       return
@@ -89,21 +90,23 @@ export class ChatsRoomService {
   updateChatRoomData () {
     this.isLoading.set(true)
     const id = this.currentChatRoomId()
+
     return this.findOneChatRoom(id).pipe(
       tap(
         { next: (currentChatRoom) => {
+          console.log('dentrooo')
           if (currentChatRoom) {
             this.addColorToNamesInGroups(currentChatRoom)
             this.currentChatRoomData.set(currentChatRoom)
           }
           setTimeout(() => {
             this.isLoading.set(false)
-          }, 0)
-        } }
+          }, 10)
+        },
+        error: err => { console.log(err) }
+        }
       )
     )
-
-
   }
 
   private addColorToNamesInGroups (foundChat: ChatI) {

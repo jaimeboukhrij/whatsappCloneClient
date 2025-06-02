@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core'
 import { ChatFiltersService } from './services/chats-filters.service'
 import { ChatService } from './services/chats.service'
 import { ChatFiltersEnum } from './interfaces'
+import { Router } from '@angular/router'
 
 
 
@@ -12,6 +13,7 @@ import { ChatFiltersEnum } from './interfaces'
 export class ChatsComponent {
   private readonly chatFiltersService = inject(ChatFiltersService)
   private readonly chatService = inject(ChatService)
+  private readonly router = inject(Router)
   public showSilencedNotificationsModal = this.chatService.showSilencedNotificationsModal
   public showLeaveGroupModal = this.chatService.showLeaveGroupModal
   public showStarredMessages = this.chatService.showStarredMessages
@@ -36,6 +38,10 @@ export class ChatsComponent {
     if (!id) id = ChatFiltersEnum.ALL
     this.currenIndexBtnActive.set(id)
     this.chatFiltersService.filterChats(id)
+  }
+
+  onClickShowContacts () {
+    this.router.navigate(['/contacts'])
   }
 
   onChangeQueryInput (event: string) {
